@@ -83,6 +83,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: const Text('Skip', style: TextStyle(color: Colors.white70)),
             ),
           ),
+
+          // ── Logo ──────────────────────────────────────────────
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 40,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Image.asset(
+                'assets/images/gymvibe_logo.png',
+                height: 160,
+                errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+              ),
+            ),
+          ),
           
           Positioned(
             left: 24,
