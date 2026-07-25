@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "1015297666389",
+    "project_id": "gymvibedavao",
+    "storage_bucket": "gymvibedavao.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1015297666389:android:0dacac5d973c987256d3dc",
+        "android_client_info": {
+          "package_name": "com.example.gymvibe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1015297666389-dvkgrk2f6fqsrja5bdh14hoku062ihfb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gymvibe",
+            "certificate_hash": "572c87638db2a9aa1018e9c2923c3950060b1b4b"
+          }
+        },
+        {
+          "client_id": "1015297666389-57ll8ctctcq8ke9asbslj16c54hgtfg6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0ViWLJF3e-IJYGvUbMsa9M4rioYNklL0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1015297666389-57ll8ctctcq8ke9asbslj16c54hgtfg6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1015297666389-plq9da4u7fbg53uh9rsudsgoks64gj5t.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.gymvibe"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1015297666389:android:fe071311d52369e956d3dc",
+        "android_client_info": {
+          "package_name": "com.gymvibe.davao"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1015297666389-geunl0rg96do2gdb57f7k5gvoq1uldlo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gymvibe.davao",
+            "certificate_hash": "572c87638db2a9aa1018e9c2923c3950060b1b4b"
+          }
+        },
+        {
+          "client_id": "1015297666389-57ll8ctctcq8ke9asbslj16c54hgtfg6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0ViWLJF3e-IJYGvUbMsa9M4rioYNklL0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1015297666389-57ll8ctctcq8ke9asbslj16c54hgtfg6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1015297666389-plq9da4u7fbg53uh9rsudsgoks64gj5t.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.gymvibe"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

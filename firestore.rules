@@ -1,0 +1,232 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ═══════════════════════════════════════════════════════════════════
+    // Helper Functions
+    // ═══════════════════════════════════════════════════════════════════
+
+    /// Returns true if the request is from an authenticated user.
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    /// Returns true if the authenticated user's UID matches the given userId.
+    function isOwnerOf(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    /// Returns true if a string field is present and within length bounds.
+    function isValidString(field, minLen, maxLen) {
+      return field is string && field.size() >= minLen && field.size() <= maxLen;
+    }
+
+    /// Returns true if the authenticated user has isOwner == true in their profile.
+    function isGymOwner() {
+      return isAuthenticated() &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isOwner == true;
+    }
+
+    /// Returns true if the authenticated user has the super_admin role.
+    function isSuperAdmin() {
+      return isAuthenticated() &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'super_admin';
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // Users Collection
+    // ═══════════════════════════════════════════════════════════════════
+
+    match /users/{userId} {
+      // Users can only read their own profile
+      allow read: if isOwnerOf(userId);
+
+      // Users can create their own profile during registration
+      allow create: if isOwnerOf(userId)
+        && isValidString(request.resource.data.name, 2, 50)
+        && isValidString(request.resource.data.email, 5, 254);
+
+      // Users can update their own profile but cannot self-promote to owner
+      allow update: if isOwnerOf(userId)
+        && request.resource.data.isOwner == resource.data.isOwner;
+
+      // Users cannot delete their own profile (admin-only operation)
+      allow delete: if false;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // Gyms Collection
+    // ═══════════════════════════════════════════════════════════════════
+
+    match /gyms/{gymId} {
+      // Anyone authenticated can read gym listings
+      allow read: if isAuthenticated();
+
+      // Only gym owners can create a gym, and must set themselves as ownerId
+      allow create: if isGymOwner()
+        && request.resource.data.ownerId == request.auth.uid
+        && isValidString(request.resource.data.name, 2, 100);
+
+      // Only the gym's owner can update it
+      allow update: if isAuthenticated()
+        && resource.data.ownerId == request.auth.uid
+        && request.resource.data.ownerId == resource.data.ownerId;
+
+      // Only the gym's owner can delete it
+      allow delete: if isAuthenticated()
+        && resource.data.ownerId == request.auth.uid;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // Bookings Collection
+    // ═══════════════════════════════════════════════════════════════════
+
+    match /bookings/{bookingId} {
+      // Users can read their own bookings
+      allow read: if isAuthenticated()
+        && resource.data.userId == request.auth.uid;
+
+      // Users can create bookings for themselves only
+      allow create: if isAuthenticated()
+        && request.resource.data.userId == request.auth.uid;
+
+      // Only the booking owner can update (e.g., cancel)
+      allow update: if isAuthenticated()
+        && resource.data.userId == request.auth.uid;
+
+      // Only the booking owner can delete
+      allow delete: if isAuthenticated()
+        && resource.data.userId == request.auth.uid;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // Events Collection
+    // ═══════════════════════════════════════════════════════════════════
+
+    match /events/{eventId} {
+      // Anyone authenticated can read events
+      allow read: if isAuthenticated();
+
+      // Only gym owners can create events
+      allow create: if isGymOwner()
+        && isValidString(request.resource.data.title, 2, 200);
+
+      // Only the event creator (gym owner) can update
+      allow update: if isAuthenticated()
+        && resource.data.createdBy == request.auth.uid;
+
+      // Only the event creator can delete
+      allow delete: if isAuthenticated()
+        && resource.data.createdBy == request.auth.uid;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // Promotions Collection
+    // ═══════════════════════════════════════════════════════════════════
+
+    match /promotions/{promotionId} {
+      // Anyone authenticated can read promotions
+      allow read: if isAuthenticated();
+
+      // Only gym owners can create promotions
+      allow create: if isGymOwner()
+        && isValidString(request.resource.data.title, 2, 200);
+
+      // Only the promotion creator can update
+      allow update: if isAuthenticated()
+        && resource.data.createdBy == request.auth.uid;
+
+      // Only the promotion creator can delete
+      allow delete: if isAuthenticated()
+        && resource.data.createdBy == request.auth.uid;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // Personal Records (Gym Leaderboard)
+    // ═══════════════════════════════════════════════════════════════════
+
+    match /gyms/{gymId}/personalRecords/{recordId} {
+      // Any authenticated user can read records (for leaderboard display)
+      allow read: if isAuthenticated();
+
+      // Users can submit their own records (must be pending)
+      allow create: if isAuthenticated()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.status == 'pending';
+
+      // Only the gym owner can verify/reject records (update status)
+      allow update: if isAuthenticated()
+        && exists(/databases/$(database)/documents/gyms/$(gymId))
+        && get(/databases/$(database)/documents/gyms/$(gymId)).data.ownerId == request.auth.uid;
+
+      // Only the submitter can delete their own record
+      allow delete: if isAuthenticated()
+        && resource.data.userId == request.auth.uid;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // Workout Calendar (User's personal calendar)
+    // ═══════════════════════════════════════════════════════════════════
+
+    match /users/{userId}/workoutCalendar/{dateKey} {
+      // Only the user can read/write their own calendar
+      allow read, write: if isOwnerOf(userId);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // Job Postings
+    // ═══════════════════════════════════════════════════════════════════
+
+    match /job_postings/{jobId} {
+      // Anyone authenticated can read job postings
+      allow read: if isAuthenticated();
+      
+      // Only gym owners can create job postings
+      allow create: if isGymOwner() 
+        && request.resource.data.ownerId == request.auth.uid;
+        
+      // Only the gym owner who created the job can update or delete
+      allow update, delete: if isAuthenticated() 
+        && resource.data.ownerId == request.auth.uid;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // Job Applications
+    // ═══════════════════════════════════════════════════════════════════
+
+    match /job_applications/{applicationId} {
+      // Applicant can read their own applications.
+      // Gym owner can read applications for their jobs.
+      allow read: if isAuthenticated() && (
+        resource.data.applicantId == request.auth.uid ||
+        resource.data.ownerId == request.auth.uid
+      );
+      
+      // Applicants can create applications
+      allow create: if isAuthenticated() 
+        && request.resource.data.applicantId == request.auth.uid;
+        
+      // Both applicant and gym owner can update applications (for status changes)
+      allow update: if isAuthenticated() && (
+        resource.data.applicantId == request.auth.uid ||
+        resource.data.ownerId == request.auth.uid
+      );
+      
+      // Applications generally shouldn't be deleted, but if so, only by applicant
+      allow delete: if isAuthenticated() 
+        && resource.data.applicantId == request.auth.uid;
+    }
+
+
+    // ═══════════════════════════════════════════════════════════════════
+    // Global Admin Access
+    // ═══════════════════════════════════════════════════════════════════
+
+    match /{document=**} {
+      allow read, write: if isSuperAdmin();
+    }
+  }
+}

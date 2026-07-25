@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="facebook_app_id">2515220425608676</string>
+    <string name="facebook_client_token">7544b4561cf67c3737e8f1ab9fb5a5df</string>
+    <string name="app_name">GymVibe</string>
+    <string name="fb_login_protocol_scheme">fb2515220425608676</string>
+</resources>
