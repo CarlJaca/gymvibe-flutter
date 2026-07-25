@@ -92,7 +92,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             child: Center(
               child: Image.asset(
                 'assets/images/gymvibe_logo.png',
-                height: 160,
+                height: 320,
                 errorBuilder: (_, __, ___) => const SizedBox.shrink(),
               ),
             ),

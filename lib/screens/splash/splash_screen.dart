@@ -34,7 +34,7 @@ class _SplashScreenState extends State<SplashScreen>
       if (mounted) {
         final isLoggedIn = AuthService.instance.isLoggedIn;
         final isOwner = AuthService.instance.currentUser?.isOwner ?? false;
-        
+
         String nextRoute = AppRoutes.onboarding;
         if (isLoggedIn) {
           final user = AuthService.instance.currentUser;
@@ -42,7 +42,9 @@ class _SplashScreenState extends State<SplashScreen>
             nextRoute = AppRoutes.superAdminPortal;
           } else if (isOwner) {
             if (user != null) {
-              context.read<GymProvider>().setCurrentOwner(user.id, gymName: user.gymName);
+              context
+                  .read<GymProvider>()
+                  .setCurrentOwner(user.id, gymName: user.gymName);
             }
             nextRoute = AppRoutes.ownerPortal;
           } else {
@@ -75,60 +77,14 @@ class _SplashScreenState extends State<SplashScreen>
 
             // ── Logo & Brand ────────────────────────────────────────
             Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Fitness icon in circle
-                  Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.primary.withValues(alpha: 0.12),
-                      border: Border.all(color: AppColors.primary, width: 2),
-                    ),
-                    child: const Icon(
-                      Icons.fitness_center_rounded,
-                      size: 52,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                  const SizedBox(height: 28),
-
-                  // GYM VIBE
-                  const Text(
-                    AppStrings.appNameLine1,
-                    style: TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white,
-                      letterSpacing: 6,
-                      height: 1.1,
-                    ),
-                  ),
-
-                  // DAVAO — in primary color
-                  const Text(
-                    AppStrings.appNameLine2,
-                    style: TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.primary,
-                      letterSpacing: 10,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Tagline
-                  const Text(
-                    AppStrings.tagline,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: AppColors.textSecondary,
-                      letterSpacing: 1.5,
-                    ),
-                  ),
-                ],
+              child: Image.asset(
+                'assets/images/gymvibe_logo.png',
+                height: 220,
+                errorBuilder: (_, __, ___) => const Icon(
+                  Icons.fitness_center_rounded,
+                  size: 80,
+                  color: AppColors.primary,
+                ),
               ),
             ),
 

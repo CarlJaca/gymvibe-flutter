@@ -195,12 +195,12 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               children: [
                 // Top Section (Logo)
-                Expanded(
-                  flex: 3,
+                Padding(
+                  padding: const EdgeInsets.only(top: 24.0, bottom: 8.0),
                   child: Center(
                     child: Image.asset(
                       'assets/images/gymvibe_logo.png',
-                      height: 150,
+                      height: 200,
                       errorBuilder: (_, __, ___) => const Icon(
                         Icons.fitness_center_rounded,
                         size: 56,
@@ -212,7 +212,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 // Login Card
                 Expanded(
-                  flex: 7,
                   child: Container(
                     width: double.infinity,
                     decoration: const BoxDecoration(
