@@ -1,11 +1,10 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/routes/app_router.dart';
 import '../../providers/gym_provider.dart';
 import '../../providers/auth_provider.dart';
-import '../../services/recommendation_service.dart';
-import '../../widgets/gym_card.dart';
 import '../preferences/gym_preferences_screen.dart';
 
 class MatchesScreen extends StatefulWidget {
@@ -502,7 +501,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
                         const Icon(Icons.star_rounded, color: Colors.amber, size: 16),
                         const SizedBox(width: 3),
                         Text(
-                          '${gym.rating.toStringAsFixed(1)}',
+                          gym.rating.toStringAsFixed(1),
                           style: const TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
