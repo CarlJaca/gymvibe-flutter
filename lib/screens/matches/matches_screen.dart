@@ -21,12 +21,36 @@ class MatchesScreen extends StatefulWidget {
 
 class _MatchesScreenState extends State<MatchesScreen> {
   bool _showAllGyms = false;
+  final Set<String> _selectedGymIds = {};
+
+  void _toggleGymSelection(String gymId) {
+    setState(() {
+      if (_selectedGymIds.contains(gymId)) {
+        _selectedGymIds.remove(gymId);
+      } else {
+        if (_selectedGymIds.length < 3) {
+          _selectedGymIds.add(gymId);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('You can compare up to 3 gyms at a time'),
+              backgroundColor: AppColors.error,
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      }
+    });
+  }
 
   void _openCompareScreen(List<GymMatchResult> matchResults) {
-    if (matchResults.length < 2) {
+    final allGyms = matchResults.map((m) => m.gym).toList();
+    final selectedGyms = allGyms.where((g) => _selectedGymIds.contains(g.id)).toList();
+    
+    if (selectedGyms.length < 2) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Not enough matches to compare'),
+          content: Text('Select at least 2 gyms to compare'),
           backgroundColor: AppColors.error,
           duration: Duration(seconds: 2),
         ),
@@ -34,12 +58,10 @@ class _MatchesScreenState extends State<MatchesScreen> {
       return;
     }
     
-    // Pass the top 3 (or fewer) matched gyms to the compare screen
-    final topMatches = matchResults.take(3).map((r) => r.gym).toList();
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => CompareGymsScreen(gyms: topMatches),
+        builder: (_) => CompareGymsScreen(gyms: selectedGyms),
       ),
     );
   }
@@ -72,14 +94,14 @@ class _MatchesScreenState extends State<MatchesScreen> {
 
         return Scaffold(
           backgroundColor: AppColors.background,
-          floatingActionButton: matchResults.length >= 2
+          floatingActionButton: _selectedGymIds.isNotEmpty
               ? FloatingActionButton.extended(
                   onPressed: () => _openCompareScreen(matchResults),
                   backgroundColor: AppColors.primary,
                   icon: const Icon(Icons.compare_arrows_rounded, color: Colors.white),
-                  label: const Text(
-                    'Compare Gyms',
-                    style: TextStyle(
+                  label: Text(
+                    'Compare Gyms (${_selectedGymIds.length})',
+                    style: const TextStyle(
                         color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                 )
@@ -435,16 +457,21 @@ class _MatchesScreenState extends State<MatchesScreen> {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadius.lg),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(
+          color: _selectedGymIds.contains(gym.id) ? AppColors.primary : AppColors.border,
+          width: _selectedGymIds.contains(gym.id) ? 1.5 : 1.0,
+        ),
       ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-        onTap: () {
-          Navigator.pushNamed(context, AppRoutes.gymDetails, arguments: gym);
-        },
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+      child: Stack(
+        children: [
+          InkWell(
+            borderRadius: BorderRadius.circular(AppRadius.lg),
+            onTap: () {
+              Navigator.pushNamed(context, AppRoutes.gymDetails, arguments: gym);
+            },
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
             // Gym image with rank badge
             Stack(
               children: [
@@ -622,6 +649,35 @@ class _MatchesScreenState extends State<MatchesScreen> {
           ], // Closes Row's children
         ), // Closes Row
       ), // Closes InkWell
+          // ── Compare Checkbox ──
+          Positioned(
+            bottom: 12,
+            right: 12,
+            child: GestureDetector(
+              onTap: () => _toggleGymSelection(gym.id),
+              child: Container(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: _selectedGymIds.contains(gym.id)
+                      ? AppColors.primary
+                      : AppColors.surface.withValues(alpha: 0.8),
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(
+                    color: _selectedGymIds.contains(gym.id)
+                        ? AppColors.primary
+                        : AppColors.border,
+                    width: 1.5,
+                  ),
+                ),
+                child: _selectedGymIds.contains(gym.id)
+                    ? const Icon(Icons.check_rounded, color: Colors.white, size: 18)
+                    : null,
+              ),
+            ),
+          ),
+        ], // Closes Stack's children
+      ), // Closes Stack
     );
   }
 
