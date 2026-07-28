@@ -145,6 +145,7 @@ class GymProvider extends ChangeNotifier {
 
             _allGyms = firestoreGyms;
             _applyFilter();
+            calculateMatches();
           } catch (e, stack) {
             debugPrint('Error processing gym snapshot: $e');
             debugPrint(stack.toString());
