@@ -603,12 +603,17 @@ class _MatchesScreenState extends State<MatchesScreen> {
                     const SizedBox(height: 6),
                     // Price
                     Text(
-                      gym.monthlyPrice.isNotEmpty ? '${gym.monthlyPrice} / month' : '',
+                      [
+                        if (gym.sessionPrice.isNotEmpty) '${gym.sessionPrice} / session',
+                        if (gym.monthlyPrice.isNotEmpty) '${gym.monthlyPrice} / month',
+                      ].join(' • '),
                       style: const TextStyle(
-                        fontSize: 13,
+                        fontSize: 12,
                         fontWeight: FontWeight.bold,
                         color: AppColors.textPrimary,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
