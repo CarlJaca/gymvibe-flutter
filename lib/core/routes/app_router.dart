@@ -50,5 +50,6 @@ class AppRoutes {
   // ── Jobs (Seeker) ─────────────────────────────────────────────────
   static const String jobs = '/jobs';
   static const String myApplications = '/my-applications';
+  static const String compareGyms = '/compare-gyms';
 }
 

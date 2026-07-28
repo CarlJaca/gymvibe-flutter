@@ -5,10 +5,12 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/routes/app_router.dart';
+import '../../models/gym_model.dart';
 import '../../providers/gym_provider.dart';
 import '../../providers/location_provider.dart';
 import '../../widgets/gym_card.dart';
 import '../../widgets/explore_gym_tile.dart';
+import 'compare_gyms_screen.dart';
 
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
@@ -21,6 +23,7 @@ class _ExploreScreenState extends State<ExploreScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final MapController _mapController = MapController();
+  final Set<String> _selectedGymIds = {};
 
   @override
   void initState() {
@@ -36,6 +39,46 @@ class _ExploreScreenState extends State<ExploreScreen>
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  void _toggleGymSelection(String gymId) {
+    setState(() {
+      if (_selectedGymIds.contains(gymId)) {
+        _selectedGymIds.remove(gymId);
+      } else {
+        if (_selectedGymIds.length < 3) {
+          _selectedGymIds.add(gymId);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('You can compare up to 3 gyms at a time'),
+              backgroundColor: AppColors.error,
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      }
+    });
+  }
+
+  void _openCompareScreen(List<GymModel> allGyms) {
+    final selectedGyms = allGyms.where((g) => _selectedGymIds.contains(g.id)).toList();
+    if (selectedGyms.length < 2) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Select at least 2 gyms to compare'),
+          backgroundColor: AppColors.error,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => CompareGymsScreen(gyms: selectedGyms),
+      ),
+    );
   }
 
   @override
@@ -143,38 +186,126 @@ class _ExploreScreenState extends State<ExploreScreen>
           );
         }
 
-        return ListView(
-          padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+        return Stack(
           children: [
-            Row(
+            ListView(
+              padding: EdgeInsets.fromLTRB(20, 12, 20, _selectedGymIds.isNotEmpty ? 80 : 20),
               children: [
-                const Icon(Icons.list_alt_rounded, size: 18, color: AppColors.primary),
-                const SizedBox(width: 8),
-                const Text(
-                  'View All Gyms',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                  ),
+                Row(
+                  children: [
+                    const Icon(Icons.list_alt_rounded, size: 18, color: AppColors.primary),
+                    const SizedBox(width: 8),
+                    const Text(
+                      'View All Gyms',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const Spacer(),
+                    Text(
+                      '${gyms.length} gyms found',
+                      style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                    ),
+                  ],
                 ),
-                const Spacer(),
-                Text(
-                  '${gyms.length} gyms found',
-                  style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
-                ),
+                const SizedBox(height: 16),
+                ...gyms.map((gym) => Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: Stack(
+                        children: [
+                          GymCard(
+                            gym: gym,
+                            onTap: () => Navigator.pushNamed(
+                                context, AppRoutes.gymDetails,
+                                arguments: gym),
+                          ),
+                          // ── Compare Checkbox ──
+                          Positioned(
+                            top: 12,
+                            right: 28,
+                            child: GestureDetector(
+                              onTap: () => _toggleGymSelection(gym.id),
+                              child: Container(
+                                width: 28,
+                                height: 28,
+                                decoration: BoxDecoration(
+                                  color: _selectedGymIds.contains(gym.id)
+                                      ? AppColors.primary
+                                      : AppColors.surface.withValues(alpha: 0.8),
+                                  borderRadius: BorderRadius.circular(6),
+                                  border: Border.all(
+                                    color: _selectedGymIds.contains(gym.id)
+                                        ? AppColors.primary
+                                        : AppColors.border,
+                                    width: 1.5,
+                                  ),
+                                ),
+                                child: _selectedGymIds.contains(gym.id)
+                                    ? const Icon(Icons.check_rounded, color: Colors.white, size: 18)
+                                    : null,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )),
               ],
             ),
-            const SizedBox(height: 16),
-            ...gyms.map((gym) => Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: GymCard(
-                    gym: gym,
-                    onTap: () => Navigator.pushNamed(
-                        context, AppRoutes.gymDetails,
-                        arguments: gym),
+
+            // ── Sticky Compare Bar ──
+            if (_selectedGymIds.isNotEmpty)
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: AppColors.surface,
+                    border: const Border(top: BorderSide(color: AppColors.border)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, -2),
+                      ),
+                    ],
                   ),
-                )),
+                  child: Row(
+                    children: [
+                      Text(
+                        '${_selectedGymIds.length} gym${_selectedGymIds.length > 1 ? 's' : ''} selected',
+                        style: const TextStyle(
+                          color: AppColors.textPrimary,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                      ),
+                      const Spacer(),
+                      TextButton(
+                        onPressed: () => setState(() => _selectedGymIds.clear()),
+                        child: const Text('Clear', style: TextStyle(color: AppColors.textMuted)),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton.icon(
+                        onPressed: () => _openCompareScreen(gyms),
+                        icon: const Icon(Icons.compare_arrows_rounded, size: 18),
+                        label: const Text('Compare', style: TextStyle(fontWeight: FontWeight.bold)),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(AppRadius.md),
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
           ],
         );
       },
