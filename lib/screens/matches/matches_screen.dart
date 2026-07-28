@@ -5,6 +5,7 @@ import '../../core/constants/app_constants.dart';
 import '../../core/routes/app_router.dart';
 import '../../providers/gym_provider.dart';
 import '../../providers/auth_provider.dart';
+import '../../services/recommendation_service.dart';
 import '../preferences/gym_preferences_screen.dart';
 
 class MatchesScreen extends StatefulWidget {

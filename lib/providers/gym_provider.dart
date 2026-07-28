@@ -4,8 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/gym_model.dart';
 import '../services/recommendation_service.dart';
 
-export '../services/recommendation_service.dart' show GymMatchResult;
-
 class GymProvider extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
