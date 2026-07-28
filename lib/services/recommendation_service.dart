@@ -206,14 +206,17 @@ class RecommendationService {
       );
     }).toList();
 
+    // Filter out gyms with 0 score (no match at all)
+    final filteredResults = results.where((r) => r.jaccardScore > 0.0).toList();
+
     // Sort by score descending, then by rating for ties
-    results.sort((a, b) {
+    filteredResults.sort((a, b) {
       final scoreCompare = b.jaccardScore.compareTo(a.jaccardScore);
       if (scoreCompare != 0) return scoreCompare;
       return b.gym.rating.compareTo(a.gym.rating);
     });
 
-    return results.take(limit).toList();
+    return filteredResults.take(limit).toList();
   }
 
   /// Legacy method — returns gyms without scores for backward compatibility.
