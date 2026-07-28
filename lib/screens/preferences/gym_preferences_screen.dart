@@ -548,15 +548,6 @@ class _GymPreferencesScreenState extends State<GymPreferencesScreen> {
                       color: AppColors.textPrimary,
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Finding gyms that match your preferences\nusing Jaccard Similarity Algorithm',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
                 ],
               ),
             ),

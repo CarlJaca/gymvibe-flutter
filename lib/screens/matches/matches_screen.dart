@@ -352,17 +352,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
                 color: AppColors.textPrimary,
               ),
             ),
-            const SizedBox(height: 6),
-            const Text(
-              'Based on your preferences using\nJaccard Similarity Algorithm',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 12,
-                color: AppColors.textSecondary,
-                height: 1.4,
-              ),
-            ),
-            const SizedBox(height: 16),
+
             // Match summary badge
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
