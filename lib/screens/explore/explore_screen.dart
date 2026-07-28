@@ -168,6 +168,7 @@ class _ExploreScreenState extends State<ExploreScreen>
             Expanded(
               child: TabBarView(
                 controller: _tabController,
+                physics: const NeverScrollableScrollPhysics(),
                 children: [
                   _buildAllGymsTab(),
                   _buildExploreMapTab(),
