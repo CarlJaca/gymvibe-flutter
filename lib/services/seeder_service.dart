@@ -26,6 +26,9 @@ class FirebaseSeeder {
       await _seedJobPostings(firestore);
       await _seedCalendarData(firestore);
       await _seedLeaderboardData(firestore);
+      await _seedCommunityData(firestore);
+      await _seedEventsData(firestore);
+      await _seedPromotionsData(firestore);
     } catch (e) {
       SecureLogger.logError('Error seeding database', e);
     }
@@ -603,6 +606,221 @@ class FirebaseSeeder {
       SecureLogger.log('Successfully seeded ${records.length} leaderboard records.');
     } catch (e) {
       SecureLogger.logError('Error seeding leaderboard data', e);
+    }
+  }
+
+  // ─── Community Data ─────────────────────────────────────────────────────────
+  static Future<void> _seedCommunityData(FirebaseFirestore firestore) async {
+    try {
+      final existing = await firestore.collection('communities').limit(1).get();
+      if (existing.docs.isNotEmpty) {
+        SecureLogger.log('Community data already seeded — skipping.');
+        return;
+      }
+
+      final now = DateTime.now();
+      final batch = firestore.batch();
+
+      // Seed Communities
+      final communities = [
+        {
+          'id': 'comm_1',
+          'name': 'Davao Powerlifters',
+          'imageUrl': 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=200&q=80',
+          'memberCount': 342,
+          'isComingSoon': false,
+          'description': 'A community for powerlifting enthusiasts in Davao City.',
+        },
+        {
+          'id': 'comm_2',
+          'name': 'HIIT & Cardio Davao',
+          'imageUrl': 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=200&q=80',
+          'memberCount': 891,
+          'isComingSoon': false,
+          'description': 'Cardio, HIIT, and endurance training group.',
+        },
+        {
+          'id': 'comm_3',
+          'name': 'Yoga & Wellness',
+          'imageUrl': 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=200&q=80',
+          'memberCount': 0,
+          'isComingSoon': true,
+          'description': 'Find your zen with our yoga and wellness community.',
+        },
+      ];
+
+      for (var comm in communities) {
+        final docRef = firestore.collection('communities').doc(comm['id'] as String);
+        batch.set(docRef, comm);
+      }
+
+      // Seed Posts
+      final posts = [
+        {
+          'id': 'post_1',
+          'userId': 'user_seed_1',
+          'userName': 'Jeffrey Caman',
+          'userAvatarUrl': 'https://i.pravatar.cc/150?img=15',
+          'userLocation': 'Davao City',
+          'communityId': 'comm_1',
+          'communityName': 'Davao Powerlifters',
+          'caption': 'Hit a new PR on deadlifts today! 220kg felt smooth! 💪🔥',
+          'imageUrl': 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&q=80',
+          'likeCount': 45,
+          'commentCount': 12,
+          'likedBy': [],
+          'createdAt': now.subtract(const Duration(hours: 2)).toIso8601String(),
+        },
+        {
+          'id': 'post_2',
+          'userId': 'user_seed_2',
+          'userName': 'Sarah Mendoza',
+          'userAvatarUrl': 'https://i.pravatar.cc/150?img=9',
+          'userLocation': 'Davao City',
+          'communityId': 'comm_2',
+          'communityName': 'HIIT & Cardio Davao',
+          'caption': 'Morning run done! 5km before breakfast. Who else is up early?',
+          'imageUrl': null,
+          'likeCount': 120,
+          'commentCount': 34,
+          'likedBy': [],
+          'createdAt': now.subtract(const Duration(hours: 5)).toIso8601String(),
+        },
+      ];
+
+      for (var post in posts) {
+        final docRef = firestore.collection('posts').doc(post['id'] as String);
+        batch.set(docRef, post);
+      }
+
+      await batch.commit();
+      SecureLogger.log('Successfully seeded community data.');
+    } catch (e) {
+      SecureLogger.logError('Error seeding community data', e);
+    }
+  }
+
+  // ─── Events Data ────────────────────────────────────────────────────────────
+  static Future<void> _seedEventsData(FirebaseFirestore firestore) async {
+    try {
+      final existing = await firestore.collection('events').limit(1).get();
+      if (existing.docs.isNotEmpty) {
+        SecureLogger.log('Events data already seeded — skipping.');
+        return;
+      }
+
+      final batch = firestore.batch();
+
+      final events = [
+        {
+          'id': 'evt_1',
+          'title': 'Summer Slimdown Challenge',
+          'gymName': 'Dstar Gym Matina',
+          'date': 'May 25, 2025',
+          'time': '8:00 AM - 10:00 AM',
+          'location': 'Matina, Davao City',
+          'type': 'Competition',
+          'status': 'Upcoming', // Active, Upcoming, Inactive, Past
+          'isFeatured': true,
+          'isSaved': false,
+          'hasReminder': true,
+          'imageUrl': 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400&q=80',
+          'description': 'Join us for a 4-week summer fitness challenge. Top 3 transformations win free supplements!',
+          'price': '₱500',
+          'attendees': 24,
+          'maxAttendees': 50,
+        },
+        {
+          'id': 'evt_2',
+          'title': 'Davao Powerlifting Meet',
+          'gymName': 'Elevation Gym Buhangin',
+          'date': 'Jul 15, 2025',
+          'time': '9:00 AM - 4:00 PM',
+          'location': 'Buhangin, Davao City',
+          'type': 'Meet',
+          'status': 'Upcoming',
+          'isFeatured': false,
+          'isSaved': true,
+          'hasReminder': false,
+          'imageUrl': 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&q=80',
+          'description': 'Annual powerlifting meet for all weight classes. Register early to secure your spot!',
+          'price': '₱1500',
+          'attendees': 45,
+          'maxAttendees': 100,
+        },
+      ];
+
+      for (var evt in events) {
+        final docRef = firestore.collection('events').doc(evt['id'] as String);
+        batch.set(docRef, evt);
+      }
+
+      await batch.commit();
+      SecureLogger.log('Successfully seeded events data.');
+    } catch (e) {
+      SecureLogger.logError('Error seeding events data', e);
+    }
+  }
+
+  // ─── Promotions Data ────────────────────────────────────────────────────────
+  static Future<void> _seedPromotionsData(FirebaseFirestore firestore) async {
+    try {
+      final existing = await firestore.collection('promotions').limit(1).get();
+      if (existing.docs.isNotEmpty) {
+        SecureLogger.log('Promotions data already seeded — skipping.');
+        return;
+      }
+
+      final batch = firestore.batch();
+
+      final promotions = [
+        {
+          'id': 'promo_1',
+          'title': '20% Off Annual Membership',
+          'dates': 'Valid until Aug 30, 2025',
+          'type': 'Discount',
+          'status': 'Active', // Active, Scheduled, Paused, Expired
+          'color': 0xFFE91E63, // Pink
+          'isClaimed': false,
+          'claimedCount': 120,
+          'code': 'SUMMER20',
+          'description': 'Get 20% off when you sign up for our annual membership plan. Valid for new members only.',
+        },
+        {
+          'id': 'promo_2',
+          'title': 'Free 1-on-1 PT Session',
+          'dates': 'Valid until Sep 15, 2025',
+          'type': 'Freebie',
+          'status': 'Active',
+          'color': 0xFF4CAF50, // Green
+          'isClaimed': true,
+          'claimedCount': 45,
+          'code': 'FREETRAIN',
+          'description': 'Claim one free personal training session to jumpstart your fitness journey.',
+        },
+        {
+          'id': 'promo_3',
+          'title': 'Buy 1 Take 1 Protein Shake',
+          'dates': 'Every Friday in July',
+          'type': 'Special',
+          'status': 'Active',
+          'color': 0xFFFF9800, // Orange
+          'isClaimed': false,
+          'claimedCount': 89,
+          'code': 'SHAKEFRIDAY',
+          'description': 'Cool down with our buy 1 take 1 promo on all protein shakes at the gym bar.',
+        },
+      ];
+
+      for (var promo in promotions) {
+        final docRef = firestore.collection('promotions').doc(promo['id'] as String);
+        batch.set(docRef, promo);
+      }
+
+      await batch.commit();
+      SecureLogger.log('Successfully seeded promotions data.');
+    } catch (e) {
+      SecureLogger.logError('Error seeding promotions data', e);
     }
   }
 }
