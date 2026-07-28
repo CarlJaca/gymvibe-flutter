@@ -11,7 +11,6 @@ import '../community/community_screen.dart';
 import '../calendar/workout_calendar_screen.dart';
 import '../home/customer_notifications_screen.dart';
 import '../explore/compare_gyms_screen.dart';
-import '../../models/gym_model.dart';
 
 class MatchesScreen extends StatefulWidget {
   const MatchesScreen({super.key});
@@ -22,44 +21,25 @@ class MatchesScreen extends StatefulWidget {
 
 class _MatchesScreenState extends State<MatchesScreen> {
   bool _showAllGyms = false;
-  final Set<String> _selectedGymIds = {};
 
-  void _toggleGymSelection(String gymId) {
-    setState(() {
-      if (_selectedGymIds.contains(gymId)) {
-        _selectedGymIds.remove(gymId);
-      } else {
-        if (_selectedGymIds.length < 3) {
-          _selectedGymIds.add(gymId);
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('You can compare up to 3 gyms at a time'),
-              backgroundColor: AppColors.error,
-              duration: Duration(seconds: 2),
-            ),
-          );
-        }
-      }
-    });
-  }
-
-  void _openCompareScreen(List<GymModel> allGyms) {
-    final selectedGyms = allGyms.where((g) => _selectedGymIds.contains(g.id)).toList();
-    if (selectedGyms.length < 2) {
+  void _openCompareScreen(List<GymMatchResult> matchResults) {
+    if (matchResults.length < 2) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Select at least 2 gyms to compare'),
+          content: Text('Not enough matches to compare'),
           backgroundColor: AppColors.error,
           duration: Duration(seconds: 2),
         ),
       );
       return;
     }
+    
+    // Pass the top 3 (or fewer) matched gyms to the compare screen
+    final topMatches = matchResults.take(3).map((r) => r.gym).toList();
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => CompareGymsScreen(gyms: selectedGyms),
+        builder: (_) => CompareGymsScreen(gyms: topMatches),
       ),
     );
   }
@@ -84,31 +64,28 @@ class _MatchesScreenState extends State<MatchesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      floatingActionButton: _selectedGymIds.isNotEmpty
-          ? FloatingActionButton.extended(
-              onPressed: () {
-                final allGyms = context.read<GymProvider>().allGyms;
-                _openCompareScreen(allGyms);
-              },
-              backgroundColor: AppColors.primary,
-              icon: const Icon(Icons.balance_rounded, color: Colors.white),
-              label: Text(
-                'Compare Gyms (${_selectedGymIds.length})',
-                style: const TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-            )
-          : null,
-      body: SafeArea(
-        child: Consumer2<GymProvider, AuthProvider>(
-          builder: (context, gymProvider, authProvider, _) {
-            final hasPreferences = authProvider.currentUser != null &&
-                authProvider.currentUser!.fitnessPreferences.isNotEmpty;
-            final matchResults = gymProvider.matchResults;
+    return Consumer2<GymProvider, AuthProvider>(
+      builder: (context, gymProvider, authProvider, _) {
+        final hasPreferences = authProvider.currentUser != null &&
+            authProvider.currentUser!.fitnessPreferences.isNotEmpty;
+        final matchResults = gymProvider.matchResults;
 
-            return CustomScrollView(
+        return Scaffold(
+          backgroundColor: AppColors.background,
+          floatingActionButton: matchResults.length >= 2
+              ? FloatingActionButton.extended(
+                  onPressed: () => _openCompareScreen(matchResults),
+                  backgroundColor: AppColors.primary,
+                  icon: const Icon(Icons.compare_arrows_rounded, color: Colors.white),
+                  label: const Text(
+                    'Compare Gyms',
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                )
+              : null,
+          body: SafeArea(
+            child: CustomScrollView(
               slivers: [
                 // ── Header ─────────────────────────────────────────
                 SliverToBoxAdapter(
@@ -305,14 +282,14 @@ class _MatchesScreenState extends State<MatchesScreen> {
                     ),
 
                   const SliverToBoxAdapter(child: SizedBox(height: 24)),
-                ],
-              ],
-            );
-          },
-        ),
-      ),
-    );
-  }
+                ], // closes spread
+              ], // closes slivers
+            ), // closes CustomScrollView
+          ), // closes SafeArea
+        ); // closes Scaffold
+      }, // closes builder
+    ); // closes Consumer2
+  } // closes build
 
   Widget _buildEmptyState(BuildContext context) {
     return Center(
@@ -460,16 +437,14 @@ class _MatchesScreenState extends State<MatchesScreen> {
         borderRadius: BorderRadius.circular(AppRadius.lg),
         border: Border.all(color: AppColors.border),
       ),
-      child: Stack(
-        children: [
-          InkWell(
-            borderRadius: BorderRadius.circular(AppRadius.lg),
-            onTap: () {
-              Navigator.pushNamed(context, AppRoutes.gymDetails, arguments: gym);
-            },
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+      child: InkWell(
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        onTap: () {
+          Navigator.pushNamed(context, AppRoutes.gymDetails, arguments: gym);
+        },
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             // Gym image with rank badge
             Stack(
               children: [
@@ -642,35 +617,6 @@ class _MatchesScreenState extends State<MatchesScreen> {
           ], // Closes Row's children
         ), // Closes Row
       ), // Closes InkWell
-          // ── Compare Checkbox ──
-          Positioned(
-            bottom: 12,
-            right: 12,
-            child: GestureDetector(
-              onTap: () => _toggleGymSelection(gym.id),
-              child: Container(
-                width: 28,
-                height: 28,
-                decoration: BoxDecoration(
-                  color: _selectedGymIds.contains(gym.id)
-                      ? AppColors.primary
-                      : AppColors.surface.withValues(alpha: 0.8),
-                  borderRadius: BorderRadius.circular(6),
-                  border: Border.all(
-                    color: _selectedGymIds.contains(gym.id)
-                        ? AppColors.primary
-                        : AppColors.border,
-                    width: 1.5,
-                  ),
-                ),
-                child: _selectedGymIds.contains(gym.id)
-                    ? const Icon(Icons.check_rounded, color: Colors.white, size: 18)
-                    : null,
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 
