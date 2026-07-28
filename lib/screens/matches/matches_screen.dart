@@ -631,8 +631,8 @@ class _MatchesScreenState extends State<MatchesScreen> {
                     // Price
                     Text(
                       [
-                        if (gym.sessionPrice.isNotEmpty) '${gym.sessionPrice} / session',
-                        if (gym.monthlyPrice.isNotEmpty) '${gym.monthlyPrice} / month',
+                        if (gym.sessionPrice.isNotEmpty) gym.sessionPrice,
+                        if (gym.monthlyPrice.isNotEmpty) gym.monthlyPrice,
                       ].join(' • '),
                       style: const TextStyle(
                         fontSize: 12,
