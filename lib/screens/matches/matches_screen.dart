@@ -10,6 +10,8 @@ import '../preferences/gym_preferences_screen.dart';
 import '../community/community_screen.dart';
 import '../calendar/workout_calendar_screen.dart';
 import '../home/customer_notifications_screen.dart';
+import '../explore/compare_gyms_screen.dart';
+import '../../models/gym_model.dart';
 
 class MatchesScreen extends StatefulWidget {
   const MatchesScreen({super.key});
@@ -20,6 +22,47 @@ class MatchesScreen extends StatefulWidget {
 
 class _MatchesScreenState extends State<MatchesScreen> {
   bool _showAllGyms = false;
+  final Set<String> _selectedGymIds = {};
+
+  void _toggleGymSelection(String gymId) {
+    setState(() {
+      if (_selectedGymIds.contains(gymId)) {
+        _selectedGymIds.remove(gymId);
+      } else {
+        if (_selectedGymIds.length < 3) {
+          _selectedGymIds.add(gymId);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('You can compare up to 3 gyms at a time'),
+              backgroundColor: AppColors.error,
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      }
+    });
+  }
+
+  void _openCompareScreen(List<GymModel> allGyms) {
+    final selectedGyms = allGyms.where((g) => _selectedGymIds.contains(g.id)).toList();
+    if (selectedGyms.length < 2) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Select at least 2 gyms to compare'),
+          backgroundColor: AppColors.error,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => CompareGymsScreen(gyms: selectedGyms),
+      ),
+    );
+  }
 
   @override
   void initState() {
@@ -43,6 +86,21 @@ class _MatchesScreenState extends State<MatchesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
+      floatingActionButton: _selectedGymIds.isNotEmpty
+          ? FloatingActionButton.extended(
+              onPressed: () {
+                final allGyms = context.read<GymProvider>().allGyms;
+                _openCompareScreen(allGyms);
+              },
+              backgroundColor: AppColors.primary,
+              icon: const Icon(Icons.balance_rounded, color: Colors.white),
+              label: Text(
+                'Compare Gyms (${_selectedGymIds.length})',
+                style: const TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+            )
+          : null,
       body: SafeArea(
         child: Consumer2<GymProvider, AuthProvider>(
           builder: (context, gymProvider, authProvider, _) {
@@ -402,14 +460,16 @@ class _MatchesScreenState extends State<MatchesScreen> {
         borderRadius: BorderRadius.circular(AppRadius.lg),
         border: Border.all(color: AppColors.border),
       ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-        onTap: () {
-          Navigator.pushNamed(context, AppRoutes.gymDetails, arguments: gym);
-        },
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+      child: Stack(
+        children: [
+          InkWell(
+            borderRadius: BorderRadius.circular(AppRadius.lg),
+            onTap: () {
+              Navigator.pushNamed(context, AppRoutes.gymDetails, arguments: gym);
+            },
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
             // Gym image with rank badge
             Stack(
               children: [
@@ -578,9 +638,38 @@ class _MatchesScreenState extends State<MatchesScreen> {
                   ],
                 ),
               ),
+            ), // Closes Expanded
+          ], // Closes Row's children
+        ), // Closes Row
+      ), // Closes InkWell
+          // ── Compare Checkbox ──
+          Positioned(
+            bottom: 12,
+            right: 12,
+            child: GestureDetector(
+              onTap: () => _toggleGymSelection(gym.id),
+              child: Container(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: _selectedGymIds.contains(gym.id)
+                      ? AppColors.primary
+                      : AppColors.surface.withValues(alpha: 0.8),
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(
+                    color: _selectedGymIds.contains(gym.id)
+                        ? AppColors.primary
+                        : AppColors.border,
+                    width: 1.5,
+                  ),
+                ),
+                child: _selectedGymIds.contains(gym.id)
+                    ? const Icon(Icons.check_rounded, color: Colors.white, size: 18)
+                    : null,
+              ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
