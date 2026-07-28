@@ -1,11 +1,15 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/routes/app_router.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
+import '../../providers/location_provider.dart';
 import '../../widgets/gym_card.dart';
+import '../../widgets/explore_gym_tile.dart';
 import '../community/community_screen.dart';
 import '../calendar/workout_calendar_screen.dart';
 import '../home/customer_notifications_screen.dart';
@@ -20,6 +24,7 @@ class ExploreScreen extends StatefulWidget {
 class _ExploreScreenState extends State<ExploreScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final MapController _mapController = MapController();
 
   @override
   void initState() {
@@ -224,384 +229,183 @@ class _ExploreScreenState extends State<ExploreScreen>
   }
 
   // ═══════════════════════════════════════════════════════════════════════
-  // TAB 2: Explore (Map-style location view)
+  // TAB 2: Explore (Real Map with flutter_map + OpenStreetMap)
   // ═══════════════════════════════════════════════════════════════════════
   Widget _buildExploreMapTab() {
+    return Stack(
+      children: [
+        _buildMapView(),
+        _buildMyLocationButton(),
+      ],
+    );
+  }
+
+  Widget _buildMapView() {
     return Consumer<GymProvider>(
-      builder: (context, provider, _) {
+      builder: (context, provider, child) {
         if (provider.isLoading) {
-          return Center(
-              child: CircularProgressIndicator(color: AppColors.primary));
-        }
-
-        final gyms = List.from(provider.allGyms)
-          ..sort((a, b) => a.distanceKm.compareTo(b.distanceKm));
-
-        if (gyms.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.map_rounded,
-                    size: 48, color: AppColors.textMuted),
-                SizedBox(height: 16),
-                Text('No gyms to explore.',
-                    style: TextStyle(
-                        fontSize: 16, color: AppColors.textSecondary)),
-              ],
-            ),
+          return const Center(
+            child: CircularProgressIndicator(color: AppColors.primary),
           );
         }
 
-        return Column(
-          children: [
-            // Map placeholder area
-            Container(
-              height: 220,
-              margin: const EdgeInsets.fromLTRB(20, 12, 20, 0),
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(AppRadius.lg),
-                border: Border.all(color: AppColors.border),
+        final gyms = provider.allGyms
+            .where((g) => g.latitude != 0.0 && g.longitude != 0.0)
+            .toList();
+        // Center on Davao City
+        const initialCenter = LatLng(7.0700, 125.6000);
+
+        return Consumer<LocationProvider>(
+          builder: (context, locProvider, _) {
+            final userLoc = locProvider.currentLocation;
+
+            return FlutterMap(
+              mapController: _mapController,
+              options: MapOptions(
+                initialCenter: userLoc ?? initialCenter,
+                initialZoom: userLoc != null ? 14.0 : 13.0,
+                interactionOptions: const InteractionOptions(
+                  flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
+                ),
               ),
-              child: Stack(
-                children: [
-                  // Map background
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(AppRadius.lg),
-                    child: Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      color: AppColors.surfaceElevated,
-                      child: CustomPaint(
-                        painter: _MapGridPainter(),
-                      ),
-                    ),
-                  ),
-                  // Gym pin markers
-                  ...gyms.take(6).toList().asMap().entries.map((entry) {
-                    final index = entry.key;
-                    final gym = entry.value;
-                    // Distribute pins across the map area
-                    final positions = [
-                      Offset(0.3, 0.35),
-                      Offset(0.65, 0.25),
-                      Offset(0.5, 0.55),
-                      Offset(0.2, 0.65),
-                      Offset(0.75, 0.6),
-                      Offset(0.45, 0.3),
-                    ];
-                    final pos = positions[index % positions.length];
-                    return Positioned(
-                      left: pos.dx *
-                          (MediaQuery.of(context).size.width - 40) -
-                          16,
-                      top: pos.dy * 220 - 32,
+              children: [
+                TileLayer(
+                  urlTemplate:
+                      'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  userAgentPackageName: 'com.example.gymvibe',
+                ),
+                MarkerLayer(
+                  markers: gyms.map((gym) {
+                    return Marker(
+                      point: LatLng(gym.latitude, gym.longitude),
+                      width: 40,
+                      height: 40,
                       child: GestureDetector(
-                        onTap: () => Navigator.pushNamed(
-                            context, AppRoutes.gymDetails,
-                            arguments: gym),
-                        child: Column(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: AppColors.primary,
-                                borderRadius:
-                                    BorderRadius.circular(AppRadius.sm),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color:
-                                        Colors.black.withValues(alpha: 0.3),
-                                    blurRadius: 4,
-                                    offset: Offset(0, 2),
-                                  ),
-                                ],
+                        onTap: () {
+                          _showGymPreview(context, gym);
+                        },
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            color: AppColors.primary,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 4,
+                                offset: Offset(0, 2),
                               ),
-                              child: Text(
-                                gym.name.length > 12
-                                    ? '${gym.name.substring(0, 12)}...'
-                                    : gym.name,
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                            Icon(Icons.location_on_rounded,
-                                color: AppColors.primary, size: 24),
-                          ],
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.fitness_center_rounded,
+                            color: Colors.white,
+                            size: 20,
+                          ),
                         ),
                       ),
                     );
-                  }),
-                  // "Davao City" label
-                  Positioned(
-                    bottom: 8,
-                    left: 12,
-                    child: Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: AppColors.background.withValues(alpha: 0.85),
-                        borderRadius: BorderRadius.circular(AppRadius.sm),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.map_rounded,
-                              size: 14, color: AppColors.primary),
-                          SizedBox(width: 4),
-                          Text(
-                            'Davao City',
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.textPrimary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  // Gym count badge
-                  Positioned(
-                    bottom: 8,
-                    right: 12,
-                    child: Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(AppRadius.full),
-                        border: Border.all(
-                            color: AppColors.primary.withValues(alpha: 0.3)),
-                      ),
-                      child: Text(
-                        '${gyms.length} gyms nearby',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Nearby header
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-              child: Row(
-                children: [
-                  Icon(Icons.near_me_rounded,
-                      size: 18, color: AppColors.primary),
-                  SizedBox(width: 8),
-                  Text(
-                    'Nearby Gyms',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  Spacer(),
-                  Text(
-                    'Sorted by distance',
-                    style: TextStyle(
-                        fontSize: 12, color: AppColors.textSecondary),
-                  ),
-                ],
-              ),
-            ),
-
-            // Nearby gym list
-            Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                itemCount: gyms.length,
-                itemBuilder: (context, index) {
-                  final gym = gyms[index];
-                  return _buildExploreGymTile(gym);
-                },
-              ),
-            ),
-          ],
+                  }).toList()
+                    ..addAll(userLoc != null
+                        ? [
+                            Marker(
+                              point: userLoc,
+                              width: 24,
+                              height: 24,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.blue,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                      color: Colors.white, width: 3),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                        color: Colors.black26,
+                                        blurRadius: 4,
+                                        offset: Offset(0, 2)),
+                                  ],
+                                ),
+                              ),
+                            )
+                          ]
+                        : []),
+                ),
+              ],
+            );
+          },
         );
       },
     );
   }
 
-  Widget _buildExploreGymTile(dynamic gym) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-        border: Border.all(color: AppColors.border),
+  Widget _buildMyLocationButton() {
+    return Positioned(
+      bottom: 24,
+      right: 24,
+      child: Consumer<LocationProvider>(
+        builder: (context, locProvider, _) {
+          return FloatingActionButton(
+            heroTag: 'my_location_fab',
+            backgroundColor: AppColors.surface,
+            onPressed: () async {
+              await locProvider.fetchCurrentLocation();
+              if (locProvider.currentLocation != null) {
+                _mapController.move(locProvider.currentLocation!, 15.0);
+              }
+              if (locProvider.errorMessage != null && context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                      content: Text(locProvider.errorMessage!),
+                      backgroundColor: AppColors.error),
+                );
+              }
+            },
+            child: locProvider.isLoading
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                        color: AppColors.primary, strokeWidth: 2))
+                : const Icon(Icons.my_location_rounded,
+                    color: AppColors.primary),
+          );
+        },
       ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-        onTap: () => Navigator.pushNamed(context, AppRoutes.gymDetails,
-            arguments: gym),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Row(
-            children: [
-              // Gym image
-              ClipRRect(
-                borderRadius: BorderRadius.circular(AppRadius.md),
-                child: SizedBox(
-                  width: 60,
-                  height: 60,
-                  child: Image.network(
-                    gym.imageUrl,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
-                      color: AppColors.surfaceElevated,
-                      child: Icon(Icons.fitness_center_rounded,
-                          color: AppColors.textMuted, size: 24),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(width: 12),
-              // Info
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      gym.name,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    SizedBox(height: 3),
-                    Row(
-                      children: [
-                        Icon(Icons.location_on_outlined,
-                            size: 13, color: AppColors.textMuted),
-                        SizedBox(width: 3),
-                        Expanded(
-                          child: Text(
-                            '${gym.address}, ${gym.city}',
-                            style: TextStyle(
-                                fontSize: 12,
-                                color: AppColors.textSecondary),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 3),
-                    Row(
-                      children: [
-                        Icon(Icons.star_rounded,
-                            size: 14, color: Colors.amber),
-                        SizedBox(width: 3),
-                        Text(
-                          gym.rating.toStringAsFixed(1),
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.textPrimary,
-                          ),
-                        ),
-                        SizedBox(width: 8),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 6, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: gym.isOpen
-                                ? AppColors.primary.withValues(alpha: 0.15)
-                                : Colors.red.withValues(alpha: 0.15),
-                            borderRadius:
-                                BorderRadius.circular(AppRadius.sm),
-                          ),
-                          child: Text(
-                            gym.isOpen ? 'Open' : 'Closed',
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w600,
-                              color: gym.isOpen
-                                  ? AppColors.primary
-                                  : Colors.red,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              // Distance badge
-              Column(
-                children: [
-                  Icon(Icons.near_me_rounded,
-                      size: 16, color: AppColors.primary),
-                  SizedBox(height: 4),
-                  Text(
-                    gym.distanceKm > 0
-                        ? '${gym.distanceKm.toStringAsFixed(1)} km'
-                        : 'N/A',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+    );
+  }
+
+  void _showGymPreview(BuildContext context, dynamic gym) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(AppPadding.md),
+        decoration: const BoxDecoration(
+          color: AppColors.surface,
+          borderRadius:
+              BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                    color: AppColors.border,
+                    borderRadius: BorderRadius.circular(2))),
+            const SizedBox(height: AppPadding.md),
+            ExploreGymTile(
+              gym: gym,
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, AppRoutes.gymDetails,
+                    arguments: gym);
+              },
+            ),
+            const SizedBox(height: AppPadding.lg),
+          ],
         ),
       ),
     );
   }
-}
-
-/// Custom painter that draws a subtle grid to simulate a map background
-class _MapGridPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = AppColors.border.withValues(alpha: 0.3)
-      ..strokeWidth = 0.5;
-
-    // Horizontal lines
-    for (double y = 0; y < size.height; y += 30) {
-      canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
-    }
-    // Vertical lines
-    for (double x = 0; x < size.width; x += 30) {
-      canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
-    }
-
-    // Draw a couple of "road" lines
-    final roadPaint = Paint()
-      ..color = AppColors.border.withValues(alpha: 0.5)
-      ..strokeWidth = 2;
-
-    canvas.drawLine(
-        Offset(0, size.height * 0.4),
-        Offset(size.width, size.height * 0.45),
-        roadPaint);
-    canvas.drawLine(
-        Offset(size.width * 0.35, 0),
-        Offset(size.width * 0.4, size.height),
-        roadPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
