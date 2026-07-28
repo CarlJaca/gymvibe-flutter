@@ -252,7 +252,8 @@ class _OwnerCreatePromotionScreenState
                   onPressed: () {
                     final notifProv = context.read<NotificationProvider>();
                     notifProv.addNotification(NotificationItem(
-                      icon: Icons.local_offer_rounded,
+                      id: '',
+                      type: 'promo',
                       title: 'New Promotion: ${_titleCtrl.text.isEmpty ? 'Special Offer' : _titleCtrl.text}',
                       subtitle: _descCtrl.text.isEmpty ? 'Don\'t miss our latest promotion!' : _descCtrl.text,
                       time: 'Just now',

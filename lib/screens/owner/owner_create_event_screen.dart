@@ -262,7 +262,8 @@ class _OwnerCreateEventScreenState extends State<OwnerCreateEventScreen> {
                   onPressed: () {
                     final notifProv = context.read<NotificationProvider>();
                     notifProv.addNotification(NotificationItem(
-                      icon: Icons.event_rounded,
+                      id: '',
+                      type: 'event',
                       title: 'New Event: ${_titleCtrl.text.isEmpty ? 'Upcoming Event' : _titleCtrl.text}',
                       subtitle: _descCtrl.text.isEmpty ? 'Check out our new event!' : _descCtrl.text,
                       time: 'Just now',

@@ -30,15 +30,13 @@ class _HomeScreenState extends State<HomeScreen> {
       context.read<CommunityProvider>().loadCommunityData();
       context.read<EventsProvider>().loadEvents();
       context.read<PromotionsProvider>().loadPromotions();
-      
-      final authProvider = context.read<AuthProvider>();
-      if (authProvider.currentUser != null) {
-        context.read<NotificationProvider>().loadNotifications(authProvider.currentUser!.id);
-      }
 
       // Load user fitness preferences into GymProvider for Jaccard recommendations
       final authProvider = context.read<AuthProvider>();
       if (authProvider.currentUser != null) {
+        // Load notifications from Firestore
+        context.read<NotificationProvider>().loadNotifications(authProvider.currentUser!.id);
+
         final rawPrefs = authProvider.currentUser!.fitnessPreferences;
         final jaccardPrefs = <String>[];
         for (final p in rawPrefs) {

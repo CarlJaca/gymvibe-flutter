@@ -5,7 +5,6 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/routes/app_router.dart';
-import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
 import '../../providers/location_provider.dart';
 import '../../widgets/gym_card.dart';
