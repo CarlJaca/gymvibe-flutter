@@ -519,9 +519,11 @@ class _GymPreferencesScreenState extends State<GymPreferencesScreen> {
 
         // ── Calculating Overlay ────────────────────────────────────────
         if (_isSaving)
-          Container(
-            color: AppColors.background.withValues(alpha: 0.92),
-            child: Center(
+          Material(
+            color: Colors.transparent,
+            child: Container(
+              color: AppColors.background.withValues(alpha: 0.92),
+              child: Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -551,8 +553,9 @@ class _GymPreferencesScreenState extends State<GymPreferencesScreen> {
                 ],
               ),
             ),
-          ),
-      ],
+          ), // Closes Container
+        ), // Closes Material
+      ], // Closes Stack
     );
   }
 
