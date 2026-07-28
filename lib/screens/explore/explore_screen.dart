@@ -213,21 +213,39 @@ class _ExploreScreenState extends State<ExploreScreen>
           );
         }
 
-        return ListView.builder(
+        return ListView(
           padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
-          itemCount: gyms.length,
-          itemBuilder: (context, index) {
-            final gym = gyms[index];
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: GymCard(
-                gym: gym,
-                onTap: () => Navigator.pushNamed(
-                    context, AppRoutes.gymDetails,
-                    arguments: gym),
-              ),
-            );
-          },
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.list_alt_rounded, size: 18, color: AppColors.primary),
+                const SizedBox(width: 8),
+                const Text(
+                  'View All Gyms',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  '${gyms.length} gyms found',
+                  style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            ...gyms.map((gym) => Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: GymCard(
+                    gym: gym,
+                    onTap: () => Navigator.pushNamed(
+                        context, AppRoutes.gymDetails,
+                        arguments: gym),
+                  ),
+                )),
+          ],
         );
       },
     );
