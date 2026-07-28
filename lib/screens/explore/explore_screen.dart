@@ -166,13 +166,17 @@ class _ExploreScreenState extends State<ExploreScreen>
 
             // ── Tab Content ────────────────────────────────────────
             Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  _buildAllGymsTab(),
-                  _buildExploreMapTab(),
-                ],
+              child: AnimatedBuilder(
+                animation: _tabController,
+                builder: (context, _) {
+                  return IndexedStack(
+                    index: _tabController.index,
+                    children: [
+                      _buildAllGymsTab(),
+                      _buildExploreMapTab(),
+                    ],
+                  );
+                },
               ),
             ),
           ],
