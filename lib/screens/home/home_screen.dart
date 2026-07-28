@@ -10,6 +10,7 @@ import '../../providers/gym_provider.dart';
 import '../../providers/community_provider.dart';
 import '../../providers/events_provider.dart';
 import '../../providers/promotions_provider.dart';
+import '../../providers/notification_provider.dart';
 import '../../widgets/gym_card.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -29,6 +30,11 @@ class _HomeScreenState extends State<HomeScreen> {
       context.read<CommunityProvider>().loadCommunityData();
       context.read<EventsProvider>().loadEvents();
       context.read<PromotionsProvider>().loadPromotions();
+      
+      final authProvider = context.read<AuthProvider>();
+      if (authProvider.currentUser != null) {
+        context.read<NotificationProvider>().loadNotifications(authProvider.currentUser!.id);
+      }
 
       // Load user fitness preferences into GymProvider for Jaccard recommendations
       final authProvider = context.read<AuthProvider>();

@@ -4,6 +4,8 @@ import '../../core/constants/app_constants.dart';
 import '../../providers/gym_provider.dart';
 import '../../providers/events_provider.dart';
 import '../../providers/promotions_provider.dart';
+import '../../providers/notification_provider.dart';
+import '../../providers/auth_provider.dart';
 import 'owner_dashboard_screen.dart';
 import 'owner_events_management_screen.dart';
 import 'owner_promotions_management_screen.dart';
@@ -43,6 +45,12 @@ class _OwnerNavigationState extends State<OwnerNavigation> {
         context.read<EventsProvider>().loadEvents();
         debugPrint('OwnerNavigation: calling loadPromotions');
         context.read<PromotionsProvider>().loadPromotions();
+        
+        final authProvider = context.read<AuthProvider>();
+        if (authProvider.currentUser != null) {
+          debugPrint('OwnerNavigation: calling loadNotifications');
+          context.read<NotificationProvider>().loadNotifications(authProvider.currentUser!.id);
+        }
       } catch (e, stack) {
         debugPrint('Error loading owner data: $e');
         debugPrint(stack.toString());
