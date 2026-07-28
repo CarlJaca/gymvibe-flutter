@@ -10,9 +10,6 @@ import '../../providers/gym_provider.dart';
 import '../../providers/location_provider.dart';
 import '../../widgets/gym_card.dart';
 import '../../widgets/explore_gym_tile.dart';
-import '../community/community_screen.dart';
-import '../calendar/workout_calendar_screen.dart';
-import '../home/customer_notifications_screen.dart';
 
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
@@ -49,72 +46,6 @@ class _ExploreScreenState extends State<ExploreScreen>
       body: SafeArea(
         child: Column(
           children: [
-            // ── Header ─────────────────────────────────────────────
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 16, 16, 0),
-              child: Consumer<AuthProvider>(
-                builder: (context, auth, _) => Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Hello, ${auth.userName.split(' ').first}! 👋',
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.textPrimary,
-                            ),
-                          ),
-                          SizedBox(height: 2),
-                          Text(
-                            'Discover gyms in Davao City',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) =>
-                                    const WorkoutCalendarScreen()));
-                      },
-                      icon: Icon(Icons.calendar_month_rounded,
-                          color: AppColors.textPrimary, size: 24),
-                      tooltip: 'Workout Calendar',
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => const CommunityScreen()));
-                      },
-                      icon: Icon(Icons.people_outline_rounded,
-                          color: AppColors.textPrimary, size: 24),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) =>
-                                    const CustomerNotificationsScreen()));
-                      },
-                      icon: Icon(Icons.notifications_none_rounded,
-                          color: AppColors.textPrimary, size: 24),
-                    ),
-                  ],
-                ),
-              ),
-            ),
 
             // ── Search Bar ─────────────────────────────────────────
             GestureDetector(
