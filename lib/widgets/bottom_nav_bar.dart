@@ -33,9 +33,9 @@ class AppBottomNavBar extends StatelessWidget {
           unselectedLabelStyle: const TextStyle(fontSize: 11),
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              activeIcon: Icon(Icons.home_rounded),
-              label: 'Home',
+              icon: Icon(Icons.favorite_border_rounded),
+              activeIcon: Icon(Icons.favorite_rounded),
+              label: 'Matches',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.explore_outlined),

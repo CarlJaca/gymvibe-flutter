@@ -89,13 +89,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       }
     }
 
-    // Apply defaults if nothing was saved
-    if (_fitnessGoals.isEmpty) _fitnessGoals = {'Muscle Gain'};
-    if (_budgetRange.isEmpty) _budgetRange = '₱0 – ₱2,000';
-    if (_trainerAvailability.isEmpty) _trainerAvailability = 'Evening';
-    if (_preferredFacilities.isEmpty) {
-      _preferredFacilities = {'Cardio', 'Free Weights', 'Locker Room', 'Shower Area'};
-    }
+    // Ensure sets are empty if nothing was saved
+    if (_fitnessGoals.isEmpty) _fitnessGoals = {};
+    if (_budgetRange.isEmpty) _budgetRange = '';
+    if (_trainerAvailability.isEmpty) _trainerAvailability = '';
+    if (_preferredFacilities.isEmpty) _preferredFacilities = {};
   }
 
   /// Save all preferences to Firestore and update GymProvider for Jaccard
@@ -415,7 +413,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 _buildSectionTitle('My Preferences'),
                 const SizedBox(height: AppPadding.sm),
                 _buildPreferenceRow(
-                    context, Icons.flag_outlined, 'Fitness Goal', '${_fitnessGoals.length} selected',
+                    context, Icons.flag_outlined, 'Fitness Goal', _fitnessGoals.isEmpty ? 'Not Set' : '${_fitnessGoals.length} selected',
                      onTap: () => _showMultiSelectSheet(
                       'Fitness Goal',
                       ['Muscle Gain', 'Weight Loss', 'Endurance', 'Flexibility', 'General Fitness'],
@@ -426,7 +424,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       },
                     )),
                 _buildPreferenceRow(
-                    context, Icons.payments_outlined, 'Budget Range', _budgetRange,
+                    context, Icons.payments_outlined, 'Budget Range', _budgetRange.isEmpty ? 'Not Set' : _budgetRange,
                     onTap: () => _showPreferenceSheet(
                       'Budget Range',
                       ['₱0 – ₱1,000', '₱1,000 – ₱2,000', '₱2,000 – ₱5,000', '₱5,000+'],
@@ -437,7 +435,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       },
                     )),
                 _buildPreferenceRow(
-                    context, Icons.fitness_center_outlined, 'Preferred Facilities', '${_preferredFacilities.length} selected',
+                    context, Icons.fitness_center_outlined, 'Preferred Facilities', _preferredFacilities.isEmpty ? 'Not Set' : '${_preferredFacilities.length} selected',
                     onTap: () => _showMultiSelectSheet(
                       'Preferred Facilities',
                       ['Cardio', 'Free Weights', 'Machines', 'Locker Room', 'Shower Area', 'Sauna', 'Pool', 'Personal Trainers', 'Yoga Studio', 'Boxing', 'Parking', 'WiFi', 'AC', 'Group Classes', 'Kids Area', 'Nutrition Bar'],
@@ -448,7 +446,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       },
                     )),
                 _buildPreferenceRow(
-                    context, Icons.person_outline_rounded, 'Trainer Availability', _trainerAvailability,
+                    context, Icons.person_outline_rounded, 'Trainer Availability', _trainerAvailability.isEmpty ? 'Not Set' : _trainerAvailability,
                     onTap: () => _showPreferenceSheet(
                       'Trainer Availability',
                       ['Morning', 'Afternoon', 'Evening', 'Weekends Only', 'Anytime'],

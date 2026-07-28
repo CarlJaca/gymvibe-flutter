@@ -28,7 +28,8 @@ import 'screens/splash/splash_screen.dart';
 import 'screens/onboarding/onboarding_screen.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/registration_screen.dart';
-import 'screens/home/home_screen.dart';
+import 'screens/matches/matches_screen.dart';
+import 'screens/preferences/gym_preferences_screen.dart';
 import 'screens/explore/explore_screen.dart';
 import 'screens/events/events_screen.dart'; // User requested 'Events'
 import 'screens/events/event_detail_screen.dart';
@@ -75,9 +76,11 @@ import 'screens/calendar/workout_day_screen.dart';
 import 'widgets/bottom_nav_bar.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'firebase_options.dart';
 import 'services/auth_service.dart';
+import 'services/seeder_service.dart';
 import 'widgets/role_guard.dart';
 import 'widgets/super_admin_guard.dart';
 
@@ -150,11 +153,18 @@ void main() {
         options: DefaultFirebaseOptions.currentPlatform,
       );
 
+      // Disable offline persistence to see real server errors
+      FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: false);
+
       // Initialize Firebase App Check
-      await FirebaseAppCheck.instance.activate(
-        providerAndroid: kDebugMode ? const AndroidDebugProvider() : const AndroidPlayIntegrityProvider(),
-        providerApple: kDebugMode ? const AppleDebugProvider() : const AppleDeviceCheckProvider(),
-      );
+      try {
+        await FirebaseAppCheck.instance.activate(
+          providerAndroid: kDebugMode ? const AndroidDebugProvider() : const AndroidPlayIntegrityProvider(),
+          providerApple: kDebugMode ? const AppleDebugProvider() : const AppleDeviceCheckProvider(),
+        );
+      } catch (e) {
+        SecureLogger.logError('AppCheck Error', e);
+      }
     } catch (e, stack) {
       SecureLogger.logError('Firebase initialization error', e, stack);
     }
@@ -166,7 +176,12 @@ void main() {
       SecureLogger.logError('Google Sign-In initialization skipped/failed', e, stack);
     }
 
-    // Seed Database removed
+    // Seed Database (Job Postings, Calendar, Leaderboard)
+    try {
+      await FirebaseSeeder.seedDatabase();
+    } catch (e, stack) {
+      SecureLogger.logError('Database seeding error', e, stack);
+    }
 
     runApp(
       MultiProvider(
@@ -212,7 +227,12 @@ class AppLauncher extends StatelessWidget {
       SecureLogger.logError('Google Sign-In initialization skipped/failed', e, stack);
     }
 
-    // Seed Database removed
+    // Seed Database (Job Postings, Calendar, Leaderboard)
+    try {
+      await FirebaseSeeder.seedDatabase();
+    } catch (e, stack) {
+      SecureLogger.logError('Database seeding error', e, stack);
+    }
   }
 
   @override
@@ -307,6 +327,8 @@ class _GymVibeAppState extends State<GymVibeApp> {
                   builder: (_) => const RegistrationScreen());
             case AppRoutes.main:
               return MaterialPageRoute(builder: (_) => const MainNavigation());
+            case AppRoutes.gymPreferences:
+              return MaterialPageRoute(builder: (_) => const GymPreferencesScreen(isFirstTime: true));
             case AppRoutes.gymDetails:
               final gym = settings.arguments as GymModel;
               return MaterialPageRoute(
@@ -425,7 +447,7 @@ class _MainNavigationState extends State<MainNavigation> {
   int _currentIndex = 0;
 
   final List<Widget> _screens = [
-    const HomeScreen(), // 0 – Home
+    const MatchesScreen(), // 0 – Matches
     const ExploreScreen(), // 1 – Explore
     const EventsScreen(), // 2 – Events
     const PromotionsScreen(), // 3 - Promos

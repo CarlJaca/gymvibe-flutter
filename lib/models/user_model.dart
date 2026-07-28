@@ -15,6 +15,7 @@ class UserModel {
   final String? contactNumber;
   final DateTime? createdAt;
   final DateTime? lastLogin;
+  final bool hasCompletedPreferences;
 
   const UserModel({
     required this.id,
@@ -31,6 +32,7 @@ class UserModel {
     this.contactNumber,
     this.createdAt,
     this.lastLogin,
+    this.hasCompletedPreferences = false,
   });
 
   // ─── Computed role getters (backward compatible) ─────────────────────
@@ -72,6 +74,7 @@ class UserModel {
       contactNumber: json['contactNumber'],
       createdAt: createdAt,
       lastLogin: lastLogin,
+      hasCompletedPreferences: json['hasCompletedPreferences'] ?? false,
     );
   }
 
@@ -91,6 +94,7 @@ class UserModel {
       'contactNumber': contactNumber,
       'createdAt': createdAt != null ? Timestamp.fromDate(createdAt!) : FieldValue.serverTimestamp(),
       'lastLogin': lastLogin != null ? Timestamp.fromDate(lastLogin!) : null,
+      'hasCompletedPreferences': hasCompletedPreferences,
     };
   }
 
@@ -109,6 +113,7 @@ class UserModel {
     String? contactNumber,
     DateTime? createdAt,
     DateTime? lastLogin,
+    bool? hasCompletedPreferences,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -125,6 +130,7 @@ class UserModel {
       contactNumber: contactNumber ?? this.contactNumber,
       createdAt: createdAt ?? this.createdAt,
       lastLogin: lastLogin ?? this.lastLogin,
+      hasCompletedPreferences: hasCompletedPreferences ?? this.hasCompletedPreferences,
     );
   }
 }

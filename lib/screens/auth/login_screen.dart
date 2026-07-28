@@ -52,9 +52,12 @@ class _LoginScreenState extends State<LoginScreen> {
       }
       if (provider.isSuperAdmin) {
         Navigator.pushReplacementNamed(context, AppRoutes.superAdminPortal);
+      } else if (_isOwnerLogin) {
+        Navigator.pushReplacementNamed(context, AppRoutes.ownerPortal);
+      } else if (!provider.currentUser!.hasCompletedPreferences) {
+        Navigator.pushReplacementNamed(context, AppRoutes.gymPreferences);
       } else {
-        Navigator.pushReplacementNamed(
-            context, _isOwnerLogin ? AppRoutes.ownerPortal : AppRoutes.main);
+        Navigator.pushReplacementNamed(context, AppRoutes.main);
       }
     }
   }
@@ -71,9 +74,12 @@ class _LoginScreenState extends State<LoginScreen> {
       }
       if (provider.isSuperAdmin) {
         Navigator.pushReplacementNamed(context, AppRoutes.superAdminPortal);
+      } else if (_isOwnerLogin) {
+        Navigator.pushReplacementNamed(context, AppRoutes.ownerPortal);
+      } else if (!provider.currentUser!.hasCompletedPreferences) {
+        Navigator.pushReplacementNamed(context, AppRoutes.gymPreferences);
       } else {
-        Navigator.pushReplacementNamed(
-            context, _isOwnerLogin ? AppRoutes.ownerPortal : AppRoutes.main);
+        Navigator.pushReplacementNamed(context, AppRoutes.main);
       }
     }
   }
@@ -90,9 +96,12 @@ class _LoginScreenState extends State<LoginScreen> {
       }
       if (provider.isSuperAdmin) {
         Navigator.pushReplacementNamed(context, AppRoutes.superAdminPortal);
+      } else if (_isOwnerLogin) {
+        Navigator.pushReplacementNamed(context, AppRoutes.ownerPortal);
+      } else if (!provider.currentUser!.hasCompletedPreferences) {
+        Navigator.pushReplacementNamed(context, AppRoutes.gymPreferences);
       } else {
-        Navigator.pushReplacementNamed(
-            context, _isOwnerLogin ? AppRoutes.ownerPortal : AppRoutes.main);
+        Navigator.pushReplacementNamed(context, AppRoutes.main);
       }
     }
   }

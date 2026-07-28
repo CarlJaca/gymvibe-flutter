@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/gym_model.dart';
 import '../services/recommendation_service.dart';
 
+export '../services/recommendation_service.dart' show GymMatchResult;
+
 class GymProvider extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -29,6 +31,9 @@ class GymProvider extends ChangeNotifier {
 
   // User fitness preferences for Jaccard recommendations
   List<String> _userPreferences = [];
+
+  // Jaccard match results with scores
+  List<GymMatchResult> _matchResults = [];
 
   // ─── Getters ────────────────────────────────────────────────────────────────
   /// Returns the gym belonging to the currently logged-in owner.
@@ -62,22 +67,21 @@ class GymProvider extends ChangeNotifier {
       _allGyms.where((g) => g.isSaved).toList();
 
   /// Returns gyms ranked by Jaccard similarity to the user's preferences.
-  /// Falls back to top-rated gyms when no preferences are set.
-  /// Excludes gyms the user has already saved or favorited.
+  /// Delegates to matchResults for consistency.
   List<GymModel> get recommendedGyms {
-    final eligibleGyms = _allGyms.where((g) => !g.isFavorite && !g.isSaved).toList();
-
-    if (_userPreferences.isEmpty) {
-      final topRatedEligible = List<GymModel>.from(eligibleGyms)
-        ..sort((a, b) => b.rating.compareTo(a.rating));
-      return topRatedEligible.take(5).toList();
+    if (_matchResults.isNotEmpty) {
+      return _matchResults.map((r) => r.gym).toList();
     }
+    if (_userPreferences.isEmpty) return [];
     return RecommendationService.getRecommendedGyms(
       userPreferences: _userPreferences,
-      allGyms: eligibleGyms,
-      limit: 5,
+      allGyms: _allGyms,
+      limit: 10,
     );
   }
+
+  /// Returns full Jaccard match results with scores and matched attributes.
+  List<GymMatchResult> get matchResults => _matchResults;
 
   List<String> get userPreferences => _userPreferences;
   GymModel? get selectedGym => _selectedGym;
@@ -106,7 +110,21 @@ class GymProvider extends ChangeNotifier {
   /// Called from the Profile preferences screen.
   void setUserPreferences(List<String> preferences) {
     _userPreferences = List<String>.from(preferences);
+    calculateMatches();
     notifyListeners();
+  }
+
+  /// Recalculates Jaccard similarity matches using current preferences.
+  void calculateMatches() {
+    if (_userPreferences.isEmpty || _allGyms.isEmpty) {
+      _matchResults = [];
+      return;
+    }
+    _matchResults = RecommendationService.getRecommendedGymsWithScores(
+      userPreferences: _userPreferences,
+      allGyms: _allGyms,
+      limit: 10,
+    );
   }
 
   StreamSubscription<QuerySnapshot>? _gymsSubscription;
