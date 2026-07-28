@@ -191,24 +191,28 @@ class _ExploreScreenState extends State<ExploreScreen>
             ListView(
               padding: EdgeInsets.fromLTRB(20, 12, 20, _selectedGymIds.isNotEmpty ? 80 : 20),
               children: [
-                Row(
-                  children: [
-                    const Icon(Icons.list_alt_rounded, size: 18, color: AppColors.primary),
-                    const SizedBox(width: 8),
-                    const Text(
-                      'View All Gyms',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
+                GestureDetector(
+                  onTap: () => Navigator.pushNamed(context, AppRoutes.searchLanding),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.list_alt_rounded, size: 18, color: AppColors.primary),
+                      const SizedBox(width: 8),
+                      const Text(
+                        'View All Gyms',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
+                        ),
                       ),
-                    ),
-                    const Spacer(),
-                    Text(
-                      '${gyms.length} gyms found',
-                      style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
-                    ),
-                  ],
+                      const Icon(Icons.chevron_right_rounded, size: 20, color: AppColors.primary),
+                      const Spacer(),
+                      Text(
+                        '${gyms.length} gyms found',
+                        style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 16),
                 ...gyms.map((gym) => Padding(
