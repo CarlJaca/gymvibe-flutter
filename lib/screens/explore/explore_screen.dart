@@ -223,8 +223,8 @@ class _ExploreScreenState extends State<ExploreScreen>
                           ),
                           // ── Compare Checkbox ──
                           Positioned(
-                            top: 12,
-                            right: 28,
+                            bottom: 12,
+                            right: 12,
                             child: GestureDetector(
                               onTap: () => _toggleGymSelection(gym.id),
                               child: Container(
