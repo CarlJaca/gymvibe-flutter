@@ -7,6 +7,9 @@ import '../../providers/gym_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../services/recommendation_service.dart';
 import '../preferences/gym_preferences_screen.dart';
+import '../community/community_screen.dart';
+import '../calendar/workout_calendar_screen.dart';
+import '../home/customer_notifications_screen.dart';
 
 class MatchesScreen extends StatefulWidget {
   const MatchesScreen({super.key});
@@ -64,6 +67,39 @@ class _MatchesScreenState extends State<MatchesScreen> {
                               color: AppColors.textPrimary,
                             ),
                           ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) =>
+                                        const WorkoutCalendarScreen()));
+                          },
+                          icon: const Icon(Icons.calendar_month_rounded,
+                              color: AppColors.textPrimary, size: 24),
+                          tooltip: 'Workout Calendar',
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => const CommunityScreen()));
+                          },
+                          icon: const Icon(Icons.people_outline_rounded,
+                              color: AppColors.textPrimary, size: 24),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) =>
+                                        const CustomerNotificationsScreen()));
+                          },
+                          icon: const Icon(Icons.notifications_none_rounded,
+                              color: AppColors.textPrimary, size: 24),
                         ),
                         if (hasPreferences)
                           IconButton(
