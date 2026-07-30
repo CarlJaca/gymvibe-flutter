@@ -124,13 +124,18 @@ class CompareGymsScreen extends StatelessWidget {
   // ─── Gym Header Columns ──────────────────────────────────────────────────
   Widget _buildGymHeaders() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+      padding: const EdgeInsets.symmetric(vertical: 16),
       child: Row(
-        children: gyms.map((gym) {
-          return Expanded(
-            child: Column(
-              children: [
-                ClipRRect(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          const SizedBox(width: 90),
+          ...gyms.map((gym) {
+            return Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6),
+                child: Column(
+                  children: [
+                    ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: gym.imageUrl.isNotEmpty
                       ? CachedNetworkImage(
@@ -175,7 +180,8 @@ class CompareGymsScreen extends StatelessWidget {
                 ),
               ],
             ),
-          );
+          ), // Closes Padding
+          ); // Closes Expanded
         }).toList(),
       ),
     );
