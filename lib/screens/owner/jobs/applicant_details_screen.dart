@@ -371,10 +371,15 @@ class _ApplicantDetailsScreenState extends State<ApplicantDetailsScreen> {
                 child: TextField(
                   controller: _noteController,
                   maxLines: 3,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: 'Add private notes about this applicant...',
                     border: InputBorder.none,
-                    contentPadding: const EdgeInsets.all(12),
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     suffixIcon: IconButton(
                       icon: _isSavingNote
                           ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))

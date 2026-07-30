@@ -166,6 +166,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                         border: InputBorder.none,
                                         enabledBorder: InputBorder.none,
                                         focusedBorder: InputBorder.none,
+                                        errorBorder: InputBorder.none,
+                                        disabledBorder: InputBorder.none,
                                         filled: false,
                                         contentPadding: EdgeInsets.zero,
                                       ),
