@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../../core/constants/app_constants.dart';
 import '../../providers/auth_provider.dart';
-import '../../providers/gym_provider.dart';
+
 import 'dart:io';
 import '../../providers/events_provider.dart';
 import '../../providers/notification_provider.dart';
@@ -23,12 +23,6 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  // Preference states — initialized from Firestore on first build
-  Set<String> _fitnessGoals = {};
-  String _budgetRange = '';
-  String _trainerAvailability = '';
-  Set<String> _preferredFacilities = {};
-  bool _prefsInitialized = false;
   bool _isUploadingAvatar = false;
 
   Future<void> _uploadAvatar() async {
@@ -68,216 +62,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  /// Load saved preferences from the user's Firestore profile
-  void _initPreferencesFromUser(AuthProvider auth) {
-    if (_prefsInitialized || auth.currentUser == null) return;
-    _prefsInitialized = true;
 
-    final prefs = auth.currentUser!.fitnessPreferences;
-    // Parse stored preferences back into categorized sets
-    // We store all preferences in a single flat list with prefixes
-    for (final p in prefs) {
-      if (p.startsWith('goal:')) {
-        _fitnessGoals.add(p.substring(5));
-      } else if (p.startsWith('budget:')) {
-        _budgetRange = p.substring(7);
-      } else if (p.startsWith('trainer:')) {
-        _trainerAvailability = p.substring(8);
-      } else {
-        // Facility/category preferences (no prefix) — these feed Jaccard
-        _preferredFacilities.add(p);
-      }
-    }
-
-    // Ensure sets are empty if nothing was saved
-    if (_fitnessGoals.isEmpty) _fitnessGoals = {};
-    if (_budgetRange.isEmpty) _budgetRange = '';
-    if (_trainerAvailability.isEmpty) _trainerAvailability = '';
-    if (_preferredFacilities.isEmpty) _preferredFacilities = {};
-  }
-
-  /// Save all preferences to Firestore and update GymProvider for Jaccard
-  Future<void> _savePreferences() async {
-    final auth = context.read<AuthProvider>();
-    if (auth.currentUser == null) return;
-
-    // Build flat list: facilities go unprefixed (for Jaccard), others prefixed
-    final allPrefs = <String>[
-      ..._fitnessGoals.map((g) => 'goal:$g'),
-      'budget:$_budgetRange',
-      'trainer:$_trainerAvailability',
-      ..._preferredFacilities, // These are the Jaccard-comparable preferences
-    ];
-
-    // Save to Firestore
-    try {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(auth.currentUser!.id)
-          .update({'fitnessPreferences': allPrefs});
-    } catch (e) {
-      debugPrint('Error saving preferences: $e');
-    }
-
-    // Update GymProvider so recommendations refresh immediately
-    if (mounted) {
-      final jaccardPrefs = [
-        ..._fitnessGoals,
-        ..._preferredFacilities,
-      ];
-      context.read<GymProvider>().setUserPreferences(jaccardPrefs);
-    }
-  }
-
-  void _showPreferenceSheet(String title, List<String> options, String currentValue, Function(String) onSelect) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: AppColors.surfaceElevated,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
-      ),
-      builder: (ctx) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: 12),
-              Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: AppColors.border,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Select $title',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 16),
-              ...options.map((option) => ListTile(
-                title: Text(
-                  option,
-                  style: TextStyle(
-                    color: option == currentValue ? AppColors.primary : AppColors.textPrimary,
-                    fontWeight: option == currentValue ? FontWeight.bold : FontWeight.normal,
-                  ),
-                ),
-                trailing: option == currentValue
-                    ? const Icon(Icons.check_circle_rounded, color: AppColors.primary)
-                    : null,
-                onTap: () {
-                  onSelect(option);
-                  Navigator.pop(ctx);
-                },
-              )),
-              const SizedBox(height: 16),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  void _showMultiSelectSheet(String title, List<String> options, Set<String> currentValues, Function(Set<String>) onUpdate) {
-    Set<String> tempValues = Set.from(currentValues);
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: AppColors.surfaceElevated,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
-      ),
-      builder: (ctx) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setModalState) {
-            return SafeArea(
-              child: Padding(
-                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: 12),
-                    Container(
-                      width: 40,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: AppColors.border,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Select $title',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Flexible(
-                      child: ListView(
-                        shrinkWrap: true,
-                        children: options.map((option) {
-                          final isSelected = tempValues.contains(option);
-                          return CheckboxListTile(
-                            title: Text(
-                              option,
-                              style: TextStyle(
-                                color: isSelected ? AppColors.primary : AppColors.textPrimary,
-                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                              ),
-                            ),
-                            value: isSelected,
-                            activeColor: AppColors.primary,
-                            checkColor: Colors.white,
-                            side: const BorderSide(color: AppColors.border),
-                            onChanged: (bool? value) {
-                              setModalState(() {
-                                if (value == true) {
-                                  tempValues.add(option);
-                                } else {
-                                  tempValues.remove(option);
-                                }
-                              });
-                            },
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: AppPadding.md),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            onUpdate(tempValues);
-                            Navigator.pop(ctx);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                          ),
-                          child: const Text('Save Selection', style: TextStyle(fontSize: 16)),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                  ],
-                ),
-              ),
-            );
-          }
-        );
-      },
-    );
-  }
 
   void _showComingSoon(String feature) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -295,7 +80,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: SafeArea(
         child: Consumer<AuthProvider>(
           builder: (context, auth, child) {
-            _initPreferencesFromUser(auth);
             return ListView(
               padding: const EdgeInsets.all(AppPadding.md),
               children: [
@@ -409,54 +193,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 const SizedBox(height: AppPadding.xl),
 
-                // ── My Preferences ──────────────────────────────────────
-                _buildSectionTitle('My Preferences'),
-                const SizedBox(height: AppPadding.sm),
-                _buildPreferenceRow(
-                    context, Icons.flag_outlined, 'Fitness Goal', _fitnessGoals.isEmpty ? 'Not Set' : '${_fitnessGoals.length} selected',
-                     onTap: () => _showMultiSelectSheet(
-                      'Fitness Goal',
-                      ['Muscle Gain', 'Weight Loss', 'Endurance', 'Flexibility', 'General Fitness'],
-                      _fitnessGoals,
-                      (val) {
-                        setState(() => _fitnessGoals = val);
-                        _savePreferences();
-                      },
-                    )),
-                _buildPreferenceRow(
-                    context, Icons.payments_outlined, 'Budget Range', _budgetRange.isEmpty ? 'Not Set' : _budgetRange,
-                    onTap: () => _showPreferenceSheet(
-                      'Budget Range',
-                      ['₱0 – ₱1,000', '₱1,000 – ₱2,000', '₱2,000 – ₱5,000', '₱5,000+'],
-                      _budgetRange,
-                      (val) {
-                        setState(() => _budgetRange = val);
-                        _savePreferences();
-                      },
-                    )),
-                _buildPreferenceRow(
-                    context, Icons.fitness_center_outlined, 'Preferred Facilities', _preferredFacilities.isEmpty ? 'Not Set' : '${_preferredFacilities.length} selected',
-                    onTap: () => _showMultiSelectSheet(
-                      'Preferred Facilities',
-                      ['Cardio', 'Free Weights', 'Machines', 'Locker Room', 'Shower Area', 'Sauna', 'Pool', 'Personal Trainers', 'Yoga Studio', 'Boxing', 'Parking', 'WiFi', 'AC', 'Group Classes', 'Kids Area', 'Nutrition Bar'],
-                      _preferredFacilities,
-                      (val) {
-                        setState(() => _preferredFacilities = val);
-                        _savePreferences();
-                      },
-                    )),
-                _buildPreferenceRow(
-                    context, Icons.person_outline_rounded, 'Trainer Availability', _trainerAvailability.isEmpty ? 'Not Set' : _trainerAvailability,
-                    onTap: () => _showPreferenceSheet(
-                      'Trainer Availability',
-                      ['Morning', 'Afternoon', 'Evening', 'Weekends Only', 'Anytime'],
-                      _trainerAvailability,
-                      (val) {
-                        setState(() => _trainerAvailability = val);
-                        _savePreferences();
-                      },
-                    )),
-                const SizedBox(height: AppPadding.lg),
+
 
                 // ── My Activity ─────────────────────────────────────────
                 _buildSectionTitle('My Activity'),
@@ -585,37 +322,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildPreferenceRow(
-      BuildContext context, IconData icon, String label, String value, {required VoidCallback onTap}) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Material(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        clipBehavior: Clip.antiAlias,
-        child: ListTile(
-        leading: Icon(icon, color: AppColors.primary, size: 22),
-        title: Text(label,
-            style: const TextStyle(
-                fontSize: 14, color: AppColors.textSecondary)),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(value,
-                style: const TextStyle(
-                    fontSize: 14,
-                    color: AppColors.textPrimary,
-                    fontWeight: FontWeight.w500)),
-            const SizedBox(width: 4),
-            const Icon(Icons.chevron_right_rounded,
-                color: AppColors.textSecondary, size: 20),
-          ],
-        ),
-        onTap: onTap,
-      ),
-      ),
-    );
-  }
+
 
   Widget _buildMenuItem(IconData icon, String title,
       {required VoidCallback onTap}) {
