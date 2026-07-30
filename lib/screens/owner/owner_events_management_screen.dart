@@ -13,10 +13,12 @@ class OwnerEventsManagementScreen extends StatefulWidget {
       _OwnerEventsManagementScreenState();
 }
 
-class _OwnerEventsManagementScreenState
-    extends State<OwnerEventsManagementScreen>
+class _OwnerEventsManagementScreenState extends State<OwnerEventsManagementScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+  String _selectedCategory = 'All';
 
   @override
   void initState() {
@@ -27,6 +29,7 @@ class _OwnerEventsManagementScreenState
   @override
   void dispose() {
     _tabController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -44,9 +47,17 @@ class _OwnerEventsManagementScreenState
             }
             
             final ownerGymId = gymProv.ownerGym.id;
-            final activeEvents = eventsProv.activeEvents.where((e) => e['gymId'] == ownerGymId).toList();
-            final upcomingEvents = eventsProv.upcomingEvents.where((e) => e['gymId'] == ownerGymId).toList();
-            final inactiveEvents = eventsProv.inactiveEvents.where((e) => e['gymId'] == ownerGymId).toList();
+            
+            bool matchesFilter(Map<String, dynamic> e) {
+              if (e['gymId'] != ownerGymId) return false;
+              if (_selectedCategory != 'All' && e['category']?.toString().toLowerCase() != _selectedCategory.toLowerCase()) return false;
+              if (_searchQuery.isNotEmpty && !e['title'].toString().toLowerCase().contains(_searchQuery)) return false;
+              return true;
+            }
+
+            final activeEvents = eventsProv.activeEvents.where(matchesFilter).toList();
+            final upcomingEvents = eventsProv.upcomingEvents.where(matchesFilter).toList();
+            final inactiveEvents = eventsProv.inactiveEvents.where(matchesFilter).toList();
 
             final activeCount = activeEvents.length;
             final upcomingCount = upcomingEvents.length;
@@ -94,14 +105,6 @@ class _OwnerEventsManagementScreenState
                           ],
                         ),
                       ),
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: AppColors.border),
-                        ),
-                        child: const Icon(Icons.filter_list_rounded, color: Colors.white, size: 20),
-                      ),
                     ],
                   ),
                 ),
@@ -120,7 +123,65 @@ class _OwnerEventsManagementScreenState
                     Tab(text: 'Inactive ($inactiveCount)'),
                   ],
                 ),
-                const SizedBox(height: AppPadding.md),
+                
+                // ── Search & Filter ─────────────────────────────────────
+                Padding(
+                  padding: const EdgeInsets.all(AppPadding.md),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          height: 44,
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          decoration: BoxDecoration(
+                            color: AppColors.surface,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: AppColors.border),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.search_rounded, color: AppColors.textSecondary, size: 20),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: TextField(
+                                  controller: _searchController,
+                                  onChanged: (value) => setState(() => _searchQuery = value.toLowerCase()),
+                                  decoration: const InputDecoration(
+                                    hintText: 'Search events...',
+                                    hintStyle: TextStyle(color: AppColors.textMuted, fontSize: 14),
+                                    border: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    isDense: true,
+                                    contentPadding: EdgeInsets.zero,
+                                  ),
+                                  style: const TextStyle(color: Colors.white, fontSize: 14),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Container(
+                        height: 44,
+                        width: 44,
+                        decoration: BoxDecoration(
+                          color: _selectedCategory != 'All' ? AppColors.primary.withValues(alpha: 0.2) : AppColors.surface,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: _selectedCategory != 'All' ? AppColors.primary : AppColors.border),
+                        ),
+                        child: IconButton(
+                          icon: Icon(Icons.filter_list_rounded, color: _selectedCategory != 'All' ? AppColors.primary : AppColors.textPrimary, size: 20),
+                          onPressed: _showFilterModal,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: AppPadding.sm),
 
 
                 // ── Content ─────────────────────────────────────────────
