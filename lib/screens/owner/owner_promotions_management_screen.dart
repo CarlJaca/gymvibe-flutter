@@ -18,6 +18,9 @@ class _OwnerPromotionsManagementScreenState
     extends State<OwnerPromotionsManagementScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+  String _selectedType = 'All';
 
   @override
   void initState() {
@@ -28,6 +31,7 @@ class _OwnerPromotionsManagementScreenState
   @override
   void dispose() {
     _tabController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -111,6 +115,8 @@ class _OwnerPromotionsManagementScreenState
                           SizedBox(width: 8),
                           Expanded(
                             child: TextField(
+                              controller: _searchController,
+                              onChanged: (value) => setState(() => _searchQuery = value.toLowerCase()),
                               decoration: InputDecoration(
                                 hintText: 'Search promotions...',
                                 hintStyle: TextStyle(color: AppColors.textMuted, fontSize: 14),
@@ -134,15 +140,13 @@ class _OwnerPromotionsManagementScreenState
                     height: 44,
                     width: 44,
                     decoration: BoxDecoration(
-                      color: AppColors.surface,
+                      color: _selectedType != 'All' ? AppColors.primary.withValues(alpha: 0.2) : AppColors.surface,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: AppColors.border),
+                      border: Border.all(color: _selectedType != 'All' ? AppColors.primary : AppColors.border),
                     ),
                     child: IconButton(
-                      icon: const Icon(Icons.filter_list_rounded, color: AppColors.textPrimary, size: 20),
-                      onPressed: () {
-                        // Show filter modal
-                      },
+                      icon: Icon(Icons.filter_list_rounded, color: _selectedType != 'All' ? AppColors.primary : AppColors.textPrimary, size: 20),
+                      onPressed: _showFilterModal,
                     ),
                   ),
                 ],
@@ -160,9 +164,17 @@ class _OwnerPromotionsManagementScreenState
                   }
                   
                   final ownerGymId = gymProv.ownerGym.id;
-                  final active = promoProv.active.where((p) => p['gymId'] == ownerGymId).toList();
-                  final scheduled = promoProv.scheduled.where((p) => p['gymId'] == ownerGymId).toList();
-                  final paused = promoProv.paused.where((p) => p['gymId'] == ownerGymId).toList();
+                  
+                  bool matchesFilter(Map<String, dynamic> p) {
+                    if (p['gymId'] != ownerGymId) return false;
+                    if (_selectedType != 'All' && p['type']?.toString().toLowerCase() != _selectedType.toLowerCase()) return false;
+                    if (_searchQuery.isNotEmpty && !p['title'].toString().toLowerCase().contains(_searchQuery)) return false;
+                    return true;
+                  }
+
+                  final active = promoProv.active.where(matchesFilter).toList();
+                  final scheduled = promoProv.scheduled.where(matchesFilter).toList();
+                  final paused = promoProv.paused.where(matchesFilter).toList();
 
                   return TabBarView(
                     controller: _tabController,
