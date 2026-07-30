@@ -19,7 +19,7 @@ class PromotionsProvider extends ChangeNotifier {
   bool _isLoading = false;
 
   List<Map<String, dynamic>> get allPromotions => _active;
-  List<Map<String, dynamic>> get active => _active.where((p) => p['status'] == 'Active').toList();
+  List<Map<String, dynamic>> get active => _active.where((p) => (p['status'] ?? 'Active') == 'Active').toList();
   List<Map<String, dynamic>> get myClaimed => _myClaimed;
   List<Map<String, dynamic>> get scheduled => _active.where((p) => p['status'] == 'Scheduled').toList();
   List<Map<String, dynamic>> get paused => _active.where((p) => p['status'] == 'Paused').toList();

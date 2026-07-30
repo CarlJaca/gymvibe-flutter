@@ -14,15 +14,15 @@ class EventsProvider extends ChangeNotifier {
   // ─── Getters ────────────────────────────────────────────────────────
   bool get isLoading => _isLoading;
   List<Map<String, dynamic>> get allEvents => _allEvents;
-  List<Map<String, dynamic>> get activeEvents => _allEvents.where((e) => e['status'] == 'Active').toList();
-  List<Map<String, dynamic>> get upcomingEvents => _allEvents.where((e) => e['status'] == 'Upcoming').toList();
+  List<Map<String, dynamic>> get activeEvents => _allEvents.where((e) => (e['status'] ?? 'Active') == 'Active').toList();
+  List<Map<String, dynamic>> get upcomingEvents => _allEvents.where((e) => (e['status'] ?? 'Upcoming') == 'Upcoming').toList();
   List<Map<String, dynamic>> get inactiveEvents => _allEvents.where((e) => e['status'] == 'Inactive').toList();
   List<Map<String, dynamic>> get pastEvents => _allEvents.where((e) => e['status'] == 'Past' || e['status'] == 'Inactive').toList();
   
-  List<Map<String, dynamic>> get featuredEvents => _allEvents.where((e) => e['isFeatured'] == true).toList();
+  List<Map<String, dynamic>> get featuredEvents => _allEvents.where((e) => (e['isFeatured'] ?? false) == true).toList();
   List<Map<String, dynamic>> get myRegisteredEvents => _myRegisteredEvents;
-  List<Map<String, dynamic>> get savedEvents => _allEvents.where((e) => e['isSaved'] == true).toList();
-  List<Map<String, dynamic>> get eventsWithReminders => _allEvents.where((e) => e['hasReminder'] == true).toList();
+  List<Map<String, dynamic>> get savedEvents => _allEvents.where((e) => (e['isSaved'] ?? false) == true).toList();
+  List<Map<String, dynamic>> get eventsWithReminders => _allEvents.where((e) => (e['hasReminder'] ?? false) == true).toList();
 
   // ─── Init (Firestore) ──────────────────────────────────────────────
   Future<void> loadEvents() async {

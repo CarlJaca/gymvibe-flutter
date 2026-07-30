@@ -34,17 +34,22 @@ class _OwnerEventsManagementScreenState
     return Scaffold(
       backgroundColor: AppColors.backgroundDark, // added for dark mode theme
       body: SafeArea(
-        child: Consumer<EventsProvider>(
-          builder: (context, eventsProv, _) {
+        child: Consumer2<EventsProvider, GymProvider>(
+          builder: (context, eventsProv, gymProv, _) {
             if (eventsProv.isLoading) {
               return const Center(
                 child: CircularProgressIndicator(color: AppColors.primary),
               );
             }
+            
+            final ownerGymId = gymProv.ownerGym.id;
+            final activeEvents = eventsProv.activeEvents.where((e) => e['gymId'] == ownerGymId).toList();
+            final upcomingEvents = eventsProv.upcomingEvents.where((e) => e['gymId'] == ownerGymId).toList();
+            final inactiveEvents = eventsProv.inactiveEvents.where((e) => e['gymId'] == ownerGymId).toList();
 
-            final activeCount = eventsProv.activeEvents.length;
-            final upcomingCount = eventsProv.upcomingEvents.length;
-            final inactiveCount = eventsProv.inactiveEvents.length;
+            final activeCount = activeEvents.length;
+            final upcomingCount = upcomingEvents.length;
+            final inactiveCount = inactiveEvents.length;
 
 
 
@@ -122,9 +127,9 @@ class _OwnerEventsManagementScreenState
                   child: TabBarView(
                     controller: _tabController,
                     children: [
-                      _buildEventList(eventsProv.activeEvents),
-                      _buildEventList(eventsProv.upcomingEvents),
-                      _buildEventList(eventsProv.inactiveEvents),
+                      _buildEventList(activeEvents),
+                      _buildEventList(upcomingEvents),
+                      _buildEventList(inactiveEvents),
                     ],
                   ),
                 ),

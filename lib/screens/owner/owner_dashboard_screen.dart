@@ -51,8 +51,8 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
             final gymName = gymProv.ownerGym.name;
             // For testing/demo purposes, we read ALL events/promos
             // to ensure they show up in the analytics regardless of gymId mismatches.
-            final ownerEvents = eventsProv.allEvents;
-            final ownerPromos = promoProv.allPromotions;
+            final ownerEvents = eventsProv.allEvents.where((e) => e['gymId'] == gymProv.ownerGym.id).toList();
+            final ownerPromos = promoProv.allPromotions.where((p) => p['gymId'] == gymProv.ownerGym.id).toList();
             
             final totalEvents = ownerEvents.length;
             final totalPromotions = ownerPromos.length;
@@ -60,11 +60,11 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
             final totalBookings = gymProv.ownerGym.bookingsCount;
             
             int totalInterested = 0;
-            for (var e in eventsProv.allEvents) {
+            for (var e in ownerEvents) {
               totalInterested += (e['interested'] as int? ?? 0);
             }
             int totalGoing = 0;
-            for (var e in eventsProv.allEvents) {
+            for (var e in ownerEvents) {
               totalGoing += (e['registeredCount'] as int? ?? 0);
             }
 

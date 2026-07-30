@@ -146,21 +146,26 @@ class _OwnerPromotionsManagementScreenState
 
             // ── List View ───────────────────────────────────────────
             Expanded(
-              child: Consumer<PromotionsProvider>(
-                builder: (context, promoProv, _) {
+              child: Consumer2<PromotionsProvider, GymProvider>(
+                builder: (context, promoProv, gymProv, _) {
                   if (promoProv.isLoading) {
                     return const Center(
                       child: CircularProgressIndicator(color: AppColors.primary),
                     );
                   }
+                  
+                  final ownerGymId = gymProv.ownerGym.id;
+                  final active = promoProv.active.where((p) => p['gymId'] == ownerGymId).toList();
+                  final scheduled = promoProv.scheduled.where((p) => p['gymId'] == ownerGymId).toList();
+                  final paused = promoProv.paused.where((p) => p['gymId'] == ownerGymId).toList();
 
                   return TabBarView(
                     controller: _tabController,
                     children: [
-                      _buildList(promoProv.active, promoProv),
-                      _buildList(promoProv.scheduled, promoProv),
+                      _buildList(active, promoProv),
+                      _buildList(scheduled, promoProv),
                       _buildEmptyState('No expired promotions', 'Check back later.'),
-                      _buildList(promoProv.paused, promoProv),
+                      _buildList(paused, promoProv),
                     ],
                   );
                 },
