@@ -90,52 +90,64 @@ class _MyEventsScreenState extends State<MyEventsScreen> with SingleTickerProvid
   }
 
   Widget _buildUpcomingView(List<Map<String, dynamic>> events) {
+    if (events.isEmpty) {
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.event_busy_rounded, size: 64, color: AppColors.textMuted),
+            SizedBox(height: 16),
+            Text('No upcoming events yet', style: TextStyle(color: AppColors.textMuted, fontSize: 16)),
+          ],
+        ),
+      );
+    }
+
     // Show top 3 upcoming events just as recommendations or reminders
     return ListView(
       padding: const EdgeInsets.all(AppPadding.md),
       children: [
         // Reminder Card
-        if (events.isNotEmpty)
-          Container(
-            padding: const EdgeInsets.all(AppPadding.md),
-            margin: const EdgeInsets.only(bottom: AppPadding.lg),
-            decoration: BoxDecoration(
-              color: AppColors.surface,
-              borderRadius: BorderRadius.circular(AppRadius.lg),
-              border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(Icons.notifications_active_rounded, color: AppColors.primary),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Upcoming Reminder', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
-                      const SizedBox(height: 4),
-                      Text('${events[0]['title']} is in 2 days!', style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold)),
-                    ],
-                  ),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.pushNamed(context, '/event-details', arguments: events[0]),
-                  style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    backgroundColor: AppColors.surfaceElevated,
-                  ),
-                  child: const Text('Details', style: TextStyle(color: AppColors.primary, fontSize: 12)),
-                ),
-              ],
-            ),
+        Container(
+          padding: const EdgeInsets.all(AppPadding.md),
+          margin: const EdgeInsets.only(bottom: AppPadding.lg),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(AppRadius.lg),
+            border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
           ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.notifications_active_rounded, color: AppColors.primary),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Upcoming Reminder', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                    const SizedBox(height: 4),
+                    Text('${events[0]['title']} is in 2 days!', style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pushNamed(context, '/event-details', arguments: events[0]),
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  backgroundColor: AppColors.surfaceElevated,
+                ),
+                child: const Text('Details', style: TextStyle(color: AppColors.primary, fontSize: 12)),
+              ),
+            ],
+          ),
+        ),
         
         const Text('Explore More', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
         const SizedBox(height: 12),
