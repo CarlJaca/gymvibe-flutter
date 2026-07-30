@@ -109,15 +109,15 @@ class _OwnerPromotionsManagementScreenState
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: AppColors.border),
                       ),
-                      child: const Row(
+                      child: Row(
                         children: [
-                          Icon(Icons.search_rounded, color: AppColors.textSecondary, size: 20),
-                          SizedBox(width: 8),
+                          const Icon(Icons.search_rounded, color: AppColors.textSecondary, size: 20),
+                          const SizedBox(width: 8),
                           Expanded(
                             child: TextField(
                               controller: _searchController,
                               onChanged: (value) => setState(() => _searchQuery = value.toLowerCase()),
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                 hintText: 'Search promotions...',
                                 hintStyle: TextStyle(color: AppColors.textMuted, fontSize: 14),
                                 border: InputBorder.none,
@@ -128,7 +128,7 @@ class _OwnerPromotionsManagementScreenState
                                 isDense: true,
                                 contentPadding: EdgeInsets.zero,
                               ),
-                              style: TextStyle(color: Colors.white, fontSize: 14),
+                              style: const TextStyle(color: Colors.white, fontSize: 14),
                             ),
                           ),
                         ],
@@ -408,4 +408,57 @@ class _OwnerPromotionsManagementScreenState
     );
   }
 
+  void _showFilterModal() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Padding(
+              padding: const EdgeInsets.all(AppPadding.lg),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Filter by Type', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+                  const SizedBox(height: 16),
+                  Wrap(
+                    spacing: 8,
+                    children: ['All', 'Discount', 'Freebie'].map((type) {
+                      final isSelected = _selectedType == type;
+                      return ChoiceChip(
+                        label: Text(type),
+                        selected: isSelected,
+                        onSelected: (selected) {
+                          if (selected) {
+                            setModalState(() => _selectedType = type);
+                            setState(() => _selectedType = type);
+                          }
+                        },
+                        selectedColor: AppColors.primary,
+                        backgroundColor: AppColors.background,
+                        labelStyle: TextStyle(color: isSelected ? Colors.white : AppColors.textSecondary),
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Apply'),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 }

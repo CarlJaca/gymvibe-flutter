@@ -541,4 +541,59 @@ class _OwnerEventsManagementScreenState extends State<OwnerEventsManagementScree
       ),
     );
   }
+
+  void _showFilterModal() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Padding(
+              padding: const EdgeInsets.all(AppPadding.lg),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Filter by Category', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+                  const SizedBox(height: 16),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: ['All', 'Workout', 'Dance', 'Strength', 'Wellness', 'Yoga', 'HIIT', 'Nutrition'].map((category) {
+                      final isSelected = _selectedCategory == category;
+                      return ChoiceChip(
+                        label: Text(category),
+                        selected: isSelected,
+                        onSelected: (selected) {
+                          if (selected) {
+                            setModalState(() => _selectedCategory = category);
+                            setState(() => _selectedCategory = category);
+                          }
+                        },
+                        selectedColor: AppColors.primary,
+                        backgroundColor: AppColors.background,
+                        labelStyle: TextStyle(color: isSelected ? Colors.white : AppColors.textSecondary),
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Apply'),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 }

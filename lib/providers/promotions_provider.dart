@@ -39,18 +39,6 @@ class PromotionsProvider extends ChangeNotifier {
         'color': const Color(0xFF2962FF).toARGB32(), // Blue
         'status': 'Active',
       },
-      {
-        'id': 'p3',
-        'gymId': 'gym2', // From mock gyms
-        'title': 'Bring a Friend for Free',
-        'dates': 'Weekends only',
-        'type': 'bogo',
-        'value': 0,
-        'reach': 2100,
-        'redemptions': 89,
-        'color': const Color(0xFFAA00FF).toARGB32(), // Purple
-        'status': 'Active',
-      },
     ];
 
     for (var p in defaultPromotions) {
