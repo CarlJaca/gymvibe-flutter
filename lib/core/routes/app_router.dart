@@ -9,6 +9,7 @@ class AppRoutes {
   static const String gymPreferences = '/gym-preferences';
   static const String gymDetails = '/gym-details';
   static const String booking = '/booking';
+  static const String busyDayCalendar = '/busy-day-calendar';
   static const String myBookings = '/my-bookings';
   static const String membership = '/membership';
   static const String searchLanding = '/search-landing';
@@ -37,6 +38,7 @@ class AppRoutes {
   static const String ownerLogin     = '/owner-login';
   static const String ownerRegister  = '/owner-register';
   static const String ownerPortal    = '/owner-portal';
+  static const String ownerCrowdStatus = '/owner-crowd-status';
   static const String ownerCreateEvent      = '/owner-create-event';
   static const String ownerCreatePromotion  = '/owner-create-promotion';
   static const String ownerEditProfile      = '/owner-edit-profile';

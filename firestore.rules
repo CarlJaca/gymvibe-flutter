@@ -85,9 +85,8 @@ service cloud.firestore {
     // ═══════════════════════════════════════════════════════════════════
 
     match /bookings/{bookingId} {
-      // Users can read their own bookings
-      allow read: if isAuthenticated()
-        && resource.data.userId == request.auth.uid;
+      // Users can read all bookings (needed for crowd status calculation)
+      allow read: if isAuthenticated();
 
       // Users can create bookings for themselves only
       allow create: if isAuthenticated()

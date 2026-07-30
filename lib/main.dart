@@ -21,6 +21,7 @@ import 'providers/super_admin_provider.dart';
 import 'providers/job_provider.dart';
 import 'providers/job_application_provider.dart';
 import 'providers/owner_job_provider.dart';
+import 'providers/crowd_status_provider.dart';
 import 'models/gym_model.dart';
 
 // User App
@@ -47,6 +48,7 @@ import 'screens/search/filters_screen.dart';
 import 'screens/home/customer_notifications_screen.dart';
 import 'screens/booking/booking_screen.dart';
 import 'screens/booking/my_bookings_screen.dart';
+import 'screens/booking/busy_day_calendar_screen.dart';
 import 'screens/membership/membership_screen.dart';
 import 'screens/profile/my_reviews_screen.dart';
 import 'screens/profile/membership_history_screen.dart';
@@ -63,6 +65,7 @@ import 'screens/owner/owner_attendance_tracking_screen.dart';
 import 'screens/owner/owner_notifications_screen.dart';
 import 'screens/owner/owner_pr_verification_screen.dart';
 import 'screens/owner/jobs/owner_job_postings_screen.dart';
+import 'screens/owner/owner_crowd_status_screen.dart';
 // Super Admin Portal
 import 'screens/super_admin/super_admin_shell.dart';
 
@@ -200,6 +203,7 @@ void main() {
           ChangeNotifierProvider(create: (_) => JobProvider()),
           ChangeNotifierProvider(create: (_) => JobApplicationProvider()),
           ChangeNotifierProvider(create: (_) => OwnerJobProvider()),
+          ChangeNotifierProvider(create: (_) => CrowdStatusProvider()),
         ],
         child: const GymVibeApp(),
       ),
@@ -265,6 +269,7 @@ class AppLauncher extends StatelessWidget {
             ChangeNotifierProvider(create: (_) => JobProvider()),
             ChangeNotifierProvider(create: (_) => JobApplicationProvider()),
             ChangeNotifierProvider(create: (_) => OwnerJobProvider()),
+            ChangeNotifierProvider(create: (_) => CrowdStatusProvider()),
           ],
           child: const GymVibeApp(),
         );
@@ -344,6 +349,9 @@ class _GymVibeAppState extends State<GymVibeApp> {
             case AppRoutes.booking:
               final gym = settings.arguments as GymModel;
               return MaterialPageRoute(builder: (_) => BookingScreen(gym: gym));
+            case AppRoutes.busyDayCalendar:
+              final gym = settings.arguments as GymModel;
+              return MaterialPageRoute(builder: (_) => BusyDayCalendarScreen(gym: gym));
             case AppRoutes.myBookings:
               return MaterialPageRoute(builder: (_) => const MyBookingsScreen());
             case AppRoutes.membership:
@@ -391,6 +399,9 @@ class _GymVibeAppState extends State<GymVibeApp> {
                   builder: (_) => const OwnerRegisterScreen());
             case AppRoutes.ownerPortal:
               return MaterialPageRoute(builder: (_) => const RoleGuard(routeName: AppRoutes.ownerPortal, child: OwnerNavigation()));
+            case AppRoutes.ownerCrowdStatus:
+              return MaterialPageRoute(
+                  builder: (_) => const RoleGuard(routeName: AppRoutes.ownerCrowdStatus, child: OwnerCrowdStatusScreen()));
             case AppRoutes.ownerCreateEvent:
               return MaterialPageRoute(
                   builder: (_) => const RoleGuard(routeName: AppRoutes.ownerCreateEvent, child: OwnerCreateEventScreen()));

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/app_constants.dart';
+import '../../models/booking_model.dart';
 import '../../providers/bookings_provider.dart';
 
 class MyBookingsScreen extends StatefulWidget {
@@ -16,7 +17,7 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   @override
@@ -53,41 +54,6 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
     );
   }
 
-  void _showRescheduleDialog(Map<String, dynamic> booking) {
-    // For simplicity, we just use a basic Date Picker and Time Picker
-    showDatePicker(
-      context: context,
-      initialDate: DateTime.now().add(const Duration(days: 1)),
-      firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(const Duration(days: 30)),
-    ).then((selectedDate) {
-      if (!mounted) return;
-      if (selectedDate != null) {
-        showTimePicker(
-          context: context,
-          initialTime: TimeOfDay.now(),
-        ).then((selectedTime) {
-          if (!mounted) return;
-          if (selectedTime != null) {
-            final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            final weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-            final dateStr = '${weekdays[selectedDate.weekday - 1]}, ${months[selectedDate.month - 1]} ${selectedDate.day}';
-            
-            final hour = selectedTime.hourOfPeriod == 0 ? 12 : selectedTime.hourOfPeriod;
-            final period = selectedTime.period == DayPeriod.am ? 'AM' : 'PM';
-            final timeStr = '$hour:${selectedTime.minute.toString().padLeft(2, '0')} $period';
-            
-            context.read<BookingsProvider>().rescheduleBooking(booking['id'], dateStr, timeStr);
-            
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Booking rescheduled successfully'), backgroundColor: AppColors.primary),
-            );
-          }
-        });
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,7 +61,7 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
       body: SafeArea(
         child: Column(
           children: [
-            // ─── Header ──────────────────────────────────────────────────────────
+            // ─── Header ──────────────────────────────────────────
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppPadding.md, vertical: AppPadding.sm),
               child: Row(
@@ -111,32 +77,34 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  const SizedBox(width: 48), // Spacer for centering
+                  const SizedBox(width: 48),
                 ],
               ),
             ),
 
-            // ─── Tabs ────────────────────────────────────────────────────────────
+            // ─── Tabs ────────────────────────────────────────────
             TabBar(
               controller: _tabController,
               indicatorColor: AppColors.primary,
               labelColor: AppColors.primary,
               unselectedLabelColor: AppColors.textSecondary,
               tabs: const [
-                Tab(text: 'Current'),
-                Tab(text: 'Past'),
+                Tab(text: 'Upcoming'),
+                Tab(text: 'Completed'),
+                Tab(text: 'Cancelled'),
               ],
             ),
 
-            // ─── Tab Views ───────────────────────────────────────────────────────
+            // ─── Tab Views ───────────────────────────────────────
             Expanded(
               child: Consumer<BookingsProvider>(
                 builder: (context, provider, _) {
                   return TabBarView(
                     controller: _tabController,
                     children: [
-                      _buildBookingsList(provider.upcomingBookings, isUpcoming: true),
-                      _buildBookingsList(provider.pastBookings, isUpcoming: false),
+                      _buildBookingsList(provider.upcomingBookings, BookingTab.upcoming),
+                      _buildBookingsList(provider.completedBookings, BookingTab.completed),
+                      _buildBookingsList(provider.cancelledBookings, BookingTab.cancelled),
                     ],
                   );
                 },
@@ -148,29 +116,67 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
     );
   }
 
-  Widget _buildBookingsList(List<Map<String, dynamic>> bookings, {required bool isUpcoming}) {
+  Widget _buildBookingsList(List<BookingModel> bookings, BookingTab tab) {
     if (bookings.isEmpty) {
       return Center(
-        child: Text(
-          isUpcoming ? 'No current bookings.' : 'No past bookings.',
-          style: const TextStyle(color: AppColors.textSecondary),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              tab == BookingTab.upcoming
+                  ? Icons.event_available_rounded
+                  : tab == BookingTab.completed
+                      ? Icons.check_circle_outline_rounded
+                      : Icons.cancel_outlined,
+              size: 48,
+              color: AppColors.textMuted,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              tab == BookingTab.upcoming
+                  ? 'No upcoming bookings.'
+                  : tab == BookingTab.completed
+                      ? 'No completed bookings.'
+                      : 'No cancelled bookings.',
+              style: const TextStyle(color: AppColors.textSecondary),
+            ),
+          ],
         ),
       );
     }
 
     return ListView.builder(
       padding: const EdgeInsets.all(AppPadding.md),
-      itemCount: bookings.length,
+      itemCount: bookings.length + 1, // +1 for the info notice at the bottom
       itemBuilder: (context, index) {
+        if (index == bookings.length) {
+          return const Padding(
+            padding: EdgeInsets.only(top: 8, bottom: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.info_outline_rounded, size: 14, color: AppColors.textMuted),
+                SizedBox(width: 6),
+                Text(
+                  'All bookings are for one day only.',
+                  style: TextStyle(fontSize: 12, color: AppColors.textMuted),
+                ),
+              ],
+            ),
+          );
+        }
         final booking = bookings[index];
-        return _buildBookingCard(context, booking, isUpcoming);
+        return _buildBookingCard(booking, tab);
       },
     );
   }
 
-  Widget _buildBookingCard(BuildContext context, Map<String, dynamic> booking, bool isUpcoming) {
-    final statusColor = isUpcoming ? AppColors.primary : AppColors.textSecondary;
-    final displayDate = '${booking['dateStr']} at ${booking['time']}';
+  Widget _buildBookingCard(BookingModel booking, BookingTab tab) {
+    final statusColor = tab == BookingTab.upcoming
+        ? AppColors.primary
+        : tab == BookingTab.completed
+            ? AppColors.textSecondary
+            : AppColors.error;
 
     return Container(
       margin: const EdgeInsets.only(bottom: AppPadding.md),
@@ -183,27 +189,66 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // ─── Header Row ────────────────────────────────────
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                booking['type'] ?? 'Session',
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primary,
+              // Gym image thumbnail
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: booking.gymImageUrl.isNotEmpty
+                    ? Image.network(
+                        booking.gymImageUrl,
+                        width: 52,
+                        height: 52,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Container(
+                          width: 52,
+                          height: 52,
+                          color: AppColors.surfaceElevated,
+                          child: const Icon(Icons.fitness_center_rounded,
+                              color: AppColors.primary, size: 24),
+                        ),
+                      )
+                    : Container(
+                        width: 52,
+                        height: 52,
+                        color: AppColors.surfaceElevated,
+                        child: const Icon(Icons.fitness_center_rounded,
+                            color: AppColors.primary, size: 24),
+                      ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      booking.gymName,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      _formatBookingDate(booking.bookingDate),
+                      style: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                    ),
+                  ],
                 ),
               ),
+              // Status badge
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: statusColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(AppRadius.full),
                 ),
                 child: Text(
-                  booking['status'] ?? 'Confirmed',
+                  booking.status,
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 11,
                     fontWeight: FontWeight.bold,
                     color: statusColor,
                   ),
@@ -211,61 +256,81 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
               ),
             ],
           ),
-          const SizedBox(height: 8),
-          Text(
-            booking['gymName'] ?? 'Gym',
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
-            ),
-          ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 14),
+          const Divider(color: AppColors.border, height: 1),
+          const SizedBox(height: 14),
+
+          // ─── Details ───────────────────────────────────────
           Row(
             children: [
-              const Icon(Icons.calendar_today_rounded, size: 16, color: AppColors.textSecondary),
+              const Icon(Icons.access_time_rounded, size: 15, color: AppColors.textSecondary),
               const SizedBox(width: 8),
               Text(
-                displayDate,
+                booking.timeSlotDisplay,
+                style: const TextStyle(fontSize: 13, color: AppColors.textPrimary),
+              ),
+              const Spacer(),
+              Text(
+                booking.price,
                 style: const TextStyle(
-                  fontSize: 14,
-                  color: AppColors.textSecondary,
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primary,
                 ),
               ),
             ],
           ),
-          if (isUpcoming) ...[
-            const SizedBox(height: 16),
-            const Divider(color: AppColors.border),
+
+          if (booking.refNo.isNotEmpty) ...[
             const SizedBox(height: 8),
             Row(
               children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => _showRescheduleDialog(booking),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.textPrimary,
-                      side: const BorderSide(color: AppColors.border),
-                    ),
-                    child: const Text('Reschedule'),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => _showCancelDialog(booking['id']),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.error,
-                      side: const BorderSide(color: AppColors.error),
-                    ),
-                    child: const Text('Cancel'),
-                  ),
+                const Icon(Icons.tag_rounded, size: 15, color: AppColors.textMuted),
+                const SizedBox(width: 8),
+                Text(
+                  'Ref. No.  ${booking.refNo}',
+                  style: const TextStyle(fontSize: 11, color: AppColors.textMuted),
                 ),
               ],
-            )
-          ]
+            ),
+          ],
+
+          // ─── Cancel Button (upcoming only) ─────────────────
+          if (tab == BookingTab.upcoming) ...[
+            const SizedBox(height: 14),
+            const Divider(color: AppColors.border, height: 1),
+            const SizedBox(height: 10),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: () => _showCancelDialog(booking.id),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.error,
+                  side: const BorderSide(color: AppColors.error),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text('Cancel Booking'),
+              ),
+            ),
+          ],
         ],
       ),
     );
   }
+
+  String _formatBookingDate(String dateStr) {
+    try {
+      final date = DateTime.parse(dateStr);
+      const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      return '${weekdays[date.weekday - 1]}, ${months[date.month - 1]} ${date.day}, ${date.year}';
+    } catch (_) {
+      return dateStr;
+    }
+  }
 }
+
+enum BookingTab { upcoming, completed, cancelled }

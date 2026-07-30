@@ -5,6 +5,7 @@ import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
 import '../../providers/events_provider.dart';
 import '../../providers/promotions_provider.dart';
+import 'owner_crowd_status_screen.dart';
 
 class OwnerAnalyticsScreen extends StatefulWidget {
   const OwnerAnalyticsScreen({super.key});
@@ -19,9 +20,42 @@ class _OwnerAnalyticsScreenState extends State<OwnerAnalyticsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Consumer4<AuthProvider, GymProvider, EventsProvider, PromotionsProvider>(
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: AppColors.background,
+          elevation: 0,
+          leading: Navigator.canPop(context) ? IconButton(
+            icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
+            onPressed: () => Navigator.pop(context),
+          ) : null,
+          title: const Text('Analytics & Status', style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+          centerTitle: true,
+          bottom: const TabBar(
+            indicatorColor: AppColors.primary,
+            labelColor: AppColors.primary,
+            unselectedLabelColor: AppColors.textSecondary,
+            tabs: [
+              Tab(text: 'Analytics'),
+              Tab(text: 'Crowd Status'),
+            ],
+          ),
+        ),
+        body: SafeArea(
+          child: TabBarView(
+            children: [
+              _buildAnalyticsTab(),
+              const OwnerCrowdStatusScreen(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAnalyticsTab() {
+    return Consumer4<AuthProvider, GymProvider, EventsProvider, PromotionsProvider>(
           builder: (context, auth, gymProv, eventsProv, promoProv, _) {
             if (gymProv.isLoading) {
               return const Center(
@@ -88,24 +122,8 @@ class _OwnerAnalyticsScreenState extends State<OwnerAnalyticsScreen> {
               children: [
                 // ── Header ──────────────────────────────────────────────
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Row(
-                      children: [
-                        if (Navigator.canPop(context)) ...[
-                          IconButton(
-                            icon: const Icon(Icons.arrow_back_rounded),
-                            onPressed: () => Navigator.pop(context),
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(),
-                          ),
-                          const SizedBox(width: 12),
-                        ],
-                        const Text('Analytics',
-                            style: TextStyle(
-                                fontSize: 22, fontWeight: FontWeight.bold)),
-                      ],
-                    ),
                     Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 6),
@@ -218,9 +236,7 @@ class _OwnerAnalyticsScreenState extends State<OwnerAnalyticsScreen> {
               ],
             );
           },
-        ),
-      ),
-    );
+        );
   }
 
   Widget _buildMetricRow(Map<String, dynamic> metric) {

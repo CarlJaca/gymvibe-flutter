@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class GymModel {
   final String id;
   final String? ownerId;
@@ -28,6 +30,12 @@ class GymModel {
   final Map<String, String> dailySchedule;
   final Map<String, String> socials;
   final Map<String, double> ratingBreakdown;
+  // ── Crowd Status Fields ──
+  final int capacity;
+  final String? currentLiveStatus;
+  final DateTime? statusUpdatedAt;
+  final List<Map<String, String>> availableTimeSlots;
+  final List<String> blockedDates;
 
   GymModel({
     required this.id,
@@ -59,6 +67,11 @@ class GymModel {
     this.dailySchedule = const {},
     this.socials = const {},
     this.ratingBreakdown = const {},
+    this.capacity = 40,
+    this.currentLiveStatus,
+    this.statusUpdatedAt,
+    this.availableTimeSlots = const [],
+    this.blockedDates = const [],
   });
 
   GymModel copyWith({
@@ -91,6 +104,11 @@ class GymModel {
     Map<String, String>? dailySchedule,
     Map<String, String>? socials,
     Map<String, double>? ratingBreakdown,
+    int? capacity,
+    String? currentLiveStatus,
+    DateTime? statusUpdatedAt,
+    List<Map<String, String>>? availableTimeSlots,
+    List<String>? blockedDates,
   }) {
     return GymModel(
       id: id ?? this.id,
@@ -122,6 +140,11 @@ class GymModel {
       dailySchedule: dailySchedule ?? this.dailySchedule,
       socials: socials ?? this.socials,
       ratingBreakdown: ratingBreakdown ?? this.ratingBreakdown,
+      capacity: capacity ?? this.capacity,
+      currentLiveStatus: currentLiveStatus ?? this.currentLiveStatus,
+      statusUpdatedAt: statusUpdatedAt ?? this.statusUpdatedAt,
+      availableTimeSlots: availableTimeSlots ?? this.availableTimeSlots,
+      blockedDates: blockedDates ?? this.blockedDates,
     );
   }
 
@@ -156,6 +179,11 @@ class GymModel {
       'dailySchedule': dailySchedule,
       'socials': socials,
       'ratingBreakdown': ratingBreakdown,
+      'capacity': capacity,
+      'currentLiveStatus': currentLiveStatus,
+      'statusUpdatedAt': statusUpdatedAt != null ? Timestamp.fromDate(statusUpdatedAt!) : null,
+      'availableTimeSlots': availableTimeSlots,
+      'blockedDates': blockedDates,
     };
   }
 
@@ -190,6 +218,17 @@ class GymModel {
       dailySchedule: Map<String, String>.from(json['dailySchedule'] ?? {}),
       socials: Map<String, String>.from(json['socials'] ?? {}),
       ratingBreakdown: Map<String, double>.from((json['ratingBreakdown'] as Map<String, dynamic>?)?.map((k, v) => MapEntry(k, (v as num).toDouble())) ?? {}),
+      capacity: json['capacity'] ?? 40,
+      currentLiveStatus: json['currentLiveStatus'],
+      statusUpdatedAt: json['statusUpdatedAt'] != null
+          ? (json['statusUpdatedAt'] is Timestamp
+              ? (json['statusUpdatedAt'] as Timestamp).toDate()
+              : DateTime.tryParse(json['statusUpdatedAt'].toString()))
+          : null,
+      availableTimeSlots: (json['availableTimeSlots'] as List<dynamic>?)
+          ?.map((e) => Map<String, String>.from(e as Map))
+          .toList() ?? [],
+      blockedDates: List<String>.from(json['blockedDates'] ?? []),
     );
   }
 }

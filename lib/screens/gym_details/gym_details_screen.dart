@@ -8,6 +8,8 @@ import '../../core/constants/app_constants.dart';
 import '../../core/routes/app_router.dart';
 import '../../models/gym_model.dart';
 import '../../providers/gym_provider.dart';
+import '../../providers/crowd_status_provider.dart';
+import '../../services/crowd_service.dart';
 import '../../widgets/star_rating.dart';
 import '../../widgets/rating_progress_bar.dart';
 import '../../widgets/review_card.dart';
@@ -35,6 +37,8 @@ class GymDetailsScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildTagsSection(),
+                      const SizedBox(height: AppPadding.xl),
+                      _buildTodaysCrowdSection(context),
                       const SizedBox(height: AppPadding.xl),
                       _buildFacilitiesSection(),
                       const SizedBox(height: AppPadding.xl),
@@ -196,6 +200,155 @@ class GymDetailsScreen extends StatelessWidget {
     );
   }
 
+  // ─── Today's Crowd Section ────────────────────────────────────────────────────
+  Widget _buildTodaysCrowdSection(BuildContext context) {
+    return Consumer<CrowdStatusProvider>(
+      builder: (context, crowdProv, _) {
+        final now = DateTime.now();
+        final dateStr = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+        
+        final dayCount = crowdProv.getBookingCount(dateStr);
+        final estimatedLevel = CrowdService.calculateCrowdLevel(dayCount, gym.capacity);
+        
+        final liveStatus = gym.currentLiveStatus;
+        final liveLevel = CrowdService.liveStatusToCrowdLevel(liveStatus);
+        final updatedAt = gym.statusUpdatedAt;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Today\'s Crowd',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary)),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.surfaceElevated,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('Estimated from bookings',
+                                style: TextStyle(fontSize: 11, color: AppColors.textSecondary)),
+                            const SizedBox(height: 6),
+                            _buildCrowdBadge(estimatedLevel),
+                          ],
+                        ),
+                      ),
+                      if (liveLevel != null)
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text('Live status (by owner)',
+                                  style: TextStyle(fontSize: 11, color: AppColors.textSecondary)),
+                              const SizedBox(height: 6),
+                              _buildCrowdBadge(liveLevel),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '$dayCount / ${gym.capacity} bookings',
+                    style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
+                  ),
+                  if (updatedAt != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      'Updated ${_timeAgoStr(updatedAt)}',
+                      style: const TextStyle(fontSize: 11, color: AppColors.textMuted),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  Navigator.pushNamed(context, AppRoutes.busyDayCalendar, arguments: gym);
+                },
+                icon: const Icon(Icons.calendar_month_rounded, size: 18, color: AppColors.primary),
+                label: const Text('View Busy Day Calendar', style: TextStyle(color: AppColors.primary)),
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: AppColors.primary),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildCrowdBadge(CrowdLevel level) {
+    Color color;
+    switch (level) {
+      case CrowdLevel.low:
+        color = const Color(0xFF4CAF50);
+        break;
+      case CrowdLevel.moderate:
+        color = const Color(0xFFFFCA28);
+        break;
+      case CrowdLevel.busy:
+        color = const Color(0xFFFF9800);
+        break;
+      case CrowdLevel.veryBusy:
+        color = const Color(0xFFF44336);
+        break;
+    }
+    
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(AppRadius.full),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+          ),
+          const SizedBox(width: 6),
+          Text(
+            CrowdService.crowdLevelLabel(level),
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: color,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _timeAgoStr(DateTime dateTime) {
+    final diff = DateTime.now().difference(dateTime);
+    if (diff.inMinutes < 1) return 'just now';
+    if (diff.inMinutes < 60) return '${diff.inMinutes} min ago';
+    if (diff.inHours < 24) return '${diff.inHours} hours ago';
+    return '${diff.inDays} days ago';
+  }
+
   // ─── 2b. Facilities Section ───────────────────────────────────────────────────
   Widget _buildFacilitiesSection() {
     if (gym.facilities.isEmpty) return const SizedBox.shrink();
@@ -238,6 +391,28 @@ class GymDetailsScreen extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 color: AppColors.primary)),
         const SizedBox(height: 12),
+        // One-Day Booking Only Info Card
+        Container(
+          padding: const EdgeInsets.all(12),
+          margin: const EdgeInsets.only(bottom: 16),
+          decoration: BoxDecoration(
+            color: AppColors.primary.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+          ),
+          child: const Row(
+            children: [
+              Icon(Icons.event_available_rounded, color: AppColors.primary, size: 20),
+              SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  'Bookings are for one day only per time slot.',
+                  style: TextStyle(color: AppColors.textPrimary, fontSize: 13, fontWeight: FontWeight.w500),
+                ),
+              ),
+            ],
+          ),
+        ),
         if (gym.sessionPrice.isNotEmpty) ...[
           Text(
             'Session Pass: ${gym.sessionPrice}',
