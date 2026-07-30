@@ -13,6 +13,51 @@ class PromotionsProvider extends ChangeNotifier {
   int get loyaltyPoints => _loyaltyPoints;
   String get loyaltyLevel => _loyaltyLevel;
 
+  Future<void> _seedInitialPromotions() async {
+    final defaultPromotions = [
+      {
+        'id': 'p1',
+        'gymId': 'gym1', // From mock gyms
+        'title': '50% Off Annual Membership',
+        'dates': 'Valid until Aug 31',
+        'type': 'discount',
+        'value': 50,
+        'reach': 1200,
+        'redemptions': 45,
+        'color': const Color(0xFF00C853).toARGB32(), // Green
+        'status': 'Active',
+      },
+      {
+        'id': 'p2',
+        'gymId': 'gym1', // From mock gyms
+        'title': 'Free Personal Training Session',
+        'dates': 'Valid until Sep 15',
+        'type': 'freebie',
+        'value': 0,
+        'reach': 850,
+        'redemptions': 12,
+        'color': const Color(0xFF2962FF).toARGB32(), // Blue
+        'status': 'Active',
+      },
+      {
+        'id': 'p3',
+        'gymId': 'gym2', // From mock gyms
+        'title': 'Bring a Friend for Free',
+        'dates': 'Weekends only',
+        'type': 'bogo',
+        'value': 0,
+        'reach': 2100,
+        'redemptions': 89,
+        'color': const Color(0xFFAA00FF).toARGB32(), // Purple
+        'status': 'Active',
+      },
+    ];
+
+    for (var p in defaultPromotions) {
+      await _firestore.collection('promotions').doc(p['id'] as String).set(p);
+    }
+  }
+
   // ─── State ────────────────────────────────────────────────────────
   List<Map<String, dynamic>> _active = [];
   final List<Map<String, dynamic>> _myClaimed = [];
@@ -42,13 +87,17 @@ class PromotionsProvider extends ChangeNotifier {
       _promotionsSubscription = _firestore.collection('promotions').snapshots().listen(
         (snapshot) {
           try {
-            _active = snapshot.docs.map((doc) {
-              final safeData = Map<String, dynamic>.from(doc.data());
-              if (safeData['color'] is int) {
-                safeData['color'] = Color(safeData['color'] as int);
-              }
-              return safeData;
-            }).toList();
+            if (snapshot.docs.isEmpty) {
+              _seedInitialPromotions();
+            } else {
+              _active = snapshot.docs.map((doc) {
+                final safeData = Map<String, dynamic>.from(doc.data());
+                if (safeData['color'] is int) {
+                  safeData['color'] = Color(safeData['color'] as int);
+                }
+                return safeData;
+              }).toList();
+            }
           } catch (e, stack) {
             debugPrint('Error processing promotions snapshot: $e');
             debugPrint(stack.toString());

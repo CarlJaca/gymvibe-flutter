@@ -36,9 +36,13 @@ class EventsProvider extends ChangeNotifier {
         (snapshot) {
           try {
             _allEvents.clear();
-            _allEvents.addAll(snapshot.docs
-                .map((doc) => Map<String, dynamic>.from(doc.data()))
-                .toList());
+            if (snapshot.docs.isEmpty) {
+              _seedInitialEvents();
+            } else {
+              _allEvents.addAll(snapshot.docs
+                  .map((doc) => Map<String, dynamic>.from(doc.data()))
+                  .toList());
+            }
           } catch (e, stack) {
             debugPrint('Error processing events snapshot: $e');
             debugPrint(stack.toString());
@@ -67,6 +71,61 @@ class EventsProvider extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  Future<void> _seedInitialEvents() async {
+    final defaultEvents = [
+      {
+        'id': 'e1',
+        'gymId': 'gym1', // From mock gyms
+        'title': 'Summer Shred Challenge',
+        'category': 'Workout',
+        'date': 'Aug 15, 2026',
+        'time': '09:00 AM',
+        'location': 'Iron Temple - Main Area',
+        'distance': '1.2 km away',
+        'image': 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=2070',
+        'organizer': 'Iron Temple',
+        'organizerLogo': 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070',
+        'price': 'Free',
+        'registeredCount': 45,
+        'capacity': 50,
+        'description': 'Join our intensive 4-week summer shred challenge. Push your limits and achieve your best physique with our top trainers.',
+        'status': 'Upcoming',
+        'isFeatured': true,
+        'isSaved': false,
+        'hasReminder': false,
+        'interested': 120,
+      },
+      {
+        'id': 'e2',
+        'gymId': 'gym2', // From mock gyms
+        'title': 'Yoga Retreat Weekend',
+        'category': 'Wellness',
+        'date': 'Sep 05, 2026',
+        'time': '10:00 AM',
+        'location': 'Zenith Fitness - Studio 1',
+        'distance': '3.5 km away',
+        'image': 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=2120',
+        'organizer': 'Zenith Fitness',
+        'organizerLogo': 'https://images.unsplash.com/photo-1518611012118-696072aa579a?q=80&w=2070',
+        'price': '\$49.99',
+        'registeredCount': 12,
+        'capacity': 20,
+        'description': 'A weekend of relaxation, meditation, and deep stretching. Perfect for all levels to de-stress and reconnect.',
+        'status': 'Upcoming',
+        'isFeatured': false,
+        'isSaved': false,
+        'hasReminder': false,
+        'interested': 45,
+      },
+    ];
+
+    for (var e in defaultEvents) {
+      await _firestore.collection('events').doc(e['id'] as String).set(e);
+    }
+    
+    // It will be read back by snapshots()
   }
 
   // ─── Methods ────────────────────────────────────────────────────────
