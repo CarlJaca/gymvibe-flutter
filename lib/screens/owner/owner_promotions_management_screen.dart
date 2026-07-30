@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/app_constants.dart';
 import '../../providers/promotions_provider.dart';
+import '../../providers/gym_provider.dart';
 import '../../core/routes/app_router.dart';
 import 'owner_promotion_detail_screen.dart';
 
