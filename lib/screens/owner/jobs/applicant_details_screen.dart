@@ -371,7 +371,7 @@ class _ApplicantDetailsScreenState extends State<ApplicantDetailsScreen> {
                 child: TextField(
                   controller: _noteController,
                   maxLines: 3,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: 'Add private notes about this applicant...',
                     border: InputBorder.none,
                     enabledBorder: InputBorder.none,

@@ -525,32 +525,10 @@ class _MatchesScreenState extends State<MatchesScreen> {
             // Info section
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                padding: const EdgeInsets.fromLTRB(12, 10, 80, 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Match badge + heart
-                    Row(
-                      children: [
-                        const Spacer(),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                          decoration: BoxDecoration(
-                            color: _matchColor(matchPct).withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(AppRadius.full),
-                          ),
-                          child: Text(
-                            '$matchPct% Match',
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                              color: _matchColor(matchPct),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
                     // Gym name
                     Text(
                       gym.name,
@@ -601,17 +579,6 @@ class _MatchesScreenState extends State<MatchesScreen> {
                           ' (${gym.reviewCount})',
                           style: const TextStyle(fontSize: 11, color: AppColors.textSecondary),
                         ),
-                        const Spacer(),
-                        GestureDetector(
-                          onTap: () {
-                            context.read<GymProvider>().toggleFavorite(gym.id);
-                          },
-                          child: Icon(
-                            gym.isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                            color: gym.isFavorite ? Colors.red : AppColors.textMuted,
-                            size: 20,
-                          ),
-                        ),
                       ],
                     ),
                     const SizedBox(height: 8),
@@ -649,31 +616,67 @@ class _MatchesScreenState extends State<MatchesScreen> {
           ], // Closes Row's children
         ), // Closes Row
       ), // Closes InkWell
-          // ── Compare Checkbox ──
+          // ── Right Side Actions ──
           Positioned(
+            top: 10,
             bottom: 12,
             right: 12,
-            child: GestureDetector(
-              onTap: () => _toggleGymSelection(gym.id),
-              child: Container(
-                width: 28,
-                height: 28,
-                decoration: BoxDecoration(
-                  color: _selectedGymIds.contains(gym.id)
-                      ? AppColors.primary
-                      : AppColors.surface.withValues(alpha: 0.8),
-                  borderRadius: BorderRadius.circular(6),
-                  border: Border.all(
-                    color: _selectedGymIds.contains(gym.id)
-                        ? AppColors.primary
-                        : AppColors.border,
-                    width: 1.5,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                // Match badge
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: _matchColor(matchPct).withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(AppRadius.full),
+                  ),
+                  child: Text(
+                    '$matchPct% Match',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: _matchColor(matchPct),
+                    ),
                   ),
                 ),
-                child: _selectedGymIds.contains(gym.id)
-                    ? const Icon(Icons.check_rounded, color: Colors.white, size: 18)
-                    : null,
-              ),
+                const SizedBox(height: 12),
+                // Heart
+                GestureDetector(
+                  onTap: () {
+                    context.read<GymProvider>().toggleFavorite(gym.id);
+                  },
+                  child: Icon(
+                    gym.isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                    color: gym.isFavorite ? Colors.red : AppColors.textMuted,
+                    size: 20,
+                  ),
+                ),
+                const Spacer(),
+                // Compare Checkbox
+                GestureDetector(
+                  onTap: () => _toggleGymSelection(gym.id),
+                  child: Container(
+                    width: 28,
+                    height: 28,
+                    decoration: BoxDecoration(
+                      color: _selectedGymIds.contains(gym.id)
+                          ? AppColors.primary
+                          : AppColors.surface.withValues(alpha: 0.8),
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(
+                        color: _selectedGymIds.contains(gym.id)
+                            ? AppColors.primary
+                            : AppColors.border,
+                        width: 1.5,
+                      ),
+                    ),
+                    child: _selectedGymIds.contains(gym.id)
+                        ? const Icon(Icons.check_rounded, color: Colors.white, size: 18)
+                        : null,
+                  ),
+                ),
+              ],
             ),
           ),
         ], // Closes Stack's children
