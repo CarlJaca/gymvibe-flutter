@@ -272,8 +272,8 @@ class _BookingScreenState extends State<BookingScreen> {
                         color: AppColors.surfaceElevated,
                         borderRadius: BorderRadius.circular(14),
                       ),
-                      child: Row(
-                        children: const [
+                      child: const Row(
+                        children: [
                           Icon(Icons.lightbulb_outline_rounded,
                               color: AppColors.star, size: 20),
                           SizedBox(width: 10),
@@ -978,10 +978,6 @@ class _BookingScreenState extends State<BookingScreen> {
     return '${diff.inDays} days ago';
   }
 
-  String _getWeekdayAbbr(int day) {
-    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    return days[day - 1];
-  }
 
   String _getFullWeekday(int day) {
     const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];

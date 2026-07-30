@@ -8,8 +8,8 @@ class CrowdStatusProvider extends ChangeNotifier {
   final CrowdService _crowdService = CrowdService.instance;
 
   // ─── State ────────────────────────────────────────────────────────────
-  Map<String, int> _dailyBookingCounts = {}; // date -> count
-  Map<String, Map<String, int>> _slotBookingCounts = {}; // date -> {slot -> count}
+  final Map<String, int> _dailyBookingCounts = {}; // date -> count
+  final Map<String, Map<String, int>> _slotBookingCounts = {}; // date -> {slot -> count}
   bool _isLoading = false;
 
   Map<String, int> get dailyBookingCounts => _dailyBookingCounts;

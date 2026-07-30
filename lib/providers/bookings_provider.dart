@@ -51,7 +51,7 @@ class BookingsProvider extends ChangeNotifier {
 
       for (var doc in snapshot.docs) {
         final booking = BookingModel.fromJson(
-          doc.data() as Map<String, dynamic>,
+          doc.data(),
           doc.id,
         );
 
