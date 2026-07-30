@@ -379,7 +379,7 @@ class _ApplicantDetailsScreenState extends State<ApplicantDetailsScreen> {
                     errorBorder: InputBorder.none,
                     disabledBorder: InputBorder.none,
                     contentPadding:
-                        EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     suffixIcon: IconButton(
                       icon: _isSavingNote
                           ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))

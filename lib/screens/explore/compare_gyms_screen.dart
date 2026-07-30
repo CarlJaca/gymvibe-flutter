@@ -179,10 +179,11 @@ class CompareGymsScreen extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
-            ),
+            ), // Closes Column
           ), // Closes Padding
           ); // Closes Expanded
-        }).toList(),
+        }),
+        ],
       ),
     );
   }

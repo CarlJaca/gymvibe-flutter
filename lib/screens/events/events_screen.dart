@@ -77,18 +77,18 @@ class _EventsScreenState extends State<EventsScreen> {
                         borderRadius: BorderRadius.circular(AppRadius.lg),
                         border: Border.all(color: AppColors.border),
                       ),
-                      child: TextField(
+                      child: const TextField(
                         decoration: InputDecoration(
                           hintText: 'Search events...',
-                          hintStyle: const TextStyle(color: AppColors.textMuted, fontSize: 14),
+                          hintStyle: TextStyle(color: AppColors.textMuted, fontSize: 14),
                           border: InputBorder.none,
                           enabledBorder: InputBorder.none,
                           focusedBorder: InputBorder.none,
                           errorBorder: InputBorder.none,
                           disabledBorder: InputBorder.none,
-                          icon: const Icon(Icons.search_rounded, color: AppColors.textMuted, size: 20),
+                          icon: Icon(Icons.search_rounded, color: AppColors.textMuted, size: 20),
                         ),
-                        style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
+                        style: TextStyle(color: AppColors.textPrimary, fontSize: 14),
                       ),
                     ),
                   ),
