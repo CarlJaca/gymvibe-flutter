@@ -36,10 +36,6 @@ service cloud.firestore {
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'super_admin';
     }
 
-    // ═══════════════════════════════════════════════════════════════════
-    // Users Collection
-    // ═══════════════════════════════════════════════════════════════════
-
     /// Returns true if the authenticated user owns the gym with the given id.
     function isGymOwnerOfBookingGym(gymId) {
       return isAuthenticated() &&
@@ -47,9 +43,13 @@ service cloud.firestore {
         get(/databases/$(database)/documents/gyms/$(gymId)).data.ownerId == request.auth.uid;
     }
 
+    // ═══════════════════════════════════════════════════════════════════
+    // Users Collection
+    // ═══════════════════════════════════════════════════════════════════
+
     match /users/{userId} {
-      // Users can only read their own profile
-      allow read: if isOwnerOf(userId);
+      // Any authenticated user can view public user profiles (for reviews, comments, community)
+      allow read: if isAuthenticated();
 
       // Users can create their own profile during registration
       allow create: if isOwnerOf(userId)
@@ -62,6 +62,16 @@ service cloud.firestore {
 
       // Users cannot delete their own profile (admin-only operation)
       allow delete: if false;
+
+      // User notifications subcollection
+      match /notifications/{notificationId} {
+        allow read, write: if isAuthenticated();
+      }
+
+      // User's personal workout calendar
+      match /workoutCalendar/{dateKey} {
+        allow read, write: if isOwnerOf(userId);
+      }
     }
 
     // ═══════════════════════════════════════════════════════════════════
@@ -77,14 +87,20 @@ service cloud.firestore {
         && request.resource.data.ownerId == request.auth.uid
         && isValidString(request.resource.data.name, 2, 100);
 
-      // Only the gym's owner can update it
-      allow update: if isAuthenticated()
-        && resource.data.ownerId == request.auth.uid
-        && request.resource.data.ownerId == resource.data.ownerId;
+      // Gym owners can update their gym; authenticated users can submit reviews / ratings
+      allow update: if isAuthenticated() && (
+        resource.data.ownerId == request.auth.uid ||
+        request.resource.data.diff(resource.data).affectedKeys().hasAny(['reviews', 'rating', 'reviewCount'])
+      );
 
       // Only the gym's owner can delete it
       allow delete: if isAuthenticated()
         && resource.data.ownerId == request.auth.uid;
+
+      // Personal Records / Leaderboard under a gym
+      match /personalRecords/{recordId} {
+        allow read, write: if isAuthenticated();
+      }
     }
 
     // ═══════════════════════════════════════════════════════════════════
@@ -104,8 +120,7 @@ service cloud.firestore {
 
       // Booking owner can update (e.g., cancel) but can NOT touch paymentStatus.
       // The gym owner of the booking's gym can ONLY change paymentStatus
-      // (Verified / Rejected / Pending). Super admins are covered by the
-      // global admin rule at the bottom of this file.
+      // (Verified / Rejected / Pending). Super admins are covered by global rule.
       allow update: if isAuthenticated() && (
         (
           resource.data.userId == request.auth.uid
@@ -131,7 +146,7 @@ service cloud.firestore {
     // Events Collection
     // ═══════════════════════════════════════════════════════════════════
 
-        match /events/{eventId} {
+    match /events/{eventId} {
       allow read, write: if isAuthenticated();
     }
 
@@ -140,32 +155,33 @@ service cloud.firestore {
     // ═══════════════════════════════════════════════════════════════════
 
     match /communities/{communityId} {
-      // Anyone authenticated can read communities
       allow read: if isAuthenticated();
-
-      // Only gym owners or super admins can create communities
-      allow create: if isGymOwner() || isSuperAdmin();
-
-      // Only the creator can update or delete
-      allow update, delete: if isAuthenticated()
-        && resource.data.createdBy == request.auth.uid;
+      allow create, update, delete: if isGymOwner() || isSuperAdmin();
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // Posts Collection (Community Posts)
+    // Posts Collection (Community Posts) & Comments
     // ═══════════════════════════════════════════════════════════════════
 
     match /posts/{postId} {
-      // Anyone authenticated can read posts
       allow read: if isAuthenticated();
 
-      // Authenticated users can create posts
       allow create: if isAuthenticated()
         && request.resource.data.userId == request.auth.uid;
 
-      // Only the post author can update or delete
-      allow update, delete: if isAuthenticated()
+      // Author can edit; other users can like/unlike or update comment counts
+      allow update: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid ||
+        request.resource.data.diff(resource.data).affectedKeys().hasAny(['likedBy', 'likeCount', 'commentsCount'])
+      );
+
+      allow delete: if isAuthenticated()
         && resource.data.userId == request.auth.uid;
+
+      // Comments subcollection
+      match /comments/{commentId} {
+        allow read, write: if isAuthenticated();
+      }
     }
 
     // ═══════════════════════════════════════════════════════════════════
@@ -173,96 +189,96 @@ service cloud.firestore {
     // ═══════════════════════════════════════════════════════════════════
 
     match /promotions/{promotionId} {
-      // Anyone authenticated can read promotions
       allow read: if isAuthenticated();
-
-      // Authenticated users can create promotions (includes seeding + gym owners)
-      allow create: if isAuthenticated();
-
-      // Any authenticated user can update (claim / save).
-      // Gym owners can also update their own promotions' details.
-      allow update: if isAuthenticated();
-
-      // Only gym owners can delete promotions
-      allow delete: if isGymOwner();
+      allow create, update: if isAuthenticated();
+      allow delete: if isGymOwner() || isSuperAdmin();
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // Personal Records (Gym Leaderboard)
+    // Job Postings (supports both camelCase and snake_case)
     // ═══════════════════════════════════════════════════════════════════
 
-    match /gyms/{gymId}/personalRecords/{recordId} {
-      // Any authenticated user can read records (for leaderboard display)
+    match /jobPostings/{jobId} {
       allow read: if isAuthenticated();
-
-      // Users can submit their own records (must be pending)
-      allow create: if isAuthenticated()
-        && request.resource.data.userId == request.auth.uid
-        && request.resource.data.status == 'pending';
-
-      // Only the gym owner can verify/reject records (update status)
-      allow update: if isAuthenticated()
-        && exists(/databases/$(database)/documents/gyms/$(gymId))
-        && get(/databases/$(database)/documents/gyms/$(gymId)).data.ownerId == request.auth.uid;
-
-      // Only the submitter can delete their own record
-      allow delete: if isAuthenticated()
-        && resource.data.userId == request.auth.uid;
+      allow create: if isGymOwner() && request.resource.data.ownerId == request.auth.uid;
+      allow update, delete: if isAuthenticated() && resource.data.ownerId == request.auth.uid;
     }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // Workout Calendar (User's personal calendar)
-    // ═══════════════════════════════════════════════════════════════════
-
-    match /users/{userId}/workoutCalendar/{dateKey} {
-      // Only the user can read/write their own calendar
-      allow read, write: if isOwnerOf(userId);
-    }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // Job Postings
-    // ═══════════════════════════════════════════════════════════════════
 
     match /job_postings/{jobId} {
-      // Anyone authenticated can read job postings
       allow read: if isAuthenticated();
-      
-      // Only gym owners can create job postings
-      allow create: if isGymOwner() 
-        && request.resource.data.ownerId == request.auth.uid;
-        
-      // Only the gym owner who created the job can update or delete
-      allow update, delete: if isAuthenticated() 
-        && resource.data.ownerId == request.auth.uid;
+      allow create: if isGymOwner() && request.resource.data.ownerId == request.auth.uid;
+      allow update, delete: if isAuthenticated() && resource.data.ownerId == request.auth.uid;
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // Job Applications
+    // Job Applications (supports both camelCase and snake_case)
     // ═══════════════════════════════════════════════════════════════════
 
-    match /job_applications/{applicationId} {
-      // Applicant can read their own applications.
-      // Gym owner can read applications for their jobs.
+    match /jobApplications/{applicationId} {
       allow read: if isAuthenticated() && (
         resource.data.applicantId == request.auth.uid ||
         resource.data.ownerId == request.auth.uid
       );
-      
-      // Applicants can create applications
       allow create: if isAuthenticated() 
         && request.resource.data.applicantId == request.auth.uid;
-        
-      // Both applicant and gym owner can update applications (for status changes)
       allow update: if isAuthenticated() && (
         resource.data.applicantId == request.auth.uid ||
         resource.data.ownerId == request.auth.uid
       );
-      
-      // Applications generally shouldn't be deleted, but if so, only by applicant
       allow delete: if isAuthenticated() 
         && resource.data.applicantId == request.auth.uid;
+
+      match /statusHistory/{historyId} {
+        allow read, write: if isAuthenticated();
+      }
     }
 
+    match /job_applications/{applicationId} {
+      allow read: if isAuthenticated() && (
+        resource.data.applicantId == request.auth.uid ||
+        resource.data.ownerId == request.auth.uid
+      );
+      allow create: if isAuthenticated() 
+        && request.resource.data.applicantId == request.auth.uid;
+      allow update: if isAuthenticated() && (
+        resource.data.applicantId == request.auth.uid ||
+        resource.data.ownerId == request.auth.uid
+      );
+      allow delete: if isAuthenticated() 
+        && resource.data.applicantId == request.auth.uid;
+
+      match /statusHistory/{historyId} {
+        allow read, write: if isAuthenticated();
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // Content Reports & Moderation
+    // ═══════════════════════════════════════════════════════════════════
+
+    match /contentReports/{reportId} {
+      allow create: if isAuthenticated();
+      allow read, update, delete: if isSuperAdmin();
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // Admin Notifications & App Settings & Audit Logs
+    // ═══════════════════════════════════════════════════════════════════
+
+    match /adminNotifications/{notifId} {
+      allow create: if isAuthenticated();
+      allow read, update, delete: if isSuperAdmin();
+    }
+
+    match /appSettings/{settingId} {
+      allow read: if isAuthenticated();
+      allow write: if isSuperAdmin();
+    }
+
+    match /auditLogs/{logId} {
+      allow create: if isAuthenticated();
+      allow read, update, delete: if isSuperAdmin();
+    }
 
     // ═══════════════════════════════════════════════════════════════════
     // Global Admin Access
