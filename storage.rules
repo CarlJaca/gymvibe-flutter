@@ -1,0 +1,47 @@
+rules_version = '2';
+
+// Craft rules based on data in your Firestore database
+// allow write: if firestore.get(
+//    /databases/(default)/documents/users/$(request.auth.uid)).data.isAdmin;
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Payment proof screenshots for bookings.
+    // Only the owning user can upload (images only, < 5 MB).
+    // Any authenticated user can read (gym owners need to view proofs).
+    match /booking_payments/{userId}/{fileName} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null
+                    && request.auth.uid == userId
+                    && request.resource.contentType.matches('image/.*')
+                    && request.resource.size < 5 * 1024 * 1024;
+      // Proofs are immutable once uploaded.
+      allow update, delete: if false;
+    }
+
+    // Specific rules for job application resumes and documents
+    match /job_applications/{applicationId}/{fileName} {
+      // Anyone authenticated can upload (Gym Seekers)
+      allow write: if request.auth != null
+                   && request.resource.size < 10 * 1024 * 1024; // 10MB limit
+
+      // Both applicant and gym owner need to be able to read
+      // We keep it simple for now since Firestore secures the document links
+      allow read: if request.auth != null;
+    }
+
+    // Paths actually used by JobApplicationService
+    // (jobApplications/{applicantId}/{applicationId}[/supporting]/{fileName}).
+    // Previously these were only allowed through the broad catch-all rule.
+    match /jobApplications/{applicantId}/{rest=**} {
+      allow write: if request.auth != null
+                   && request.auth.uid == applicantId
+                   && request.resource.size < 10 * 1024 * 1024; // 10MB limit
+      allow read: if request.auth != null;
+    }
+
+    // The former catch-all `match /{allPaths=**}` (any signed-in user could
+    // read/write everything) was removed because it overrode the stricter rules
+    // above. Any path not matched above is now denied by default.
+  }
+}
