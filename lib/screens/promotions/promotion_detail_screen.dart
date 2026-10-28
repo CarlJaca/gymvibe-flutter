@@ -12,7 +12,9 @@ class PromotionDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = promo['color'] as Color;
+    final color = promo['color'] is Color
+        ? promo['color'] as Color
+        : (promo['color'] is int ? Color(promo['color'] as int) : AppColors.primary);
     final claimed = (promo['claimedCount'] as num?)?.toInt() ?? 0;
     final total = (promo['totalSlots'] as num?)?.toInt() ?? 1;
     final progress = claimed / total;
@@ -120,8 +122,8 @@ class PromotionDetailScreen extends StatelessWidget {
               builder: (context, provider, _) => GestureDetector(
                 onTap: () => provider.toggleSave(promo['id']),
                 child: Icon(
-                  promo['isSaved'] ? Icons.bookmark : Icons.bookmark_border,
-                  color: promo['isSaved'] ? color : Colors.white,
+                  (promo['isSaved'] ?? false) ? Icons.bookmark : Icons.bookmark_border,
+                  color: (promo['isSaved'] ?? false) ? color : Colors.white,
                   size: 28,
                 ),
               ),
@@ -163,7 +165,7 @@ class PromotionDetailScreen extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          promo['description'],
+          promo['description'] ?? 'No description available.',
           style: const TextStyle(color: AppColors.textSecondary, fontSize: 15, height: 1.5),
         ),
       ],

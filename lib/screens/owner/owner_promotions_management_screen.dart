@@ -246,7 +246,9 @@ class _OwnerPromotionsManagementScreenState
   }
 
   Widget _buildPromoCard(BuildContext context, Map<String, dynamic> promo, PromotionsProvider promoProv) {
-    final Color cardColor = promo['color'] as Color;
+    final Color cardColor = promo['color'] is Color
+        ? promo['color'] as Color
+        : (promo['color'] is int ? Color(promo['color'] as int) : AppColors.primary);
     
     return GestureDetector(
       onTap: () {
