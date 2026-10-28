@@ -160,8 +160,7 @@ class GymProvider extends ChangeNotifier {
             _errorMessage = 'Failed to parse gym data.';
           }
 
-          // ONE-TIME DB CLEANUP: Fix prices like ₱100-150
-          _cleanDatabasePrices();
+          // DB price cleanup removed — was causing PERMISSION_DENIED loop
 
           _isLoading = false;
           notifyListeners();
@@ -193,7 +192,7 @@ class GymProvider extends ChangeNotifier {
 
         _allGyms = uniqueGyms.values.toList();
         _applyFilter();
-        _cleanDatabasePrices();
+        // DB price cleanup removed — was causing PERMISSION_DENIED loop
       } catch (innerE) {
         debugPrint('Fallback get() also failed: $innerE');
         _errorMessage = 'Failed to load gyms.';
@@ -201,44 +200,6 @@ class GymProvider extends ChangeNotifier {
 
       _isLoading = false;
       notifyListeners();
-    }
-  }
-
-  Future<void> _cleanDatabasePrices() async {
-    // One-time script to fix ranges in prices so math doesn't break
-    try {
-      final snap = await _firestore.collection('gyms').get();
-      for (var doc in snap.docs) {
-        if (doc.id == 'placeholder') {
-          await doc.reference.delete();
-          continue;
-        }
-
-        final data = doc.data();
-        bool needsUpdate = false;
-        String sPrice = data['sessionPrice']?.toString() ?? '';
-        String mPrice = data['monthlyPrice']?.toString() ?? '';
-
-        if (sPrice.contains('-') || sPrice.contains('to') || sPrice.contains('–')) {
-          sPrice = '₱150/Session'; // standard fallback fix
-          needsUpdate = true;
-        }
-        
-        // Also fix any monthly prices that might be ranges
-        if (mPrice.contains('-') || mPrice.contains('to') || mPrice.contains('–')) {
-          mPrice = '₱1000/Monthly'; // standard fallback
-          needsUpdate = true;
-        }
-
-        if (needsUpdate) {
-          await doc.reference.update({
-            'sessionPrice': sPrice,
-            'monthlyPrice': mPrice,
-          });
-        }
-      }
-    } catch (e) {
-      debugPrint('Error cleaning DB prices: $e');
     }
   }
 

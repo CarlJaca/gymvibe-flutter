@@ -75,7 +75,9 @@ class _MyClaimedPromotionsScreenState extends State<MyClaimedPromotionsScreen> w
       itemCount: promos.length,
       itemBuilder: (context, index) {
         final promo = promos[index];
-        final color = promo['color'] as Color;
+        final color = promo['color'] is Color
+            ? promo['color'] as Color
+            : (promo['color'] is int ? Color(promo['color'] as int) : AppColors.primary);
         final bool isExpired = promo['status'] == 'Expired';
         final displayColor = isExpired ? AppColors.textSecondary : color;
 

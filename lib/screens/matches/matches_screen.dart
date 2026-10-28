@@ -588,27 +588,30 @@ class _MatchesScreenState extends State<MatchesScreen> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    // Price — left-aligned, allow wrapping
-                    Text(
-                      [
-                        if (gym.sessionPrice.isNotEmpty)
-                          gym.sessionPrice.toLowerCase().contains('session')
-                              ? gym.sessionPrice
-                              : 'Session: ${gym.sessionPrice}',
-                        if (gym.monthlyPrice.isNotEmpty)
-                          gym.monthlyPrice.toLowerCase().contains('month')
-                              ? gym.monthlyPrice
-                              : 'Monthly: ${gym.monthlyPrice}',
-                      ].join(' • '),
-                      style: const TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primary,
+                    // Price — only show if at least one price exists
+                    if (gym.sessionPrice.isNotEmpty || gym.monthlyPrice.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text(
+                          [
+                            if (gym.sessionPrice.isNotEmpty)
+                              gym.sessionPrice.toLowerCase().contains('session')
+                                  ? gym.sessionPrice
+                                  : 'Session: ${gym.sessionPrice}',
+                            if (gym.monthlyPrice.isNotEmpty)
+                              gym.monthlyPrice.toLowerCase().contains('month')
+                                  ? gym.monthlyPrice
+                                  : 'Monthly: ${gym.monthlyPrice}',
+                          ].join(' • '),
+                          style: const TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primary,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
                   ],
                 ),
               ),

@@ -17,26 +17,48 @@ class PromotionsProvider extends ChangeNotifier {
     final defaultPromotions = [
       {
         'id': 'p1',
-        'gymId': 'gym1', // From mock gyms
+        'gymId': 'gym1',
         'title': '50% Off Annual Membership',
+        'description': 'Get 50% off on any annual membership plan. Perfect for long-term fitness commitment!',
         'dates': 'Valid until Aug 31',
         'type': 'discount',
         'value': 50,
         'reach': 1200,
         'redemptions': 45,
-        'color': const Color(0xFF00C853).toARGB32(), // Green
+        'claimedCount': 45,
+        'totalSlots': 100,
+        'isSaved': false,
+        'isClaimed': false,
+        'claimedUsers': [],
+        'terms': [
+          'Valid for new annual memberships only',
+          'Cannot be combined with other offers',
+          'One claim per user',
+        ],
+        'color': const Color(0xFF00C853).toARGB32(),
         'status': 'Active',
       },
       {
         'id': 'p2',
-        'gymId': 'gym1', // From mock gyms
+        'gymId': 'gym1',
         'title': 'Free Personal Training Session',
+        'description': 'Enjoy a complimentary personal training session with our certified trainers.',
         'dates': 'Valid until Sep 15',
         'type': 'freebie',
         'value': 0,
         'reach': 850,
         'redemptions': 12,
-        'color': const Color(0xFF2962FF).toARGB32(), // Blue
+        'claimedCount': 12,
+        'totalSlots': 50,
+        'isSaved': false,
+        'isClaimed': false,
+        'claimedUsers': [],
+        'terms': [
+          'One free session per member',
+          'Must be redeemed within validity period',
+          'Subject to trainer availability',
+        ],
+        'color': const Color(0xFF2962FF).toARGB32(),
         'status': 'Active',
       },
     ];
@@ -83,8 +105,30 @@ class PromotionsProvider extends ChangeNotifier {
                 if (safeData['color'] is int) {
                   safeData['color'] = Color(safeData['color'] as int);
                 }
+                // Ensure required fields have defaults
+                safeData['description'] ??= '';
+                safeData['isSaved'] ??= false;
+                safeData['isClaimed'] ??= false;
+                safeData['claimedCount'] ??= 0;
+                safeData['totalSlots'] ??= 100;
+                safeData['terms'] ??= <String>[];
                 return safeData;
               }).toList();
+
+              // Backfill missing fields in Firestore docs (one-time migration)
+              for (var doc in snapshot.docs) {
+                final data = doc.data();
+                if (!data.containsKey('description') || !data.containsKey('totalSlots')) {
+                  doc.reference.set({
+                    'description': data['description'] ?? '',
+                    'isSaved': data['isSaved'] ?? false,
+                    'isClaimed': data['isClaimed'] ?? false,
+                    'claimedCount': data['claimedCount'] ?? 0,
+                    'totalSlots': data['totalSlots'] ?? 100,
+                    'terms': data['terms'] ?? <String>[],
+                  }, SetOptions(merge: true)).catchError((e) => debugPrint('Backfill error: $e'));
+                }
+              }
             }
           } catch (e, stack) {
             debugPrint('Error processing promotions snapshot: $e');
@@ -110,6 +154,12 @@ class PromotionsProvider extends ChangeNotifier {
           if (data['color'] is int) {
             data['color'] = Color(data['color'] as int);
           }
+          data['description'] ??= '';
+          data['isSaved'] ??= false;
+          data['isClaimed'] ??= false;
+          data['claimedCount'] ??= 0;
+          data['totalSlots'] ??= 100;
+          data['terms'] ??= <String>[];
           return data;
         }).toList();
       } catch (inner) {
@@ -126,7 +176,7 @@ class PromotionsProvider extends ChangeNotifier {
     final index = _active.indexWhere((p) => p['id'] == id);
     if (index != -1) {
       _active[index]['isClaimed'] = true;
-      final newCount = (_active[index]['claimedCount'] as int) + 1;
+      final newCount = ((_active[index]['claimedCount'] as num?) ?? 0).toInt() + 1;
       _active[index]['claimedCount'] = newCount;
       
       // Add to my claimed
@@ -151,7 +201,7 @@ class PromotionsProvider extends ChangeNotifier {
   void toggleSave(String id) {
     final index = _active.indexWhere((p) => p['id'] == id);
     if (index != -1) {
-      final newValue = !(_active[index]['isSaved'] as bool);
+      final newValue = !((_active[index]['isSaved'] as bool?) ?? false);
       _active[index]['isSaved'] = newValue;
       notifyListeners();
 

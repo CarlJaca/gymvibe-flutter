@@ -1093,12 +1093,12 @@ class _BookingScreenState extends State<BookingScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
+                      const Row(
                         children: [
-                          const Icon(Icons.check_circle_rounded,
+                          Icon(Icons.check_circle_rounded,
                               size: 18, color: AppColors.primary),
-                          const SizedBox(width: 6),
-                          const Text(
+                          SizedBox(width: 6),
+                          Text(
                             'Screenshot attached',
                             style: TextStyle(
                               fontSize: 13,

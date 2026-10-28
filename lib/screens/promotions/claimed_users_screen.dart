@@ -8,8 +8,12 @@ class ClaimedUsersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, String>> users = (promo['claimedUsers'] as List).cast<Map<String, String>>();
-    final Color color = promo['color'] as Color;
+    final List<Map<String, dynamic>> users = List<Map<String, dynamic>>.from(
+      (promo['claimedUsers'] as List?) ?? [],
+    );
+    final Color color = promo['color'] is Color
+        ? promo['color'] as Color
+        : (promo['color'] is int ? Color(promo['color'] as int) : AppColors.primary);
 
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
@@ -82,16 +86,21 @@ class ClaimedUsersScreen extends StatelessWidget {
                           children: [
                             CircleAvatar(
                               radius: 20,
-                              backgroundImage: NetworkImage(user['avatar']!),
+                              backgroundImage: user['avatar'] != null
+                                  ? NetworkImage(user['avatar'].toString())
+                                  : null,
+                              child: user['avatar'] == null
+                                  ? const Icon(Icons.person, size: 20)
+                                  : null,
                             ),
                             const SizedBox(width: 12),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(user['name']!, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+                                  Text(user['name']?.toString() ?? 'Unknown', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
                                   const SizedBox(height: 4),
-                                  Text('Claimed on ${user['time']}', style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                                  Text('Claimed on ${user['time'] ?? 'N/A'}', style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
                                 ],
                               ),
                             ),

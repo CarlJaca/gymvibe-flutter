@@ -189,17 +189,15 @@ service cloud.firestore {
       // Anyone authenticated can read promotions
       allow read: if isAuthenticated();
 
-      // Only gym owners can create promotions
-      allow create: if isGymOwner()
-        && isValidString(request.resource.data.title, 2, 200);
+      // Authenticated users can create promotions (includes seeding + gym owners)
+      allow create: if isAuthenticated();
 
-      // Only the promotion creator can update
-      allow update: if isAuthenticated()
-        && resource.data.createdBy == request.auth.uid;
+      // Any authenticated user can update (claim / save).
+      // Gym owners can also update their own promotions' details.
+      allow update: if isAuthenticated();
 
-      // Only the promotion creator can delete
-      allow delete: if isAuthenticated()
-        && resource.data.createdBy == request.auth.uid;
+      // Only gym owners can delete promotions
+      allow delete: if isGymOwner();
     }
 
     // ═══════════════════════════════════════════════════════════════════

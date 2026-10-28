@@ -103,7 +103,9 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
   }
 
   Widget _buildPromoCard(Map<String, dynamic> promo, PromotionsProvider provider) {
-    final color = promo['color'] as Color;
+    final color = promo['color'] is Color
+        ? promo['color'] as Color
+        : (promo['color'] is int ? Color(promo['color'] as int) : AppColors.primary);
     final claimed = (promo['claimedCount'] as num?)?.toInt() ?? 0;
     final total = (promo['totalSlots'] as num?)?.toInt() ?? 1;
     final progress = claimed / total;
