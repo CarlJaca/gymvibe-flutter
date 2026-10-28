@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:async';
 
 class PromotionsProvider extends ChangeNotifier {
@@ -106,6 +107,12 @@ class PromotionsProvider extends ChangeNotifier {
                   safeData['color'] = Color(safeData['color'] as int);
                 }
                 // Ensure required fields have defaults
+                safeData['id'] = doc.id;
+                final currentUserId = FirebaseAuth.instance.currentUser?.uid;
+                final claimedUsers = safeData['claimedUsers'] as List?;
+                final claimedUserIds = (safeData['claimedUserIds'] as List?)?.map((e) => e.toString()).toSet() ?? {};
+                final isClaimedByUser = currentUserId != null && (claimedUserIds.contains(currentUserId) || (claimedUsers != null && claimedUsers.any((u) => u is Map && u['id'] == currentUserId)));
+                safeData['isClaimed'] = isClaimedByUser || (safeData['isClaimed'] == true);
                 safeData['description'] ??= '';
                 safeData['isSaved'] ??= false;
                 safeData['isClaimed'] ??= false;
@@ -151,6 +158,7 @@ class PromotionsProvider extends ChangeNotifier {
         final snapshot = await _firestore.collection('promotions').get(const GetOptions(source: Source.cache));
         _active = snapshot.docs.map((doc) {
           final data = Map<String, dynamic>.from(doc.data());
+          data['id'] = doc.id;
           if (data['color'] is int) {
             data['color'] = Color(data['color'] as int);
           }
@@ -175,6 +183,9 @@ class PromotionsProvider extends ChangeNotifier {
   void claimOffer(String id) {
     final index = _active.indexWhere((p) => p['id'] == id);
     if (index != -1) {
+      final currentUserId = FirebaseAuth.instance.currentUser?.uid;
+      final currentUserName = FirebaseAuth.instance.currentUser?.displayName ?? 'Member';
+
       _active[index]['isClaimed'] = true;
       final newCount = ((_active[index]['claimedCount'] as num?) ?? 0).toInt() + 1;
       _active[index]['claimedCount'] = newCount;
@@ -188,13 +199,26 @@ class PromotionsProvider extends ChangeNotifier {
         'color': _active[index]['color'],
         'claimDate': 'Just now',
         'status': 'Active',
-        'savings': _active[index]['value'] ?? 0.0, // extract the value
+        'savings': _active[index]['value'] ?? 0.0,
       });
       notifyListeners();
 
-      _firestore.collection('promotions').doc(id).update({
-        'claimedCount': newCount,
-      }).catchError((e) => debugPrint('Error: $e'));
+      final updateData = <String, dynamic>{
+        'claimedCount': FieldValue.increment(1),
+        'isClaimed': true,
+      };
+      if (currentUserId != null) {
+        updateData['claimedUserIds'] = FieldValue.arrayUnion([currentUserId]);
+        updateData['claimedUsers'] = FieldValue.arrayUnion([
+          {
+            'id': currentUserId,
+            'name': currentUserName,
+            'time': 'Just now',
+          }
+        ]);
+      }
+
+      _firestore.collection('promotions').doc(id).update(updateData).catchError((e) => debugPrint('Error: $e'));
     }
   }
 

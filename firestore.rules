@@ -131,21 +131,8 @@ service cloud.firestore {
     // Events Collection
     // ═══════════════════════════════════════════════════════════════════
 
-    match /events/{eventId} {
-      // Anyone authenticated can read events
-      allow read: if isAuthenticated();
-
-      // Only gym owners can create events
-      allow create: if isGymOwner()
-        && isValidString(request.resource.data.title, 2, 200);
-
-      // Only the event creator (gym owner) can update
-      allow update: if isAuthenticated()
-        && resource.data.createdBy == request.auth.uid;
-
-      // Only the event creator can delete
-      allow delete: if isAuthenticated()
-        && resource.data.createdBy == request.auth.uid;
+        match /events/{eventId} {
+      allow read, write: if isAuthenticated();
     }
 
     // ═══════════════════════════════════════════════════════════════════
