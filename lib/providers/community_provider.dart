@@ -14,13 +14,15 @@ class CommunityProvider extends ChangeNotifier {
 
   // ─── Getters ────────────────────────────────────────────────────────────────
   List<CommunityModel> get communities => _communities;
-  
+
   // Return all posts if no community is selected, else filter by selected community.
   List<PostModel> get filteredPosts {
     if (_selectedCommunity == null) return _posts;
-    return _posts.where((p) => p.communityId == _selectedCommunity!.id).toList();
+    return _posts
+        .where((p) => p.communityId == _selectedCommunity!.id)
+        .toList();
   }
-  
+
   CommunityModel? get selectedCommunity => _selectedCommunity;
   bool get isLoading => _isLoading;
   String get postText => _postText;
@@ -45,7 +47,6 @@ class CommunityProvider extends ChangeNotifier {
       _posts = postsSnap.docs
           .map((doc) => PostModel.fromJson(doc.data(), doc.id))
           .toList();
-
     } catch (e) {
       debugPrint('Error loading community data: $e');
     } finally {
@@ -67,9 +68,9 @@ class CommunityProvider extends ChangeNotifier {
     final index = _posts.indexWhere((p) => p.id == postId);
     if (index != -1) {
       final post = _posts[index];
-      
+
       final List<String> updatedLikedBy = List.from(post.likedBy);
-      
+
       if (updatedLikedBy.contains(userId)) {
         updatedLikedBy.remove(userId);
       } else {

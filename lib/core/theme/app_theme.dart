@@ -114,7 +114,8 @@ class AppTheme {
         showUnselectedLabels: true,
         type: BottomNavigationBarType.fixed,
         elevation: 0,
-        selectedLabelStyle: TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+        selectedLabelStyle:
+            TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
         unselectedLabelStyle: TextStyle(fontSize: 11),
       ),
       tabBarTheme: TabBarThemeData(
@@ -123,7 +124,8 @@ class AppTheme {
         indicatorColor: AppColors.primary,
         indicatorSize: TabBarIndicatorSize.label,
         dividerColor: Colors.transparent,
-        labelStyle: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w600),
+        labelStyle:
+            GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w600),
         unselectedLabelStyle: GoogleFonts.inter(fontSize: 15),
       ),
       dividerTheme: const DividerThemeData(

@@ -43,7 +43,8 @@ class UserModel {
 
   factory UserModel.fromJson(Map<String, dynamic> json, String documentId) {
     // Backward compat: if 'role' is missing, derive from legacy 'isOwner' bool
-    String role = json['role'] ?? (json['isOwner'] == true ? 'gym_owner' : 'gym_seeker');
+    String role =
+        json['role'] ?? (json['isOwner'] == true ? 'gym_owner' : 'gym_seeker');
 
     DateTime? createdAt;
     if (json['createdAt'] is Timestamp) {
@@ -92,7 +93,9 @@ class UserModel {
       'accountStatus': accountStatus,
       'gymName': gymName,
       'contactNumber': contactNumber,
-      'createdAt': createdAt != null ? Timestamp.fromDate(createdAt!) : FieldValue.serverTimestamp(),
+      'createdAt': createdAt != null
+          ? Timestamp.fromDate(createdAt!)
+          : FieldValue.serverTimestamp(),
       'lastLogin': lastLogin != null ? Timestamp.fromDate(lastLogin!) : null,
       'hasCompletedPreferences': hasCompletedPreferences,
     };
@@ -130,7 +133,8 @@ class UserModel {
       contactNumber: contactNumber ?? this.contactNumber,
       createdAt: createdAt ?? this.createdAt,
       lastLogin: lastLogin ?? this.lastLogin,
-      hasCompletedPreferences: hasCompletedPreferences ?? this.hasCompletedPreferences,
+      hasCompletedPreferences:
+          hasCompletedPreferences ?? this.hasCompletedPreferences,
     );
   }
 }

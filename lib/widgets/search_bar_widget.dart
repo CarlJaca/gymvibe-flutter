@@ -66,10 +66,12 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
         decoration: InputDecoration(
           hintText: widget.hintText,
           hintStyle: const TextStyle(color: AppColors.textSecondary),
-          prefixIcon: const Icon(Icons.search_rounded, color: AppColors.textSecondary),
+          prefixIcon:
+              const Icon(Icons.search_rounded, color: AppColors.textSecondary),
           suffixIcon: widget.controller.text.isNotEmpty
               ? IconButton(
-                  icon: const Icon(Icons.close_rounded, color: AppColors.textSecondary, size: 20),
+                  icon: const Icon(Icons.close_rounded,
+                      color: AppColors.textSecondary, size: 20),
                   onPressed: () {
                     widget.controller.clear();
                     widget.onClear?.call();
@@ -82,7 +84,8 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
           focusedBorder: InputBorder.none,
           errorBorder: InputBorder.none,
           disabledBorder: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         ),
       ),
     );

@@ -8,10 +8,12 @@ class MyClaimedPromotionsScreen extends StatefulWidget {
   const MyClaimedPromotionsScreen({super.key});
 
   @override
-  State<MyClaimedPromotionsScreen> createState() => _MyClaimedPromotionsScreenState();
+  State<MyClaimedPromotionsScreen> createState() =>
+      _MyClaimedPromotionsScreenState();
 }
 
-class _MyClaimedPromotionsScreenState extends State<MyClaimedPromotionsScreen> with SingleTickerProviderStateMixin {
+class _MyClaimedPromotionsScreenState extends State<MyClaimedPromotionsScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -33,7 +35,8 @@ class _MyClaimedPromotionsScreenState extends State<MyClaimedPromotionsScreen> w
       appBar: AppBar(
         backgroundColor: AppColors.backgroundDark,
         elevation: 0,
-        title: const Text('My Claimed Promotions', style: TextStyle(color: Colors.white)),
+        title: const Text('My Claimed Promotions',
+            style: TextStyle(color: Colors.white)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
@@ -66,7 +69,8 @@ class _MyClaimedPromotionsScreenState extends State<MyClaimedPromotionsScreen> w
   Widget _buildList(List<Map<String, dynamic>> promos) {
     if (promos.isEmpty) {
       return const Center(
-        child: Text('No claimed promotions found.', style: TextStyle(color: AppColors.textSecondary)),
+        child: Text('No claimed promotions found.',
+            style: TextStyle(color: AppColors.textSecondary)),
       );
     }
 
@@ -77,7 +81,9 @@ class _MyClaimedPromotionsScreenState extends State<MyClaimedPromotionsScreen> w
         final promo = promos[index];
         final color = promo['color'] is Color
             ? promo['color'] as Color
-            : (promo['color'] is int ? Color(promo['color'] as int) : AppColors.primary);
+            : (promo['color'] is int
+                ? Color(promo['color'] as int)
+                : AppColors.primary);
         final bool isExpired = promo['status'] == 'Expired';
         final displayColor = isExpired ? AppColors.textSecondary : color;
 
@@ -103,8 +109,10 @@ class _MyClaimedPromotionsScreenState extends State<MyClaimedPromotionsScreen> w
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            displayColor.withValues(alpha: isExpired ? 0.4 : 0.8),
-                            displayColor.withValues(alpha: isExpired ? 0.1 : 0.3),
+                            displayColor.withValues(
+                                alpha: isExpired ? 0.4 : 0.8),
+                            displayColor.withValues(
+                                alpha: isExpired ? 0.1 : 0.3),
                           ],
                         ),
                       ),
@@ -128,29 +136,47 @@ class _MyClaimedPromotionsScreenState extends State<MyClaimedPromotionsScreen> w
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 4),
                               decoration: BoxDecoration(
                                 color: displayColor.withValues(alpha: 0.2),
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Text(
                                 promo['status'],
-                                style: TextStyle(color: displayColor, fontSize: 10, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                    color: displayColor,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold),
                               ),
                             ),
                             const SizedBox(height: 8),
                             Text(
                               promo['title'],
-                              style: TextStyle(color: isExpired ? Colors.white54 : Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                  color:
+                                      isExpired ? Colors.white54 : Colors.white,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 4),
-                            Text('Claimed on ${promo['claimDate']}', style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                            Text('Claimed on ${promo['claimDate']}',
+                                style: const TextStyle(
+                                    color: AppColors.textSecondary,
+                                    fontSize: 12)),
                             const SizedBox(height: 12),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text('Savings Earned', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
-                                Text('₱${promo['savings']}', style: const TextStyle(color: AppColors.star, fontSize: 14, fontWeight: FontWeight.bold)),
+                                const Text('Savings Earned',
+                                    style: TextStyle(
+                                        color: AppColors.textSecondary,
+                                        fontSize: 12)),
+                                Text('₱${promo['savings']}',
+                                    style: const TextStyle(
+                                        color: AppColors.star,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold)),
                               ],
                             ),
                           ],

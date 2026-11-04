@@ -7,7 +7,8 @@ class EventRegistrationSuccessScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final event = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final event =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
 
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
@@ -18,7 +19,7 @@ class EventRegistrationSuccessScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Spacer(),
-              
+
               // ── Success Animation/Icon ─────────────────────────────
               Container(
                 width: 120,
@@ -35,7 +36,8 @@ class EventRegistrationSuccessScreen extends StatelessWidget {
                       color: AppColors.success,
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.check_rounded, color: Colors.white, size: 48),
+                    child: const Icon(Icons.check_rounded,
+                        color: Colors.white, size: 48),
                   ),
                 ),
               ),
@@ -73,15 +75,21 @@ class EventRegistrationSuccessScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('What\'s Next?', style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold, fontSize: 16)),
+                    const Text('What\'s Next?',
+                        style: TextStyle(
+                            color: AppColors.textPrimary,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16)),
                     const SizedBox(height: 16),
-                    _buildStepRow(Icons.email_outlined, 'Check your email for confirmation.'),
+                    _buildStepRow(Icons.email_outlined,
+                        'Check your email for confirmation.'),
                     const SizedBox(height: 12),
-                    _buildStepRow(Icons.calendar_month_outlined, 'Go to My Events to see event details.'),
+                    _buildStepRow(Icons.calendar_month_outlined,
+                        'Go to My Events to see event details.'),
                   ],
                 ),
               ),
-              
+
               const Spacer(),
 
               // ── Buttons ──────────────────────────────────────────────
@@ -90,15 +98,19 @@ class EventRegistrationSuccessScreen extends StatelessWidget {
                 height: 50,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamedAndRemoveUntil(context, AppRoutes.main, (route) => false);
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, AppRoutes.main, (route) => false);
                     Navigator.pushNamed(context, AppRoutes.myEvents);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     foregroundColor: AppColors.backgroundDark,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.full)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(AppRadius.full)),
                   ),
-                  child: const Text('Go to My Events', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  child: const Text('Go to My Events',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 ),
               ),
               const SizedBox(height: 16),
@@ -107,7 +119,8 @@ class EventRegistrationSuccessScreen extends StatelessWidget {
                 height: 50,
                 child: TextButton(
                   onPressed: () {
-                    Navigator.pushNamedAndRemoveUntil(context, AppRoutes.main, (route) => false);
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, AppRoutes.main, (route) => false);
                   },
                   style: TextButton.styleFrom(
                     foregroundColor: AppColors.textPrimary,
@@ -116,7 +129,9 @@ class EventRegistrationSuccessScreen extends StatelessWidget {
                       side: const BorderSide(color: AppColors.border),
                     ),
                   ),
-                  child: const Text('Back to Events', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  child: const Text('Back to Events',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 ),
               ),
               const SizedBox(height: AppPadding.lg),
@@ -132,7 +147,10 @@ class EventRegistrationSuccessScreen extends StatelessWidget {
       children: [
         Icon(icon, color: AppColors.primary, size: 20),
         const SizedBox(width: 12),
-        Expanded(child: Text(text, style: const TextStyle(color: AppColors.textSecondary, fontSize: 14))),
+        Expanded(
+            child: Text(text,
+                style: const TextStyle(
+                    color: AppColors.textSecondary, fontSize: 14))),
       ],
     );
   }

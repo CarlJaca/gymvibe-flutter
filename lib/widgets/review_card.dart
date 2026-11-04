@@ -25,7 +25,8 @@ class ReviewCard extends StatelessWidget {
           Row(
             children: [
               CircleAvatar(
-                backgroundImage: CachedNetworkImageProvider(review.userAvatarUrl),
+                backgroundImage:
+                    CachedNetworkImageProvider(review.userAvatarUrl),
                 radius: 20,
               ),
               const SizedBox(width: 12),
@@ -35,7 +36,8 @@ class ReviewCard extends StatelessWidget {
                   children: [
                     Text(
                       review.userName,
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 15),
                     ),
                     const SizedBox(height: 4),
                     StarRating(rating: review.rating, size: 12),
@@ -44,7 +46,8 @@ class ReviewCard extends StatelessWidget {
               ),
               Text(
                 review.date,
-                style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                style: const TextStyle(
+                    color: AppColors.textSecondary, fontSize: 12),
               ),
             ],
           ),
@@ -53,7 +56,8 @@ class ReviewCard extends StatelessWidget {
           // Using a placeholder image for Figma accuracy if needed, but text is fine.
           Text(
             review.comment,
-            style: const TextStyle(color: AppColors.textSecondary, height: 1.4, fontSize: 14),
+            style: const TextStyle(
+                color: AppColors.textSecondary, height: 1.4, fontSize: 14),
           ),
           const SizedBox(height: 12),
           Row(
@@ -65,7 +69,8 @@ class ReviewCard extends StatelessWidget {
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.textSecondary,
                   side: const BorderSide(color: AppColors.border),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   minimumSize: Size.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),

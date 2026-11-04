@@ -22,7 +22,13 @@ class JobApplicationService {
   static const List<String> allowedResumeExtensions = ['pdf', 'docx'];
 
   /// Allowed file extensions for supporting documents.
-  static const List<String> allowedSupportExtensions = ['pdf', 'docx', 'jpg', 'jpeg', 'png'];
+  static const List<String> allowedSupportExtensions = [
+    'pdf',
+    'docx',
+    'jpg',
+    'jpeg',
+    'png'
+  ];
 
   /// Max file size in bytes (10 MB).
   static const int maxFileSize = 10 * 1024 * 1024;
@@ -45,9 +51,11 @@ class JobApplicationService {
 
     // Validate extension
     final ext = fileName.split('.').last.toLowerCase();
-    final allowed = isSupporting ? allowedSupportExtensions : allowedResumeExtensions;
+    final allowed =
+        isSupporting ? allowedSupportExtensions : allowedResumeExtensions;
     if (!allowed.contains(ext)) {
-      throw Exception('File type .$ext is not allowed. Allowed: ${allowed.join(', ')}');
+      throw Exception(
+          'File type .$ext is not allowed. Allowed: ${allowed.join(', ')}');
     }
 
     final storagePath = isSupporting
@@ -77,10 +85,8 @@ class JobApplicationService {
     }
 
     // Verify job is still active and not expired
-    final jobDoc = await _firestore
-        .collection('jobPostings')
-        .doc(application.jobId)
-        .get();
+    final jobDoc =
+        await _firestore.collection('jobPostings').doc(application.jobId).get();
     if (!jobDoc.exists) throw Exception('This job posting no longer exists.');
     final jobData = jobDoc.data()!;
     if (jobData['status'] != 'active') {
@@ -139,7 +145,8 @@ class JobApplicationService {
         doc.data()! as Map<String, dynamic>, doc.id);
 
     if (app.applicantId != applicantId) {
-      throw Exception('Unauthorized: you can only withdraw your own application.');
+      throw Exception(
+          'Unauthorized: you can only withdraw your own application.');
     }
 
     if (!canWithdraw(app.status)) {
@@ -158,14 +165,16 @@ class JobApplicationService {
     // Add status history
     final historyRef =
         _applicationsRef.doc(applicationId).collection('statusHistory').doc();
-    batch.set(historyRef, ApplicationStatusHistoryModel(
-      historyId: historyRef.id,
-      previousStatus: applicationStatusToString(app.status),
-      newStatus: 'withdrawn',
-      changedBy: applicantId,
-      changedByRole: 'gym_seeker',
-      message: 'Application withdrawn by applicant',
-    ).toJson());
+    batch.set(
+        historyRef,
+        ApplicationStatusHistoryModel(
+          historyId: historyRef.id,
+          previousStatus: applicationStatusToString(app.status),
+          newStatus: 'withdrawn',
+          changedBy: applicantId,
+          changedByRole: 'gym_seeker',
+          message: 'Application withdrawn by applicant',
+        ).toJson());
 
     await batch.commit();
   }
@@ -205,12 +214,15 @@ class JobApplicationService {
       'reviewedBy': changedBy,
     };
 
-    if (rejectionReason != null) updateData['rejectionReason'] = rejectionReason;
-    if (applicantMessage != null) updateData['applicantMessage'] = applicantMessage;
+    if (rejectionReason != null)
+      updateData['rejectionReason'] = rejectionReason;
+    if (applicantMessage != null)
+      updateData['applicantMessage'] = applicantMessage;
     if (interviewDate != null) {
       updateData['interviewDate'] = Timestamp.fromDate(interviewDate);
     }
-    if (interviewLocation != null) updateData['interviewLocation'] = interviewLocation;
+    if (interviewLocation != null)
+      updateData['interviewLocation'] = interviewLocation;
     if (interviewInstructions != null) {
       updateData['interviewInstructions'] = interviewInstructions;
     }
@@ -220,14 +232,16 @@ class JobApplicationService {
     // Add status history
     final historyRef =
         _applicationsRef.doc(applicationId).collection('statusHistory').doc();
-    batch.set(historyRef, ApplicationStatusHistoryModel(
-      historyId: historyRef.id,
-      previousStatus: applicationStatusToString(app.status),
-      newStatus: applicationStatusToString(newStatus),
-      changedBy: changedBy,
-      changedByRole: 'gym_owner',
-      message: message,
-    ).toJson());
+    batch.set(
+        historyRef,
+        ApplicationStatusHistoryModel(
+          historyId: historyRef.id,
+          previousStatus: applicationStatusToString(app.status),
+          newStatus: applicationStatusToString(newStatus),
+          changedBy: changedBy,
+          changedByRole: 'gym_owner',
+          message: message,
+        ).toJson());
 
     await batch.commit();
   }
@@ -253,14 +267,14 @@ class JobApplicationService {
         .map((doc) => JobApplicationModel.fromJson(
             doc.data()! as Map<String, dynamic>, doc.id))
         .toList();
-        
+
     apps.sort((a, b) {
       if (a.submittedAt == null && b.submittedAt == null) return 0;
       if (a.submittedAt == null) return 1;
       if (b.submittedAt == null) return -1;
       return b.submittedAt!.compareTo(a.submittedAt!);
     });
-    
+
     return apps;
   }
 
@@ -278,22 +292,21 @@ class JobApplicationService {
 
   /// Fetch all applications for a specific job posting.
   Future<List<JobApplicationModel>> fetchJobApplicants(String jobId) async {
-    final snapshot = await _applicationsRef
-        .where('jobId', isEqualTo: jobId)
-        .get();
+    final snapshot =
+        await _applicationsRef.where('jobId', isEqualTo: jobId).get();
 
     final apps = snapshot.docs
         .map((doc) => JobApplicationModel.fromJson(
             doc.data()! as Map<String, dynamic>, doc.id))
         .toList();
-        
+
     apps.sort((a, b) {
       if (a.submittedAt == null && b.submittedAt == null) return 0;
       if (a.submittedAt == null) return 1;
       if (b.submittedAt == null) return -1;
       return b.submittedAt!.compareTo(a.submittedAt!);
     });
-    
+
     return apps;
   }
 
@@ -323,8 +336,8 @@ class JobApplicationService {
         .get();
 
     return snapshot.docs
-        .map((doc) => ApplicationStatusHistoryModel.fromJson(
-            doc.data(), doc.id))
+        .map(
+            (doc) => ApplicationStatusHistoryModel.fromJson(doc.data(), doc.id))
         .toList();
   }
 
@@ -352,9 +365,8 @@ class JobApplicationService {
 
   /// Get aggregate applicant analytics across all of an owner's jobs.
   Future<Map<String, int>> getOwnerApplicantAnalytics(String ownerId) async {
-    final snapshot = await _applicationsRef
-        .where('ownerId', isEqualTo: ownerId)
-        .get();
+    final snapshot =
+        await _applicationsRef.where('ownerId', isEqualTo: ownerId).get();
 
     final counters = <String, int>{
       'total': snapshot.docs.length,

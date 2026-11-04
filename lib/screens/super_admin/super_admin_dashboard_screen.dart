@@ -9,7 +9,8 @@ class SuperAdminDashboardScreen extends StatefulWidget {
   const SuperAdminDashboardScreen({super.key});
 
   @override
-  State<SuperAdminDashboardScreen> createState() => _SuperAdminDashboardScreenState();
+  State<SuperAdminDashboardScreen> createState() =>
+      _SuperAdminDashboardScreenState();
 }
 
 class _SuperAdminDashboardScreenState extends State<SuperAdminDashboardScreen> {
@@ -50,7 +51,8 @@ class _SuperAdminDashboardScreenState extends State<SuperAdminDashboardScreen> {
                 ),
               )
             // ── Error state ─────────────────────────────────────
-            else if (provider.errorMessage != null && provider.dashboardStats.isEmpty)
+            else if (provider.errorMessage != null &&
+                provider.dashboardStats.isEmpty)
               _buildErrorState(provider)
             else ...[
               // ── Stat cards grid ─────────────────────────────────
@@ -93,18 +95,30 @@ class _SuperAdminDashboardScreenState extends State<SuperAdminDashboardScreen> {
 
   Widget _buildStatsGrid(Map<String, int> stats) {
     final items = [
-      _StatData('Total Users', stats['totalUsers'] ?? 0, Icons.people_rounded, const Color(0xFF4FC3F7)),
-      _StatData('Gym Seekers', stats['gymSeekers'] ?? 0, Icons.person_search_rounded, const Color(0xFF81C784)),
-      _StatData('Gym Owners', stats['gymOwners'] ?? 0, Icons.store_rounded, const Color(0xFFBA68C8)),
-      _StatData('Pending Owners', stats['pendingOwners'] ?? 0, Icons.pending_rounded, const Color(0xFFFFB74D)),
-      _StatData('Approved Gyms', stats['approvedGyms'] ?? 0, Icons.verified_rounded, AppColors.primary),
-      _StatData('Total Bookings', stats['totalBookings'] ?? 0, Icons.calendar_month_rounded, const Color(0xFF4DD0E1)),
-      _StatData('Active Events', stats['activeEvents'] ?? 0, Icons.event_rounded, const Color(0xFFF06292)),
-      _StatData('Active Promotions', stats['activePromotions'] ?? 0, Icons.local_offer_rounded, const Color(0xFFFFD54F)),
-      _StatData('Verified PRs', stats['verifiedPRs'] ?? 0, Icons.emoji_events_rounded, AppColors.primary),
-      _StatData('Pending PRs', stats['pendingPRs'] ?? 0, Icons.hourglass_top_rounded, const Color(0xFFFFB74D)),
-      _StatData('Reported Content', stats['reportedContent'] ?? 0, Icons.flag_rounded, const Color(0xFFE57373)),
-      _StatData('Suspended Users', stats['suspendedUsers'] ?? 0, Icons.block_rounded, const Color(0xFFEF5350)),
+      _StatData('Total Users', stats['totalUsers'] ?? 0, Icons.people_rounded,
+          const Color(0xFF4FC3F7)),
+      _StatData('Gym Seekers', stats['gymSeekers'] ?? 0,
+          Icons.person_search_rounded, const Color(0xFF81C784)),
+      _StatData('Gym Owners', stats['gymOwners'] ?? 0, Icons.store_rounded,
+          const Color(0xFFBA68C8)),
+      _StatData('Pending Owners', stats['pendingOwners'] ?? 0,
+          Icons.pending_rounded, const Color(0xFFFFB74D)),
+      _StatData('Approved Gyms', stats['approvedGyms'] ?? 0,
+          Icons.verified_rounded, AppColors.primary),
+      _StatData('Total Bookings', stats['totalBookings'] ?? 0,
+          Icons.calendar_month_rounded, const Color(0xFF4DD0E1)),
+      _StatData('Active Events', stats['activeEvents'] ?? 0,
+          Icons.event_rounded, const Color(0xFFF06292)),
+      _StatData('Active Promotions', stats['activePromotions'] ?? 0,
+          Icons.local_offer_rounded, const Color(0xFFFFD54F)),
+      _StatData('Verified PRs', stats['verifiedPRs'] ?? 0,
+          Icons.emoji_events_rounded, AppColors.primary),
+      _StatData('Pending PRs', stats['pendingPRs'] ?? 0,
+          Icons.hourglass_top_rounded, const Color(0xFFFFB74D)),
+      _StatData('Reported Content', stats['reportedContent'] ?? 0,
+          Icons.flag_rounded, const Color(0xFFE57373)),
+      _StatData('Suspended Users', stats['suspendedUsers'] ?? 0,
+          Icons.block_rounded, const Color(0xFFEF5350)),
     ];
 
     return GridView.builder(
@@ -144,7 +158,8 @@ class _SuperAdminDashboardScreenState extends State<SuperAdminDashboardScreen> {
                 child: Icon(data.icon, size: 18, color: data.color),
               ),
               const Spacer(),
-              const Icon(Icons.more_horiz, size: 16, color: AppColors.textMuted),
+              const Icon(Icons.more_horiz,
+                  size: 16, color: AppColors.textMuted),
             ],
           ),
           const SizedBox(height: 12),
@@ -198,7 +213,6 @@ class _SuperAdminDashboardScreenState extends State<SuperAdminDashboardScreen> {
           ],
         ),
         const SizedBox(height: 12),
-
         if (provider.recentActivity.isEmpty)
           Container(
             padding: const EdgeInsets.all(32),
@@ -210,7 +224,8 @@ class _SuperAdminDashboardScreenState extends State<SuperAdminDashboardScreen> {
             child: const Center(
               child: Column(
                 children: [
-                  Icon(Icons.history_rounded, size: 40, color: AppColors.textMuted),
+                  Icon(Icons.history_rounded,
+                      size: 40, color: AppColors.textMuted),
                   SizedBox(height: 12),
                   Text(
                     'No recent activity',
@@ -275,10 +290,14 @@ class _SuperAdminDashboardScreenState extends State<SuperAdminDashboardScreen> {
   }
 
   Color _getActionColor(String action) {
-    if (action.contains('approved') || action.contains('reactivated') || action.contains('restored')) {
+    if (action.contains('approved') ||
+        action.contains('reactivated') ||
+        action.contains('restored')) {
       return AppColors.primary;
     }
-    if (action.contains('suspended') || action.contains('removed') || action.contains('rejected')) {
+    if (action.contains('suspended') ||
+        action.contains('removed') ||
+        action.contains('rejected')) {
       return AppColors.error;
     }
     if (action.contains('disputed') || action.contains('flagged')) {

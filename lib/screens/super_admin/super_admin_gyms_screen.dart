@@ -33,17 +33,17 @@ class _SuperAdminGymsScreenState extends State<SuperAdminGymsScreen> {
 
   void _onSearch(String query) {
     context.read<SuperAdminProvider>().loadGyms(
-      searchQuery: query.isNotEmpty ? query : null,
-      statusFilter: _statusFilter,
-    );
+          searchQuery: query.isNotEmpty ? query : null,
+          statusFilter: _statusFilter,
+        );
   }
 
   void _setStatusFilter(String? status) {
     setState(() => _statusFilter = status);
     context.read<SuperAdminProvider>().loadGyms(
-      searchQuery: _searchCtrl.text.isNotEmpty ? _searchCtrl.text : null,
-      statusFilter: status,
-    );
+          searchQuery: _searchCtrl.text.isNotEmpty ? _searchCtrl.text : null,
+          statusFilter: status,
+        );
   }
 
   @override
@@ -57,7 +57,6 @@ class _SuperAdminGymsScreenState extends State<SuperAdminGymsScreen> {
         children: [
           Text('Gyms', style: Theme.of(context).textTheme.headlineLarge),
           const SizedBox(height: 16),
-          
           TextField(
             controller: _searchCtrl,
             onChanged: _onSearch,
@@ -76,23 +75,33 @@ class _SuperAdminGymsScreenState extends State<SuperAdminGymsScreen> {
             ),
           ),
           const SizedBox(height: 16),
-
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                _buildFilterChip(label: 'All', isSelected: _statusFilter == null, onTap: () => _setStatusFilter(null)),
+                _buildFilterChip(
+                    label: 'All',
+                    isSelected: _statusFilter == null,
+                    onTap: () => _setStatusFilter(null)),
                 const SizedBox(width: 8),
-                _buildFilterChip(label: 'Active', isSelected: _statusFilter == 'active', onTap: () => _setStatusFilter('active')),
+                _buildFilterChip(
+                    label: 'Active',
+                    isSelected: _statusFilter == 'active',
+                    onTap: () => _setStatusFilter('active')),
                 const SizedBox(width: 8),
-                _buildFilterChip(label: 'Suspended', isSelected: _statusFilter == 'suspended', onTap: () => _setStatusFilter('suspended')),
+                _buildFilterChip(
+                    label: 'Suspended',
+                    isSelected: _statusFilter == 'suspended',
+                    onTap: () => _setStatusFilter('suspended')),
                 const SizedBox(width: 8),
-                _buildFilterChip(label: 'Flagged', isSelected: _statusFilter == 'flagged', onTap: () => _setStatusFilter('flagged')),
+                _buildFilterChip(
+                    label: 'Flagged',
+                    isSelected: _statusFilter == 'flagged',
+                    onTap: () => _setStatusFilter('flagged')),
               ],
             ),
           ),
           const SizedBox(height: 16),
-
           Expanded(
             child: _buildContent(provider),
           ),
@@ -103,18 +112,22 @@ class _SuperAdminGymsScreenState extends State<SuperAdminGymsScreen> {
 
   Widget _buildContent(SuperAdminProvider provider) {
     if (provider.isLoading && provider.gyms.isEmpty) {
-      return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+      return const Center(
+          child: CircularProgressIndicator(color: AppColors.primary));
     }
     if (provider.gyms.isEmpty) {
       return const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.fitness_center_rounded, size: 48, color: AppColors.textMuted),
+            Icon(Icons.fitness_center_rounded,
+                size: 48, color: AppColors.textMuted),
             SizedBox(height: 16),
-            Text('No gyms found', style: TextStyle(color: AppColors.textSecondary, fontSize: 16)),
+            Text('No gyms found',
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 16)),
             SizedBox(height: 8),
-            Text('Approved gyms will appear here.', style: TextStyle(color: AppColors.textMuted, fontSize: 13)),
+            Text('Approved gyms will appear here.',
+                style: TextStyle(color: AppColors.textMuted, fontSize: 13)),
           ],
         ),
       );
@@ -124,7 +137,8 @@ class _SuperAdminGymsScreenState extends State<SuperAdminGymsScreen> {
       onRefresh: () => provider.loadGyms(statusFilter: _statusFilter),
       child: ListView.separated(
         itemCount: provider.gyms.length,
-        separatorBuilder: (_, __) => const Divider(height: 1, color: AppColors.border),
+        separatorBuilder: (_, __) =>
+            const Divider(height: 1, color: AppColors.border),
         itemBuilder: (context, index) {
           final gym = provider.gyms[index];
           return FutureBuilder<UserModel?>(
@@ -138,7 +152,8 @@ class _SuperAdminGymsScreenState extends State<SuperAdminGymsScreen> {
     );
   }
 
-  Widget _buildGymTile(GymModel gym, UserModel? owner, SuperAdminProvider provider) {
+  Widget _buildGymTile(
+      GymModel gym, UserModel? owner, SuperAdminProvider provider) {
     final authProvider = context.read<AuthProvider>();
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -153,13 +168,18 @@ class _SuperAdminGymsScreenState extends State<SuperAdminGymsScreen> {
           ),
         ),
       ),
-      title: Text(gym.name, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
+      title: Text(gym.name,
+          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(gym.address, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+          Text(gym.address,
+              style: const TextStyle(
+                  fontSize: 12, color: AppColors.textSecondary)),
           if (owner != null)
-            Text('Owner: ${owner.name} (${owner.email})', style: const TextStyle(fontSize: 11, color: AppColors.textMuted)),
+            Text('Owner: ${owner.name} (${owner.email})',
+                style:
+                    const TextStyle(fontSize: 11, color: AppColors.textMuted)),
         ],
       ),
       trailing: Row(
@@ -172,11 +192,14 @@ class _SuperAdminGymsScreenState extends State<SuperAdminGymsScreen> {
             onSelected: (val) => _handleAction(val, gym, authProvider),
             itemBuilder: (context) => [
               if (gym.status != 'suspended')
-                const PopupMenuItem(value: 'suspend', child: Text('Suspend Gym')),
+                const PopupMenuItem(
+                    value: 'suspend', child: Text('Suspend Gym')),
               if (gym.status == 'suspended')
-                const PopupMenuItem(value: 'reactivate', child: Text('Reactivate Gym')),
+                const PopupMenuItem(
+                    value: 'reactivate', child: Text('Reactivate Gym')),
               if (gym.status != 'flagged' && gym.status != 'suspended')
-                const PopupMenuItem(value: 'flag', child: Text('Flag for Review')),
+                const PopupMenuItem(
+                    value: 'flag', child: Text('Flag for Review')),
             ],
           ),
         ],
@@ -184,7 +207,10 @@ class _SuperAdminGymsScreenState extends State<SuperAdminGymsScreen> {
     );
   }
 
-  Widget _buildFilterChip({required String label, required bool isSelected, required VoidCallback onTap}) {
+  Widget _buildFilterChip(
+      {required String label,
+      required bool isSelected,
+      required VoidCallback onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -192,7 +218,8 @@ class _SuperAdminGymsScreenState extends State<SuperAdminGymsScreen> {
         decoration: BoxDecoration(
           color: isSelected ? AppColors.primary : AppColors.surface,
           borderRadius: BorderRadius.circular(AppRadius.full),
-          border: Border.all(color: isSelected ? AppColors.primary : AppColors.border),
+          border: Border.all(
+              color: isSelected ? AppColors.primary : AppColors.border),
         ),
         child: Text(
           label,
@@ -209,12 +236,23 @@ class _SuperAdminGymsScreenState extends State<SuperAdminGymsScreen> {
   Widget _buildStatusChip(String status) {
     Color color;
     switch (status) {
-      case 'active': color = AppColors.success; break;
-      case 'suspended': color = AppColors.error; break;
-      case 'flagged': color = AppColors.accentOrange; break;
-      case 'pending': color = Colors.orange; break;
-      case 'rejected': color = AppColors.error; break;
-      default: color = AppColors.textMuted;
+      case 'active':
+        color = AppColors.success;
+        break;
+      case 'suspended':
+        color = AppColors.error;
+        break;
+      case 'flagged':
+        color = AppColors.accentOrange;
+        break;
+      case 'pending':
+        color = Colors.orange;
+        break;
+      case 'rejected':
+        color = AppColors.error;
+        break;
+      default:
+        color = AppColors.textMuted;
     }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -224,7 +262,8 @@ class _SuperAdminGymsScreenState extends State<SuperAdminGymsScreen> {
       ),
       child: Text(
         status[0].toUpperCase() + status.substring(1),
-        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: color),
+        style:
+            TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: color),
       ),
     );
   }
@@ -232,10 +271,10 @@ class _SuperAdminGymsScreenState extends State<SuperAdminGymsScreen> {
   void _handleAction(String action, GymModel gym, AuthProvider authProvider) {
     if (action == 'reactivate') {
       context.read<SuperAdminProvider>().reactivateGym(
-        gymId: gym.id,
-        adminId: authProvider.currentUser!.id,
-        adminName: authProvider.userName,
-      );
+            gymId: gym.id,
+            adminId: authProvider.currentUser!.id,
+            adminName: authProvider.userName,
+          );
       return;
     }
 
@@ -248,31 +287,37 @@ class _SuperAdminGymsScreenState extends State<SuperAdminGymsScreen> {
         content: TextField(
           controller: reasonCtrl,
           maxLines: 3,
-          decoration: InputDecoration(hintText: 'Reason to ${action == 'suspend' ? 'suspend' : 'flag'} (required)'),
+          decoration: InputDecoration(
+              hintText:
+                  'Reason to ${action == 'suspend' ? 'suspend' : 'flag'} (required)'),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
           ElevatedButton(
             onPressed: () {
               if (reasonCtrl.text.trim().isEmpty) return;
               if (action == 'suspend') {
                 context.read<SuperAdminProvider>().suspendGym(
-                  gymId: gym.id,
-                  reason: reasonCtrl.text.trim(),
-                  adminId: authProvider.currentUser!.id,
-                  adminName: authProvider.userName,
-                );
+                      gymId: gym.id,
+                      reason: reasonCtrl.text.trim(),
+                      adminId: authProvider.currentUser!.id,
+                      adminName: authProvider.userName,
+                    );
               } else {
                 context.read<SuperAdminProvider>().flagGym(
-                  gymId: gym.id,
-                  reason: reasonCtrl.text.trim(),
-                  adminId: authProvider.currentUser!.id,
-                  adminName: authProvider.userName,
-                );
+                      gymId: gym.id,
+                      reason: reasonCtrl.text.trim(),
+                      adminId: authProvider.currentUser!.id,
+                      adminName: authProvider.userName,
+                    );
               }
               Navigator.pop(ctx);
             },
-            style: ElevatedButton.styleFrom(backgroundColor: action == 'suspend' ? AppColors.error : AppColors.accentOrange),
+            style: ElevatedButton.styleFrom(
+                backgroundColor: action == 'suspend'
+                    ? AppColors.error
+                    : AppColors.accentOrange),
             child: Text(action == 'suspend' ? 'Suspend' : 'Flag'),
           ),
         ],

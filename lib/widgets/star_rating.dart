@@ -59,9 +59,11 @@ class StarRatingRow extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: List.generate(5, (i) {
         if (i < rating.floor()) {
-          return Icon(Icons.star_rounded, color: AppColors.star, size: starSize);
+          return Icon(Icons.star_rounded,
+              color: AppColors.star, size: starSize);
         } else if (i < rating && rating - i >= 0.5) {
-          return Icon(Icons.star_half_rounded, color: AppColors.star, size: starSize);
+          return Icon(Icons.star_half_rounded,
+              color: AppColors.star, size: starSize);
         } else {
           return Icon(Icons.star_outline_rounded,
               color: AppColors.textMuted, size: starSize);

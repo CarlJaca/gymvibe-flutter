@@ -69,7 +69,6 @@ import 'screens/owner/owner_crowd_status_screen.dart';
 // Super Admin Portal
 import 'screens/super_admin/super_admin_shell.dart';
 
-
 // Leaderboard & Calendar
 import 'screens/leaderboard/leaderboard_screen.dart';
 import 'screens/calendar/workout_calendar_screen.dart';
@@ -87,7 +86,8 @@ import 'services/seeder_service.dart';
 import 'widgets/role_guard.dart';
 import 'widgets/super_admin_guard.dart';
 
-final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
+final RouteObserver<ModalRoute<void>> routeObserver =
+    RouteObserver<ModalRoute<void>>();
 
 /// Global navigator key for session expiry navigation.
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -96,25 +96,29 @@ class LoggingNavigatorObserver extends NavigatorObserver {
   @override
   void didPush(Route route, Route? previousRoute) {
     // Only log navigation in debug mode to prevent info leakage
-    SecureLogger.log('Navigator didPush: ${route.settings.name} from ${previousRoute?.settings.name}');
+    SecureLogger.log(
+        'Navigator didPush: ${route.settings.name} from ${previousRoute?.settings.name}');
     super.didPush(route, previousRoute);
   }
 
   @override
   void didReplace({Route? newRoute, Route? oldRoute}) {
-    SecureLogger.log('Navigator didReplace: ${oldRoute?.settings.name} -> ${newRoute?.settings.name}');
+    SecureLogger.log(
+        'Navigator didReplace: ${oldRoute?.settings.name} -> ${newRoute?.settings.name}');
     super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
   }
 
   @override
   void didPop(Route route, Route? previousRoute) {
-    SecureLogger.log('Navigator didPop: ${route.settings.name} returning to ${previousRoute?.settings.name}');
+    SecureLogger.log(
+        'Navigator didPop: ${route.settings.name} returning to ${previousRoute?.settings.name}');
     super.didPop(route, previousRoute);
   }
 
   @override
   void didRemove(Route route, Route? previousRoute) {
-    SecureLogger.log('Navigator didRemove: ${route.settings.name} previous ${previousRoute?.settings.name}');
+    SecureLogger.log(
+        'Navigator didRemove: ${route.settings.name} previous ${previousRoute?.settings.name}');
     super.didRemove(route, previousRoute);
   }
 }
@@ -125,7 +129,8 @@ void main() {
 
     FlutterError.onError = (FlutterErrorDetails details) {
       FlutterError.presentError(details);
-      SecureLogger.logError('Flutter framework error', details.exception, details.stack);
+      SecureLogger.logError(
+          'Flutter framework error', details.exception, details.stack);
     };
 
     PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
@@ -157,13 +162,18 @@ void main() {
       );
 
       // Disable offline persistence to see real server errors
-      FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: false);
+      FirebaseFirestore.instance.settings =
+          const Settings(persistenceEnabled: false);
 
       // Initialize Firebase App Check
       try {
         await FirebaseAppCheck.instance.activate(
-          providerAndroid: kDebugMode ? const AndroidDebugProvider() : const AndroidPlayIntegrityProvider(),
-          providerApple: kDebugMode ? const AppleDebugProvider() : const AppleDeviceCheckProvider(),
+          providerAndroid: kDebugMode
+              ? const AndroidDebugProvider()
+              : const AndroidPlayIntegrityProvider(),
+          providerApple: kDebugMode
+              ? const AppleDebugProvider()
+              : const AppleDeviceCheckProvider(),
         );
       } catch (e) {
         SecureLogger.logError('AppCheck Error', e);
@@ -176,7 +186,8 @@ void main() {
     try {
       await AuthService.instance.initGoogleSignIn();
     } catch (e, stack) {
-      SecureLogger.logError('Google Sign-In initialization skipped/failed', e, stack);
+      SecureLogger.logError(
+          'Google Sign-In initialization skipped/failed', e, stack);
     }
 
     // Seed Database (Job Postings, Calendar, Leaderboard)
@@ -195,7 +206,8 @@ void main() {
           ChangeNotifierProvider(create: (_) => NotificationProvider()),
           ChangeNotifierProvider(create: (_) => EventsProvider()),
           ChangeNotifierProvider(create: (_) => PromotionsProvider()),
-          ChangeNotifierProvider(create: (_) => BookingsProvider(), lazy: false),
+          ChangeNotifierProvider(
+              create: (_) => BookingsProvider(), lazy: false),
           ChangeNotifierProvider(create: (_) => LocationProvider()),
           ChangeNotifierProvider(create: (_) => LeaderboardProvider()),
           ChangeNotifierProvider(create: (_) => CalendarProvider()),
@@ -228,7 +240,8 @@ class AppLauncher extends StatelessWidget {
     try {
       await AuthService.instance.initGoogleSignIn();
     } catch (e, stack) {
-      SecureLogger.logError('Google Sign-In initialization skipped/failed', e, stack);
+      SecureLogger.logError(
+          'Google Sign-In initialization skipped/failed', e, stack);
     }
 
     // Seed Database (Job Postings, Calendar, Leaderboard)
@@ -261,7 +274,8 @@ class AppLauncher extends StatelessWidget {
             ChangeNotifierProvider(create: (_) => NotificationProvider()),
             ChangeNotifierProvider(create: (_) => EventsProvider()),
             ChangeNotifierProvider(create: (_) => PromotionsProvider()),
-            ChangeNotifierProvider(create: (_) => BookingsProvider(), lazy: false),
+            ChangeNotifierProvider(
+                create: (_) => BookingsProvider(), lazy: false),
             ChangeNotifierProvider(create: (_) => LocationProvider()),
             ChangeNotifierProvider(create: (_) => LeaderboardProvider()),
             ChangeNotifierProvider(create: (_) => CalendarProvider()),
@@ -324,7 +338,8 @@ class _GymVibeAppState extends State<GymVibeApp> {
             case AppRoutes.splash:
               return MaterialPageRoute(builder: (_) => const SplashScreen());
             case AppRoutes.onboarding:
-              return MaterialPageRoute(builder: (_) => const OnboardingScreen());
+              return MaterialPageRoute(
+                  builder: (_) => const OnboardingScreen());
             case AppRoutes.login:
               return MaterialPageRoute(builder: (_) => const LoginScreen());
             case AppRoutes.register:
@@ -333,7 +348,9 @@ class _GymVibeAppState extends State<GymVibeApp> {
             case AppRoutes.main:
               return MaterialPageRoute(builder: (_) => const MainNavigation());
             case AppRoutes.gymPreferences:
-              return MaterialPageRoute(builder: (_) => const GymPreferencesScreen(isFirstTime: true));
+              return MaterialPageRoute(
+                  builder: (_) =>
+                      const GymPreferencesScreen(isFirstTime: true));
             case AppRoutes.gymDetails:
               final gym = settings.arguments as GymModel;
               return MaterialPageRoute(
@@ -351,27 +368,40 @@ class _GymVibeAppState extends State<GymVibeApp> {
               return MaterialPageRoute(builder: (_) => BookingScreen(gym: gym));
             case AppRoutes.busyDayCalendar:
               final gym = settings.arguments as GymModel;
-              return MaterialPageRoute(builder: (_) => BusyDayCalendarScreen(gym: gym));
+              return MaterialPageRoute(
+                  builder: (_) => BusyDayCalendarScreen(gym: gym));
             case AppRoutes.myBookings:
-              return MaterialPageRoute(builder: (_) => const MyBookingsScreen());
+              return MaterialPageRoute(
+                  builder: (_) => const MyBookingsScreen());
             case AppRoutes.membership:
-              return MaterialPageRoute(builder: (_) => const MembershipScreen());
+              return MaterialPageRoute(
+                  builder: (_) => const MembershipScreen());
             case AppRoutes.events:
               return MaterialPageRoute(builder: (_) => const EventsScreen());
             case AppRoutes.eventDetails:
-              return MaterialPageRoute(builder: (_) => const EventDetailScreen(), settings: settings);
+              return MaterialPageRoute(
+                  builder: (_) => const EventDetailScreen(),
+                  settings: settings);
             case AppRoutes.myEvents:
-              return MaterialPageRoute(builder: (_) => const MyEventsScreen(), settings: settings);
+              return MaterialPageRoute(
+                  builder: (_) => const MyEventsScreen(), settings: settings);
             case AppRoutes.eventRegistration:
-              return MaterialPageRoute(builder: (_) => const EventRegistrationScreen(), settings: settings);
+              return MaterialPageRoute(
+                  builder: (_) => const EventRegistrationScreen(),
+                  settings: settings);
             case AppRoutes.eventRegistrationSuccess:
-              return MaterialPageRoute(builder: (_) => const EventRegistrationSuccessScreen(), settings: settings);
+              return MaterialPageRoute(
+                  builder: (_) => const EventRegistrationSuccessScreen(),
+                  settings: settings);
             case AppRoutes.eventReminders:
-              return MaterialPageRoute(builder: (_) => const EventRemindersScreen(), settings: settings);
+              return MaterialPageRoute(
+                  builder: (_) => const EventRemindersScreen(),
+                  settings: settings);
             case AppRoutes.favorites:
               return MaterialPageRoute(builder: (_) => const FavoritesScreen());
             case AppRoutes.notifications:
-              return MaterialPageRoute(builder: (_) => const CustomerNotificationsScreen());
+              return MaterialPageRoute(
+                  builder: (_) => const CustomerNotificationsScreen());
             case AppRoutes.myReviews:
               return MaterialPageRoute(builder: (_) => const MyReviewsScreen());
             case AppRoutes.membershipHistory:
@@ -393,47 +423,68 @@ class _GymVibeAppState extends State<GymVibeApp> {
 
             // ── Owner Portal ─────────────────────────────────────────
             case AppRoutes.ownerLogin:
-              return MaterialPageRoute(builder: (_) => const OwnerLoginScreen());
+              return MaterialPageRoute(
+                  builder: (_) => const OwnerLoginScreen());
             case AppRoutes.ownerRegister:
               return MaterialPageRoute(
                   builder: (_) => const OwnerRegisterScreen());
             case AppRoutes.ownerPortal:
-              return MaterialPageRoute(builder: (_) => const RoleGuard(routeName: AppRoutes.ownerPortal, child: OwnerNavigation()));
+              return MaterialPageRoute(
+                  builder: (_) => const RoleGuard(
+                      routeName: AppRoutes.ownerPortal,
+                      child: OwnerNavigation()));
             case AppRoutes.ownerCrowdStatus:
               return MaterialPageRoute(
-                  builder: (_) => const RoleGuard(routeName: AppRoutes.ownerCrowdStatus, child: OwnerCrowdStatusScreen()));
+                  builder: (_) => const RoleGuard(
+                      routeName: AppRoutes.ownerCrowdStatus,
+                      child: OwnerCrowdStatusScreen()));
             case AppRoutes.ownerCreateEvent:
               return MaterialPageRoute(
-                  builder: (_) => const RoleGuard(routeName: AppRoutes.ownerCreateEvent, child: OwnerCreateEventScreen()));
+                  builder: (_) => const RoleGuard(
+                      routeName: AppRoutes.ownerCreateEvent,
+                      child: OwnerCreateEventScreen()));
             case AppRoutes.ownerCreatePromotion:
               return MaterialPageRoute(
-                  builder: (_) => const RoleGuard(routeName: AppRoutes.ownerCreatePromotion, child: OwnerCreatePromotionScreen()));
+                  builder: (_) => const RoleGuard(
+                      routeName: AppRoutes.ownerCreatePromotion,
+                      child: OwnerCreatePromotionScreen()));
             case AppRoutes.ownerEditProfile:
               return MaterialPageRoute(
-                  builder: (_) => const RoleGuard(routeName: AppRoutes.ownerEditProfile, child: OwnerEditProfileScreen()));
+                  builder: (_) => const RoleGuard(
+                      routeName: AppRoutes.ownerEditProfile,
+                      child: OwnerEditProfileScreen()));
             case AppRoutes.ownerAttendanceTracking:
               return MaterialPageRoute(
-                  builder: (_) => const RoleGuard(routeName: AppRoutes.ownerAttendanceTracking, child: OwnerAttendanceTrackingScreen()));
+                  builder: (_) => const RoleGuard(
+                      routeName: AppRoutes.ownerAttendanceTracking,
+                      child: OwnerAttendanceTrackingScreen()));
             case AppRoutes.ownerNotifications:
               return MaterialPageRoute(
-                  builder: (_) => const RoleGuard(routeName: AppRoutes.ownerNotifications, child: OwnerNotificationsScreen()));
+                  builder: (_) => const RoleGuard(
+                      routeName: AppRoutes.ownerNotifications,
+                      child: OwnerNotificationsScreen()));
             case AppRoutes.ownerPrVerification:
               return MaterialPageRoute(
-                  builder: (_) => const RoleGuard(routeName: AppRoutes.ownerPrVerification, child: OwnerPrVerificationScreen()));
+                  builder: (_) => const RoleGuard(
+                      routeName: AppRoutes.ownerPrVerification,
+                      child: OwnerPrVerificationScreen()));
             case AppRoutes.ownerJobs:
               return MaterialPageRoute(
-                  builder: (_) => const RoleGuard(routeName: AppRoutes.ownerJobs, child: OwnerJobPostingsScreen()));
-                  
+                  builder: (_) => const RoleGuard(
+                      routeName: AppRoutes.ownerJobs,
+                      child: OwnerJobPostingsScreen()));
+
             case AppRoutes.jobs:
               return MaterialPageRoute(builder: (_) => const JobsScreen());
             case AppRoutes.myApplications:
-              return MaterialPageRoute(builder: (_) => const MyApplicationsScreen());
+              return MaterialPageRoute(
+                  builder: (_) => const MyApplicationsScreen());
 
             case AppRoutes.superAdminPortal:
-          return MaterialPageRoute(
-            builder: (_) => const SuperAdminGuard(child: SuperAdminShell()),
-          );
-        default:
+              return MaterialPageRoute(
+                builder: (_) => const SuperAdminGuard(child: SuperAdminShell()),
+              );
+            default:
               return MaterialPageRoute(
                 builder: (_) => Scaffold(
                   body: Center(

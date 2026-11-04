@@ -39,7 +39,8 @@ class _OwnerRegisterScreenState extends State<OwnerRegisterScreen> {
     final pass = _passCtrl.text.trim();
     final confirmPass = _confirmPassCtrl.text.trim();
 
-    if (gymName.isEmpty || ownerName.isEmpty || email.isEmpty || pass.isEmpty) return;
+    if (gymName.isEmpty || ownerName.isEmpty || email.isEmpty || pass.isEmpty)
+      return;
 
     if (pass != confirmPass) {
       if (!mounted) return;
@@ -65,13 +66,14 @@ class _OwnerRegisterScreenState extends State<OwnerRegisterScreen> {
       if (!mounted) return;
       // Get the registered user's ID to link the gym to this account
       final userId = provider.currentUser?.id ?? '';
-      
+
       // Create a new gym linked to this owner's account
       final newGym = GymModel(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         ownerId: userId,
         name: gymName,
-        imageUrl: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80',
+        imageUrl:
+            'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80',
         address: 'New Location, Davao City',
         city: 'Davao',
         hours: '6:00 AM - 10:00 PM',
@@ -107,7 +109,8 @@ class _OwnerRegisterScreenState extends State<OwnerRegisterScreen> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => Navigator.pushReplacementNamed(context, AppRoutes.ownerLogin),
+          onPressed: () =>
+              Navigator.pushReplacementNamed(context, AppRoutes.ownerLogin),
         ),
       ),
       body: SingleChildScrollView(
@@ -168,8 +171,7 @@ class _OwnerRegisterScreenState extends State<OwnerRegisterScreen> {
                 suffixIcon: IconButton(
                   icon: Icon(
                       _obscureText ? Icons.visibility_off : Icons.visibility),
-                  onPressed: () =>
-                      setState(() => _obscureText = !_obscureText),
+                  onPressed: () => setState(() => _obscureText = !_obscureText),
                 ),
               ),
             ),
@@ -186,8 +188,8 @@ class _OwnerRegisterScreenState extends State<OwnerRegisterScreen> {
                   icon: Icon(_obscureConfirmText
                       ? Icons.visibility_off
                       : Icons.visibility),
-                  onPressed: () =>
-                      setState(() => _obscureConfirmText = !_obscureConfirmText),
+                  onPressed: () => setState(
+                      () => _obscureConfirmText = !_obscureConfirmText),
                 ),
               ),
             ),
@@ -199,8 +201,8 @@ class _OwnerRegisterScreenState extends State<OwnerRegisterScreen> {
                     padding: const EdgeInsets.only(top: 12),
                     child: Text(
                       auth.errorMessage!,
-                      style: const TextStyle(
-                          color: AppColors.error, fontSize: 14),
+                      style:
+                          const TextStyle(color: AppColors.error, fontSize: 14),
                     ),
                   );
                 }
@@ -235,8 +237,8 @@ class _OwnerRegisterScreenState extends State<OwnerRegisterScreen> {
                 const Text('Already have an owner account?',
                     style: TextStyle(color: AppColors.textSecondary)),
                 TextButton(
-                  onPressed: () =>
-                      Navigator.pushReplacementNamed(context, AppRoutes.ownerLogin),
+                  onPressed: () => Navigator.pushReplacementNamed(
+                      context, AppRoutes.ownerLogin),
                   child: const Text('Log in'),
                 ),
               ],

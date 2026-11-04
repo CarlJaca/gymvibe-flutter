@@ -13,14 +13,17 @@ class ClaimedUsersScreen extends StatelessWidget {
     );
     final Color color = promo['color'] is Color
         ? promo['color'] as Color
-        : (promo['color'] is int ? Color(promo['color'] as int) : AppColors.primary);
+        : (promo['color'] is int
+            ? Color(promo['color'] as int)
+            : AppColors.primary);
 
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
       appBar: AppBar(
         backgroundColor: AppColors.backgroundDark,
         elevation: 0,
-        title: const Text('Claimed Users', style: TextStyle(color: Colors.white)),
+        title:
+            const Text('Claimed Users', style: TextStyle(color: Colors.white)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
@@ -43,7 +46,10 @@ class ClaimedUsersScreen extends StatelessWidget {
                   child: Center(
                     child: Text(
                       promo['type'].replaceAll('\n', ' '),
-                      style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 12),
+                      style: TextStyle(
+                          color: color,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -53,9 +59,15 @@ class ClaimedUsersScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(promo['title'], style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+                      Text(promo['title'],
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16)),
                       const SizedBox(height: 4),
-                      Text('${promo['claimedCount']} total claims', style: const TextStyle(color: AppColors.textSecondary, fontSize: 14)),
+                      Text('${promo['claimedCount']} total claims',
+                          style: const TextStyle(
+                              color: AppColors.textSecondary, fontSize: 14)),
                     ],
                   ),
                 ),
@@ -67,7 +79,8 @@ class ClaimedUsersScreen extends StatelessWidget {
           Expanded(
             child: users.isEmpty
                 ? const Center(
-                    child: Text('No users have claimed this yet.', style: TextStyle(color: AppColors.textSecondary)),
+                    child: Text('No users have claimed this yet.',
+                        style: TextStyle(color: AppColors.textSecondary)),
                   )
                 : ListView.builder(
                     padding: const EdgeInsets.all(AppPadding.md),
@@ -80,7 +93,8 @@ class ClaimedUsersScreen extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: Colors.white.withValues(alpha: 0.03),
                           borderRadius: BorderRadius.circular(AppRadius.md),
-                          border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+                          border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.05)),
                         ),
                         child: Row(
                           children: [
@@ -98,9 +112,15 @@ class ClaimedUsersScreen extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(user['name']?.toString() ?? 'Unknown', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+                                  Text(user['name']?.toString() ?? 'Unknown',
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600)),
                                   const SizedBox(height: 4),
-                                  Text('Claimed on ${user['time'] ?? 'N/A'}', style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                                  Text('Claimed on ${user['time'] ?? 'N/A'}',
+                                      style: const TextStyle(
+                                          color: AppColors.textSecondary,
+                                          fontSize: 12)),
                                 ],
                               ),
                             ),

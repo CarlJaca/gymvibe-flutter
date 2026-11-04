@@ -228,8 +228,8 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
             Text(
               'Your application for ${widget.job.jobTitle} at ${widget.job.gymName} has been submitted.',
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                  fontSize: 13, color: AppColors.textSecondary),
+              style:
+                  const TextStyle(fontSize: 13, color: AppColors.textSecondary),
             ),
             const SizedBox(height: 20),
             SizedBox(
@@ -273,8 +273,8 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
               decoration: BoxDecoration(
                 color: AppColors.primary.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(AppRadius.md),
-                border: Border.all(
-                    color: AppColors.primary.withValues(alpha: 0.3)),
+                border:
+                    Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
               ),
               child: Row(
                 children: [
@@ -292,8 +292,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                                 color: AppColors.textPrimary)),
                         Text(widget.job.gymName,
                             style: const TextStyle(
-                                fontSize: 12,
-                                color: AppColors.textSecondary)),
+                                fontSize: 12, color: AppColors.textSecondary)),
                       ],
                     ),
                   ),
@@ -320,8 +319,9 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
               maxLines: 4,
               decoration: const InputDecoration(
                   hintText: 'Write a short introduction...'),
-              validator: (v) =>
-                  v == null || v.trim().isEmpty ? 'Cover message is required' : null,
+              validator: (v) => v == null || v.trim().isEmpty
+                  ? 'Cover message is required'
+                  : null,
             ),
             const SizedBox(height: 14),
 
@@ -405,8 +405,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                       child: Text(
                         'I confirm that the information provided is accurate and complete.',
                         style: TextStyle(
-                            fontSize: 13,
-                            color: AppColors.textSecondary),
+                            fontSize: 13, color: AppColors.textSecondary),
                       ),
                     ),
                   ),
@@ -479,8 +478,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                   ? '₱${_expectedSalaryController.text}'
                   : 'Not specified'),
           _previewRow('Resume', _resumeFileName ?? 'Not uploaded'),
-          _previewRow(
-              'Supporting Doc', _supportDocName ?? 'None'),
+          _previewRow('Supporting Doc', _supportDocName ?? 'None'),
           const SizedBox(height: 24),
           ElevatedButton(
             onPressed: () => setState(() => _showPreview = false),
@@ -505,8 +503,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
           const SizedBox(height: 2),
           Text(
             value.isEmpty ? '—' : value,
-            style: const TextStyle(
-                fontSize: 14, color: AppColors.textPrimary),
+            style: const TextStyle(fontSize: 14, color: AppColors.textPrimary),
           ),
         ],
       ),
@@ -534,8 +531,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
         border: Border.all(color: AppColors.border),
       ),
       child: Text(value,
-          style: const TextStyle(
-              fontSize: 14, color: AppColors.textSecondary)),
+          style: const TextStyle(fontSize: 14, color: AppColors.textSecondary)),
     );
   }
 
@@ -562,9 +558,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
               fileName != null
                   ? Icons.insert_drive_file_rounded
                   : Icons.upload_file_rounded,
-              color: fileName != null
-                  ? AppColors.primary
-                  : AppColors.textMuted,
+              color: fileName != null ? AppColors.primary : AppColors.textMuted,
               size: 20,
             ),
             const SizedBox(width: 10),

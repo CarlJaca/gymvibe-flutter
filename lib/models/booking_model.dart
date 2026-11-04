@@ -8,7 +8,7 @@ class BookingModel {
   final String gymImageUrl;
   final String bookingDate; // yyyy-MM-dd
   final String timeSlotStart; // e.g. "06:00"
-  final String timeSlotEnd;   // e.g. "07:00"
+  final String timeSlotEnd; // e.g. "07:00"
   final String status; // Confirmed, Cancelled, Completed
   final String price;
   final String refNo;
@@ -51,7 +51,8 @@ class BookingModel {
 
   /// Generate a reference number from date and a counter
   static String generateRefNo(String bookingDate, int counter) {
-    final datePart = bookingDate.replaceAll('-', '').substring(2); // e.g. 250625
+    final datePart =
+        bookingDate.replaceAll('-', '').substring(2); // e.g. 250625
     return 'GVB-$datePart-${counter.toString().padLeft(4, '0')}';
   }
 

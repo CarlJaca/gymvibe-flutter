@@ -33,7 +33,8 @@ class AuthProvider extends ChangeNotifier {
 
   String get userName => _currentUser?.name ?? 'Guest';
   String get userEmail => _currentUser?.email ?? '';
-  String get userAvatar => _currentUser?.avatarUrl ?? 'https://i.pravatar.cc/150?img=15';
+  String get userAvatar =>
+      _currentUser?.avatarUrl ?? 'https://i.pravatar.cc/150?img=15';
   String get userLocation => _currentUser?.location ?? 'Davao City';
   String get membershipType => _currentUser?.membershipType ?? 'Free';
 
@@ -47,7 +48,8 @@ class AuthProvider extends ChangeNotifier {
   String get loginLockoutTime => _rateLimiter.formatRemainingTime(_loginKey);
 
   /// Returns a human-readable lockout time for the owner login action.
-  String get ownerLoginLockoutTime => _rateLimiter.formatRemainingTime(_ownerLoginKey);
+  String get ownerLoginLockoutTime =>
+      _rateLimiter.formatRemainingTime(_ownerLoginKey);
 
   // ─── Sign In ─────────────────────────────────────────────────────────────────
   Future<bool> signIn({
@@ -72,11 +74,11 @@ class AuthProvider extends ChangeNotifier {
 
     try {
       final result = await _authService.signIn(
-        email: email, 
-        password: password, 
+        email: email,
+        password: password,
         isOwnerLogin: isOwnerLogin,
       );
-      
+
       if (result is UserModel) {
         _currentUser = result;
         _status = AuthStatus.authenticated;
@@ -98,7 +100,7 @@ class AuthProvider extends ChangeNotifier {
         notifyListeners();
         return false;
       }
-      
+
       _status = AuthStatus.error;
       _errorMessage = 'An unknown error occurred.';
       _rateLimiter.recordFailure(actionKey);
@@ -120,7 +122,8 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _currentUser = await _authService.signInWithGoogle(isOwnerLogin: isOwnerLogin);
+      _currentUser =
+          await _authService.signInWithGoogle(isOwnerLogin: isOwnerLogin);
       _status = AuthStatus.authenticated;
       _startSessionMonitoring();
       notifyListeners();
@@ -140,7 +143,8 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _currentUser = await _authService.signInWithFacebook(isOwnerLogin: isOwnerLogin);
+      _currentUser =
+          await _authService.signInWithFacebook(isOwnerLogin: isOwnerLogin);
       _status = AuthStatus.authenticated;
       _startSessionMonitoring();
       notifyListeners();
@@ -166,14 +170,13 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _currentUser =
-          await _authService.register(
-            name: name, 
-            email: email, 
-            password: password,
-            isOwner: isOwner,
-            gymName: gymName,
-          );
+      _currentUser = await _authService.register(
+        name: name,
+        email: email,
+        password: password,
+        isOwner: isOwner,
+        gymName: gymName,
+      );
       _status = AuthStatus.authenticated;
       notifyListeners();
       return true;

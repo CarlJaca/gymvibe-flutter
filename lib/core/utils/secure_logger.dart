@@ -26,7 +26,8 @@ class SecureLogger {
   ///
   /// Email addresses in the message are redacted to `[REDACTED_EMAIL]`.
   /// In release mode, nothing is logged.
-  static void logError(String message, [Object? error, StackTrace? stackTrace]) {
+  static void logError(String message,
+      [Object? error, StackTrace? stackTrace]) {
     if (kDebugMode) {
       final sanitized = _sanitize(message);
       debugPrint('[GymVibe ERROR] $sanitized');

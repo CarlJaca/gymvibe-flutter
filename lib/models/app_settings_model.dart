@@ -43,17 +43,32 @@ class AppSettingsModel {
       maintenanceMode: json['maintenanceMode'] ?? false,
       registrationEnabled: json['registrationEnabled'] ?? true,
       defaultSearchRadiusKm: (json['defaultSearchRadiusKm'] ?? 10.0).toDouble(),
-      leaderboardCategories: List<String>.from(json['leaderboardCategories'] ?? [
-        'Deadlift', 'Bench Press', 'Squat', 'Dumbbell Curl', 'Overhead Press',
-      ]),
-      reportReasons: List<String>.from(json['reportReasons'] ?? [
-        'Spam or misleading', 'Inappropriate content', 'Harassment or bullying',
-        'False information', 'Offensive language', 'Other',
-      ]),
-      suspensionReasons: List<String>.from(json['suspensionReasons'] ?? [
-        'Violation of terms of service', 'Repeated policy violations',
-        'Suspicious activity', 'Fraudulent behavior', 'Inappropriate content', 'Other',
-      ]),
+      leaderboardCategories: List<String>.from(json['leaderboardCategories'] ??
+          [
+            'Deadlift',
+            'Bench Press',
+            'Squat',
+            'Dumbbell Curl',
+            'Overhead Press',
+          ]),
+      reportReasons: List<String>.from(json['reportReasons'] ??
+          [
+            'Spam or misleading',
+            'Inappropriate content',
+            'Harassment or bullying',
+            'False information',
+            'Offensive language',
+            'Other',
+          ]),
+      suspensionReasons: List<String>.from(json['suspensionReasons'] ??
+          [
+            'Violation of terms of service',
+            'Repeated policy violations',
+            'Suspicious activity',
+            'Fraudulent behavior',
+            'Inappropriate content',
+            'Other',
+          ]),
     );
   }
 
@@ -82,8 +97,10 @@ class AppSettingsModel {
       supportEmail: supportEmail ?? this.supportEmail,
       maintenanceMode: maintenanceMode ?? this.maintenanceMode,
       registrationEnabled: registrationEnabled ?? this.registrationEnabled,
-      defaultSearchRadiusKm: defaultSearchRadiusKm ?? this.defaultSearchRadiusKm,
-      leaderboardCategories: leaderboardCategories ?? this.leaderboardCategories,
+      defaultSearchRadiusKm:
+          defaultSearchRadiusKm ?? this.defaultSearchRadiusKm,
+      leaderboardCategories:
+          leaderboardCategories ?? this.leaderboardCategories,
       reportReasons: reportReasons ?? this.reportReasons,
       suspensionReasons: suspensionReasons ?? this.suspensionReasons,
     );

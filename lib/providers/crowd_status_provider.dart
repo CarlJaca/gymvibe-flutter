@@ -9,7 +9,8 @@ class CrowdStatusProvider extends ChangeNotifier {
 
   // ─── State ────────────────────────────────────────────────────────────
   final Map<String, int> _dailyBookingCounts = {}; // date -> count
-  final Map<String, Map<String, int>> _slotBookingCounts = {}; // date -> {slot -> count}
+  final Map<String, Map<String, int>> _slotBookingCounts =
+      {}; // date -> {slot -> count}
   bool _isLoading = false;
 
   Map<String, int> get dailyBookingCounts => _dailyBookingCounts;
@@ -81,7 +82,8 @@ class CrowdStatusProvider extends ChangeNotifier {
   }
 
   /// Get crowd level for a specific time slot.
-  CrowdLevel getCrowdLevelForSlot(String date, String slotKey, int slotCapacity) {
+  CrowdLevel getCrowdLevelForSlot(
+      String date, String slotKey, int slotCapacity) {
     final slotCounts = _slotBookingCounts[date] ?? {};
     final count = slotCounts[slotKey] ?? 0;
     return CrowdService.calculateCrowdLevel(count, slotCapacity);

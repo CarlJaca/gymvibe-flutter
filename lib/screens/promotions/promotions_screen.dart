@@ -15,7 +15,6 @@ class PromotionsScreen extends StatefulWidget {
 }
 
 class _PromotionsScreenState extends State<PromotionsScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -82,8 +81,6 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
     );
   }
 
-
-
   Widget _buildPromotionsList() {
     return Consumer<PromotionsProvider>(
       builder: (context, provider, child) {
@@ -102,10 +99,13 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
     );
   }
 
-  Widget _buildPromoCard(Map<String, dynamic> promo, PromotionsProvider provider) {
+  Widget _buildPromoCard(
+      Map<String, dynamic> promo, PromotionsProvider provider) {
     final color = promo['color'] is Color
         ? promo['color'] as Color
-        : (promo['color'] is int ? Color(promo['color'] as int) : AppColors.primary);
+        : (promo['color'] is int
+            ? Color(promo['color'] as int)
+            : AppColors.primary);
     final claimed = (promo['claimedCount'] as num?)?.toInt() ?? 0;
     final total = (promo['totalSlots'] as num?)?.toInt() ?? 1;
     final progress = claimed / total;
@@ -158,30 +158,39 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: color.withValues(alpha: 0.2),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: Text(
-                                promo['status'],
-                                style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold),
-                              ),
-                            ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: color.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            promo['status'],
+                            style: TextStyle(
+                                color: color,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
                         const SizedBox(height: 8),
                         Text(
                           promo['title'],
-                          style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 4),
                         Row(
                           children: [
-                            const Icon(Icons.calendar_today, size: 12, color: AppColors.textSecondary),
+                            const Icon(Icons.calendar_today,
+                                size: 12, color: AppColors.textSecondary),
                             const SizedBox(width: 4),
                             Text(
                               promo['dates'],
-                              style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                              style: const TextStyle(
+                                  color: AppColors.textSecondary, fontSize: 12),
                             ),
                           ],
                         ),
@@ -189,8 +198,13 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('$claimed claimed', style: const TextStyle(color: Colors.white, fontSize: 12)),
-                            Text('$total', style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                            Text('$claimed claimed',
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 12)),
+                            Text('$total',
+                                style: const TextStyle(
+                                    color: AppColors.textSecondary,
+                                    fontSize: 12)),
                           ],
                         ),
                         const SizedBox(height: 4),
@@ -210,7 +224,8 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => PromotionDetailScreen(promo: promo),
+                                  builder: (context) =>
+                                      PromotionDetailScreen(promo: promo),
                                 ),
                               );
                             },
@@ -218,9 +233,12 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
                               backgroundColor: color.withValues(alpha: 0.2),
                               foregroundColor: color,
                               elevation: 0,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.sm)),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(AppRadius.sm)),
                             ),
-                            child: const Text('View Details >', style: TextStyle(fontWeight: FontWeight.bold)),
+                            child: const Text('View Details >',
+                                style: TextStyle(fontWeight: FontWeight.bold)),
                           ),
                         ),
                       ],
@@ -237,7 +255,8 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
 
   Widget _buildStatsSection() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppPadding.md, vertical: AppPadding.md),
+      padding: const EdgeInsets.symmetric(
+          horizontal: AppPadding.md, vertical: AppPadding.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -249,38 +268,48 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const MyClaimedPromotionsScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => const MyClaimedPromotionsScreen()),
                 );
               },
               style: OutlinedButton.styleFrom(
                 foregroundColor: Colors.white,
                 side: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppRadius.md)),
               ),
               child: const Text('View My Claimed Promotions'),
             ),
           ),
           const SizedBox(height: 24),
-          
+
           // ── Promo Code Banner ──
           Container(
             padding: const EdgeInsets.all(AppPadding.md),
             decoration: BoxDecoration(
               color: AppColors.surfaceElevated,
               borderRadius: BorderRadius.circular(AppRadius.lg),
-              border: Border.all(color: AppColors.accentPurple.withValues(alpha: 0.3)),
+              border: Border.all(
+                  color: AppColors.accentPurple.withValues(alpha: 0.3)),
             ),
             child: Row(
               children: [
-                const Icon(Icons.card_giftcard, size: 40, color: AppColors.accentPurple),
+                const Icon(Icons.card_giftcard,
+                    size: 40, color: AppColors.accentPurple),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Have a promo code?', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+                      const Text('Have a promo code?',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16)),
                       const SizedBox(height: 4),
-                      const Text('Enter your code to unlock exclusive deals!', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                      const Text('Enter your code to unlock exclusive deals!',
+                          style: TextStyle(
+                              color: AppColors.textSecondary, fontSize: 12)),
                       const SizedBox(height: 12),
                       SizedBox(
                         height: 36,
@@ -292,9 +321,12 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
                             backgroundColor: AppColors.accentPurple,
                             foregroundColor: Colors.white,
                             elevation: 0,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.sm)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(AppRadius.sm)),
                           ),
-                          child: const Text('Redeem Code >', style: TextStyle(fontWeight: FontWeight.bold)),
+                          child: const Text('Redeem Code >',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
                       ),
                     ],
@@ -307,8 +339,4 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
       ),
     );
   }
-
-
-
-
 }

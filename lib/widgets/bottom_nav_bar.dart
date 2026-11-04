@@ -28,8 +28,8 @@ class AppBottomNavBar extends StatelessWidget {
           type: BottomNavigationBarType.fixed,
           selectedItemColor: AppColors.primary,
           unselectedItemColor: AppColors.textSecondary,
-          selectedLabelStyle: const TextStyle(
-              fontSize: 11, fontWeight: FontWeight.w600),
+          selectedLabelStyle:
+              const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
           unselectedLabelStyle: const TextStyle(fontSize: 11),
           items: const [
             BottomNavigationBarItem(
@@ -47,13 +47,11 @@ class AppBottomNavBar extends StatelessWidget {
               activeIcon: Icon(Icons.event_rounded),
               label: 'Events',
             ),
-
             BottomNavigationBarItem(
               icon: Icon(Icons.local_offer_outlined),
               activeIcon: Icon(Icons.local_offer_rounded),
               label: 'Promos',
             ),
-
             BottomNavigationBarItem(
               icon: Icon(Icons.person_outline_rounded),
               activeIcon: Icon(Icons.person_rounded),

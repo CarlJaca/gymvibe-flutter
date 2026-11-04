@@ -36,14 +36,18 @@ class _WorkoutCalendarScreenState extends State<WorkoutCalendarScreen> {
     setState(() {
       _currentMonth = DateTime(_currentMonth.year, _currentMonth.month - 1);
     });
-    context.read<CalendarProvider>().loadMonth(_currentMonth.year, _currentMonth.month);
+    context
+        .read<CalendarProvider>()
+        .loadMonth(_currentMonth.year, _currentMonth.month);
   }
 
   void _goToNextMonth() {
     setState(() {
       _currentMonth = DateTime(_currentMonth.year, _currentMonth.month + 1);
     });
-    context.read<CalendarProvider>().loadMonth(_currentMonth.year, _currentMonth.month);
+    context
+        .read<CalendarProvider>()
+        .loadMonth(_currentMonth.year, _currentMonth.month);
   }
 
   @override
@@ -87,8 +91,18 @@ class _WorkoutCalendarScreenState extends State<WorkoutCalendarScreen> {
   // ─── Month Navigation ───────────────────────────────────────────────────────
   Widget _buildMonthNavigation() {
     final monthNames = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December',
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
     ];
 
     return Padding(
@@ -98,7 +112,8 @@ class _WorkoutCalendarScreenState extends State<WorkoutCalendarScreen> {
         children: [
           IconButton(
             onPressed: _goToPreviousMonth,
-            icon: const Icon(Icons.chevron_left_rounded, color: AppColors.textPrimary),
+            icon: const Icon(Icons.chevron_left_rounded,
+                color: AppColors.textPrimary),
           ),
           Text(
             '${monthNames[_currentMonth.month - 1]} ${_currentMonth.year}',
@@ -110,7 +125,8 @@ class _WorkoutCalendarScreenState extends State<WorkoutCalendarScreen> {
           ),
           IconButton(
             onPressed: _goToNextMonth,
-            icon: const Icon(Icons.chevron_right_rounded, color: AppColors.textPrimary),
+            icon: const Icon(Icons.chevron_right_rounded,
+                color: AppColors.textPrimary),
           ),
         ],
       ),
@@ -143,8 +159,10 @@ class _WorkoutCalendarScreenState extends State<WorkoutCalendarScreen> {
 
   // ─── Calendar Grid ──────────────────────────────────────────────────────────
   Widget _buildCalendarGrid(CalendarProvider calendarProv) {
-    final daysInMonth = DateTime(_currentMonth.year, _currentMonth.month + 1, 0).day;
-    final firstDayOfMonth = DateTime(_currentMonth.year, _currentMonth.month, 1);
+    final daysInMonth =
+        DateTime(_currentMonth.year, _currentMonth.month + 1, 0).day;
+    final firstDayOfMonth =
+        DateTime(_currentMonth.year, _currentMonth.month, 1);
     // Monday = 1, so offset is weekday - 1
     final startOffset = (firstDayOfMonth.weekday - 1) % 7;
     final totalCells = startOffset + daysInMonth;
@@ -165,7 +183,8 @@ class _WorkoutCalendarScreenState extends State<WorkoutCalendarScreen> {
                 return const Expanded(child: SizedBox(height: 48));
               }
 
-              final date = DateTime(_currentMonth.year, _currentMonth.month, dayNum);
+              final date =
+                  DateTime(_currentMonth.year, _currentMonth.month, dayNum);
               final isToday = date.year == today.year &&
                   date.month == today.month &&
                   date.day == today.day;
@@ -188,7 +207,8 @@ class _WorkoutCalendarScreenState extends State<WorkoutCalendarScreen> {
                       arguments: date,
                     ).then((_) {
                       // Reload when returning from day screen
-                      calendarProv.loadMonth(_currentMonth.year, _currentMonth.month);
+                      calendarProv.loadMonth(
+                          _currentMonth.year, _currentMonth.month);
                     });
                   },
                   child: Container(
@@ -204,7 +224,9 @@ class _WorkoutCalendarScreenState extends State<WorkoutCalendarScreen> {
                       border: isSelected
                           ? Border.all(color: AppColors.primary, width: 1.5)
                           : isToday
-                              ? Border.all(color: AppColors.primary.withValues(alpha: 0.5))
+                              ? Border.all(
+                                  color:
+                                      AppColors.primary.withValues(alpha: 0.5))
                               : null,
                     ),
                     child: Column(
@@ -294,10 +316,21 @@ class _WorkoutCalendarScreenState extends State<WorkoutCalendarScreen> {
 
     final activities = calendarProv.getActivitiesForDate(_selectedDate!);
     final monthNames = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
-    final dateStr = '${monthNames[_selectedDate!.month - 1]} ${_selectedDate!.day}, ${_selectedDate!.year}';
+    final dateStr =
+        '${monthNames[_selectedDate!.month - 1]} ${_selectedDate!.day}, ${_selectedDate!.year}';
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: AppPadding.md),
@@ -322,7 +355,8 @@ class _WorkoutCalendarScreenState extends State<WorkoutCalendarScreen> {
                     AppRoutes.workoutDay,
                     arguments: _selectedDate!,
                   ).then((_) {
-                    calendarProv.loadMonth(_currentMonth.year, _currentMonth.month);
+                    calendarProv.loadMonth(
+                        _currentMonth.year, _currentMonth.month);
                   });
                 },
                 icon: Icon(
@@ -357,7 +391,8 @@ class _WorkoutCalendarScreenState extends State<WorkoutCalendarScreen> {
                     decoration: BoxDecoration(
                       color: activity.type.color.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(AppRadius.md),
-                      border: Border.all(color: activity.type.color.withValues(alpha: 0.3)),
+                      border: Border.all(
+                          color: activity.type.color.withValues(alpha: 0.3)),
                     ),
                     child: Row(
                       children: [
@@ -368,7 +403,8 @@ class _WorkoutCalendarScreenState extends State<WorkoutCalendarScreen> {
                             color: activity.type.color.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(AppRadius.sm),
                           ),
-                          child: Icon(activity.type.icon, color: activity.type.color, size: 18),
+                          child: Icon(activity.type.icon,
+                              color: activity.type.color, size: 18),
                         ),
                         const SizedBox(width: 12),
                         Expanded(

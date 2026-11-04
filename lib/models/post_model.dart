@@ -29,7 +29,8 @@ class PostModel {
     required this.createdAt,
   });
 
-  PostModel copyWith({List<String>? likedBy, int? likeCount, int? commentCount}) {
+  PostModel copyWith(
+      {List<String>? likedBy, int? likeCount, int? commentCount}) {
     return PostModel(
       id: id,
       userId: userId,
@@ -79,7 +80,9 @@ class PostModel {
       likeCount: json['likeCount'] ?? 0,
       commentCount: json['commentCount'] ?? 0,
       likedBy: List<String>.from(json['likedBy'] ?? []),
-      createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : DateTime.now(),
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'])
+          : DateTime.now(),
     );
   }
 }
@@ -112,7 +115,8 @@ class CommunityModel {
     };
   }
 
-  factory CommunityModel.fromJson(Map<String, dynamic> json, String documentId) {
+  factory CommunityModel.fromJson(
+      Map<String, dynamic> json, String documentId) {
     return CommunityModel(
       id: documentId,
       name: json['name'] ?? '',
@@ -123,5 +127,3 @@ class CommunityModel {
     );
   }
 }
-
-

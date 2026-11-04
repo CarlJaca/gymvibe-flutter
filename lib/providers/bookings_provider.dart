@@ -17,9 +17,12 @@ class BookingsProvider extends ChangeNotifier {
   StreamSubscription<QuerySnapshot>? _bookingsSubscription;
   String? _currentUserId;
 
-  List<BookingModel> get upcomingBookings => List.unmodifiable(_upcomingBookings);
-  List<BookingModel> get completedBookings => List.unmodifiable(_completedBookings);
-  List<BookingModel> get cancelledBookings => List.unmodifiable(_cancelledBookings);
+  List<BookingModel> get upcomingBookings =>
+      List.unmodifiable(_upcomingBookings);
+  List<BookingModel> get completedBookings =>
+      List.unmodifiable(_completedBookings);
+  List<BookingModel> get cancelledBookings =>
+      List.unmodifiable(_cancelledBookings);
   String? get currentUserId => _currentUserId;
 
   BookingsProvider() {
@@ -51,7 +54,8 @@ class BookingsProvider extends ChangeNotifier {
       final List<BookingModel> completed = [];
       final List<BookingModel> cancelled = [];
       final today = DateTime.now();
-      final todayStr = '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+      final todayStr =
+          '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
 
       for (var doc in snapshot.docs) {
         final booking = BookingModel.fromJson(
@@ -61,7 +65,8 @@ class BookingsProvider extends ChangeNotifier {
 
         if (booking.status == 'Cancelled') {
           cancelled.add(booking);
-        } else if (booking.status == 'Completed' || booking.bookingDate.compareTo(todayStr) < 0) {
+        } else if (booking.status == 'Completed' ||
+            booking.bookingDate.compareTo(todayStr) < 0) {
           completed.add(booking);
         } else {
           upcoming.add(booking);
@@ -101,9 +106,8 @@ class BookingsProvider extends ChangeNotifier {
         .ref()
         .child('booking_payments/$userId/${timestamp}_$safeName');
 
-    final ext = safeName.contains('.')
-        ? safeName.split('.').last.toLowerCase()
-        : 'jpg';
+    final ext =
+        safeName.contains('.') ? safeName.split('.').last.toLowerCase() : 'jpg';
     final contentType = ext == 'png' ? 'image/png' : 'image/jpeg';
     final metadata = SettableMetadata(contentType: contentType);
 

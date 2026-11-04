@@ -23,14 +23,16 @@ class _FiltersScreenState extends State<FiltersScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final provider = context.read<GymProvider>();
       setState(() {
-        _budgetRange = provider.advancedBudgetRange ?? const RangeValues(0, 2000);
-        
-        if (provider.selectedCity != null && _locations.contains(provider.selectedCity)) {
+        _budgetRange =
+            provider.advancedBudgetRange ?? const RangeValues(0, 2000);
+
+        if (provider.selectedCity != null &&
+            _locations.contains(provider.selectedCity)) {
           _selectedLocation = provider.selectedCity;
         } else if (provider.selectedCity == null) {
           _selectedLocation = 'Current Location';
         }
-        
+
         _selectedGoal = provider.advancedFitnessGoal;
         _selectedTrainer = provider.advancedTrainerAvailability;
       });
@@ -132,8 +134,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
                       icon: Icons.flag_outlined,
                       value: _selectedGoal,
                       items: _goals,
-                      onChanged: (val) =>
-                          setState(() => _selectedGoal = val),
+                      onChanged: (val) => setState(() => _selectedGoal = val),
                     ),
                     const SizedBox(height: AppPadding.lg),
 
@@ -164,8 +165,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
                       divisions: 20,
                       activeColor: AppColors.primary,
                       inactiveColor: AppColors.border,
-                      onChanged: (vals) =>
-                          setState(() => _budgetRange = vals),
+                      onChanged: (vals) => setState(() => _budgetRange = vals),
                     ),
                     const SizedBox(height: AppPadding.md),
 
@@ -187,8 +187,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
                       ].map((facility) {
                         return FilterChipWidget(
                           label: facility,
-                          isSelected:
-                              provider.activeFilters.contains(facility),
+                          isSelected: provider.activeFilters.contains(facility),
                           onTap: () => provider.toggleFilter(facility),
                         );
                       }).toList(),
@@ -217,8 +216,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
                       children: _membershipTypes.map((type) {
                         return FilterChipWidget(
                           label: type,
-                          isSelected:
-                              provider.activeFilters.contains(type),
+                          isSelected: provider.activeFilters.contains(type),
                           onTap: () => provider.toggleFilter(type),
                         );
                       }).toList(),
@@ -239,8 +237,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
                       ].map((hour) {
                         return FilterChipWidget(
                           label: hour,
-                          isSelected:
-                              provider.activeFilters.contains(hour),
+                          isSelected: provider.activeFilters.contains(hour),
                           onTap: () => provider.toggleFilter(hour),
                         );
                       }).toList(),

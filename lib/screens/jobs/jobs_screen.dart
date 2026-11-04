@@ -74,8 +74,8 @@ class _JobsScreenState extends State<JobsScreen> {
                 builder: (context, prov, _) {
                   return ListView(
                     scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: AppPadding.md),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: AppPadding.md),
                     children: [
                       FilterChipWidget(
                         label: 'All',
@@ -86,19 +86,14 @@ class _JobsScreenState extends State<JobsScreen> {
                       const SizedBox(width: 8),
                       ...['Full Time', 'Part Time', 'Contract', 'Internship']
                           .map((type) {
-                        final value = type
-                            .toLowerCase()
-                            .replaceAll(' ', '_');
+                        final value = type.toLowerCase().replaceAll(' ', '_');
                         return Padding(
                           padding: const EdgeInsets.only(right: 8),
                           child: FilterChipWidget(
                             label: type,
-                            isSelected:
-                                prov.employmentTypeFilter == value,
+                            isSelected: prov.employmentTypeFilter == value,
                             onTap: () => prov.setEmploymentTypeFilter(
-                              prov.employmentTypeFilter == value
-                                  ? null
-                                  : value,
+                              prov.employmentTypeFilter == value ? null : value,
                             ),
                           ),
                         );
@@ -112,8 +107,7 @@ class _JobsScreenState extends State<JobsScreen> {
 
             // ── Sort row ──────────────────────────────────────────────
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: AppPadding.md),
+              padding: const EdgeInsets.symmetric(horizontal: AppPadding.md),
               child: Consumer<JobProvider>(
                 builder: (context, prov, _) {
                   return Row(
@@ -140,8 +134,8 @@ class _JobsScreenState extends State<JobsScreen> {
                 builder: (context, prov, _) {
                   if (prov.isLoading && prov.jobs.isEmpty) {
                     return const Center(
-                      child: CircularProgressIndicator(
-                          color: AppColors.primary),
+                      child:
+                          CircularProgressIndicator(color: AppColors.primary),
                     );
                   }
 
@@ -173,8 +167,8 @@ class _JobsScreenState extends State<JobsScreen> {
                         children: [
                           Icon(Icons.work_off_outlined,
                               size: 64,
-                              color: AppColors.textMuted
-                                  .withValues(alpha: 0.5)),
+                              color:
+                                  AppColors.textMuted.withValues(alpha: 0.5)),
                           const SizedBox(height: 12),
                           const Text('No job postings found',
                               style: TextStyle(
@@ -183,8 +177,7 @@ class _JobsScreenState extends State<JobsScreen> {
                           const SizedBox(height: 4),
                           const Text('Try adjusting your filters',
                               style: TextStyle(
-                                  color: AppColors.textMuted,
-                                  fontSize: 13)),
+                                  color: AppColors.textMuted, fontSize: 13)),
                         ],
                       ),
                     );
@@ -196,18 +189,16 @@ class _JobsScreenState extends State<JobsScreen> {
                     onRefresh: () => prov.loadJobs(),
                     child: ListView.builder(
                       controller: _scrollController,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: AppPadding.md),
-                      itemCount:
-                          prov.jobs.length + (prov.hasMore ? 1 : 0),
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: AppPadding.md),
+                      itemCount: prov.jobs.length + (prov.hasMore ? 1 : 0),
                       itemBuilder: (context, index) {
                         if (index >= prov.jobs.length) {
                           return const Padding(
                             padding: EdgeInsets.all(16),
                             child: Center(
                               child: CircularProgressIndicator(
-                                  color: AppColors.primary,
-                                  strokeWidth: 2),
+                                  color: AppColors.primary, strokeWidth: 2),
                             ),
                           );
                         }
@@ -239,8 +230,7 @@ class _JobsScreenState extends State<JobsScreen> {
           dropdownColor: AppColors.surfaceElevated,
           icon: const Icon(Icons.keyboard_arrow_down_rounded,
               size: 16, color: AppColors.textSecondary),
-          style:
-              const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+          style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
           items: const [
             DropdownMenuItem(
                 value: 'newest',
@@ -339,9 +329,8 @@ class _JobsScreenState extends State<JobsScreen> {
                         isSaved
                             ? Icons.bookmark_rounded
                             : Icons.bookmark_border_rounded,
-                        color: isSaved
-                            ? AppColors.primary
-                            : AppColors.textMuted,
+                        color:
+                            isSaved ? AppColors.primary : AppColors.textMuted,
                         size: 22,
                       ),
                     );
@@ -372,8 +361,8 @@ class _JobsScreenState extends State<JobsScreen> {
                 const SizedBox(width: 4),
                 Text(
                   '${job.numberOfOpenings} opening${job.numberOfOpenings > 1 ? 's' : ''}',
-                  style: const TextStyle(
-                      fontSize: 11, color: AppColors.textMuted),
+                  style:
+                      const TextStyle(fontSize: 11, color: AppColors.textMuted),
                 ),
                 const Spacer(),
                 if (job.applicationDeadline != null) ...[
@@ -407,8 +396,8 @@ class _JobsScreenState extends State<JobsScreen> {
           Icon(icon, size: 12, color: AppColors.primary),
           const SizedBox(width: 4),
           Text(text,
-              style: const TextStyle(
-                  fontSize: 11, color: AppColors.textSecondary),
+              style:
+                  const TextStyle(fontSize: 11, color: AppColors.textSecondary),
               maxLines: 1,
               overflow: TextOverflow.ellipsis),
         ],
@@ -418,8 +407,19 @@ class _JobsScreenState extends State<JobsScreen> {
 
   String _formatDate(DateTime date) {
     final months = [
-      '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      '',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return '${months[date.month]} ${date.day}, ${date.year}';
   }

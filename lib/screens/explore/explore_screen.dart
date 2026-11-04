@@ -62,7 +62,8 @@ class _ExploreScreenState extends State<ExploreScreen>
   }
 
   void _openCompareScreen(List<GymModel> allGyms) {
-    final selectedGyms = allGyms.where((g) => _selectedGymIds.contains(g.id)).toList();
+    final selectedGyms =
+        allGyms.where((g) => _selectedGymIds.contains(g.id)).toList();
     if (selectedGyms.length < 2) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -88,7 +89,6 @@ class _ExploreScreenState extends State<ExploreScreen>
       body: SafeArea(
         child: Column(
           children: [
-
             // ── Search Bar ─────────────────────────────────────────
             GestureDetector(
               onTap: () =>
@@ -189,7 +189,8 @@ class _ExploreScreenState extends State<ExploreScreen>
         return Stack(
           children: [
             ListView(
-              padding: EdgeInsets.fromLTRB(20, 12, 20, _selectedGymIds.isNotEmpty ? 80 : 20),
+              padding: EdgeInsets.fromLTRB(
+                  20, 12, 20, _selectedGymIds.isNotEmpty ? 80 : 20),
               children: [
                 GestureDetector(
                   onTap: () {
@@ -198,15 +199,18 @@ class _ExploreScreenState extends State<ExploreScreen>
                     Navigator.pushNamed(context, AppRoutes.searchResults);
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
                       color: AppColors.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(AppRadius.md),
-                      border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+                      border: Border.all(
+                          color: AppColors.primary.withValues(alpha: 0.3)),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.list_alt_rounded, size: 18, color: AppColors.primary),
+                        const Icon(Icons.list_alt_rounded,
+                            size: 18, color: AppColors.primary),
                         const SizedBox(width: 8),
                         const Text(
                           'View All Gyms',
@@ -216,11 +220,13 @@ class _ExploreScreenState extends State<ExploreScreen>
                             color: AppColors.primary,
                           ),
                         ),
-                        const Icon(Icons.keyboard_arrow_down_rounded, size: 20, color: AppColors.primary),
+                        const Icon(Icons.keyboard_arrow_down_rounded,
+                            size: 20, color: AppColors.primary),
                         const Spacer(),
                         Text(
                           '${gyms.length} gyms found',
-                          style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                          style: const TextStyle(
+                              fontSize: 12, color: AppColors.textSecondary),
                         ),
                       ],
                     ),
@@ -249,7 +255,8 @@ class _ExploreScreenState extends State<ExploreScreen>
                                 decoration: BoxDecoration(
                                   color: _selectedGymIds.contains(gym.id)
                                       ? AppColors.primary
-                                      : AppColors.surface.withValues(alpha: 0.8),
+                                      : AppColors.surface
+                                          .withValues(alpha: 0.8),
                                   borderRadius: BorderRadius.circular(6),
                                   border: Border.all(
                                     color: _selectedGymIds.contains(gym.id)
@@ -259,7 +266,8 @@ class _ExploreScreenState extends State<ExploreScreen>
                                   ),
                                 ),
                                 child: _selectedGymIds.contains(gym.id)
-                                    ? const Icon(Icons.check_rounded, color: Colors.white, size: 18)
+                                    ? const Icon(Icons.check_rounded,
+                                        color: Colors.white, size: 18)
                                     : null,
                               ),
                             ),
@@ -277,10 +285,12 @@ class _ExploreScreenState extends State<ExploreScreen>
                 left: 0,
                 right: 0,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
                     color: AppColors.surface,
-                    border: const Border(top: BorderSide(color: AppColors.border)),
+                    border:
+                        const Border(top: BorderSide(color: AppColors.border)),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withValues(alpha: 0.3),
@@ -301,21 +311,26 @@ class _ExploreScreenState extends State<ExploreScreen>
                       ),
                       const Spacer(),
                       TextButton(
-                        onPressed: () => setState(() => _selectedGymIds.clear()),
-                        child: const Text('Clear', style: TextStyle(color: AppColors.textMuted)),
+                        onPressed: () =>
+                            setState(() => _selectedGymIds.clear()),
+                        child: const Text('Clear',
+                            style: TextStyle(color: AppColors.textMuted)),
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton.icon(
                         onPressed: () => _openCompareScreen(gyms),
-                        icon: const Icon(Icons.compare_arrows_rounded, size: 18),
-                        label: const Text('Compare', style: TextStyle(fontWeight: FontWeight.bold)),
+                        icon:
+                            const Icon(Icons.compare_arrows_rounded, size: 18),
+                        label: const Text('Compare',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(AppRadius.md),
                           ),
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
                         ),
                       ),
                     ],
@@ -349,9 +364,7 @@ class _ExploreScreenState extends State<ExploreScreen>
           );
         }
 
-        final gyms = provider.allGyms
-            .where((g) => g.latitude != 0.0 && g.longitude != 0.0)
-            .toList();
+        final gyms = provider.allGyms.where((g) => g.canShowMapMarker).toList();
         // Center on Davao City
         const initialCenter = LatLng(7.0700, 125.6000);
 
@@ -370,14 +383,16 @@ class _ExploreScreenState extends State<ExploreScreen>
               ),
               children: [
                 TileLayer(
-                  urlTemplate:
-                      'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                   userAgentPackageName: 'com.example.gymvibe',
                 ),
                 MarkerLayer(
                   markers: gyms.map((gym) {
+                    final isBuilding = gym.isBuildingLevel;
+                    final markerColor =
+                        isBuilding ? Colors.orange : AppColors.primary;
                     return Marker(
-                      point: LatLng(gym.latitude, gym.longitude),
+                      point: LatLng(gym.latitude!, gym.longitude!),
                       width: 40,
                       height: 40,
                       child: GestureDetector(
@@ -385,10 +400,10 @@ class _ExploreScreenState extends State<ExploreScreen>
                           _showGymPreview(context, gym);
                         },
                         child: Container(
-                          decoration: const BoxDecoration(
-                            color: AppColors.primary,
+                          decoration: BoxDecoration(
+                            color: markerColor,
                             shape: BoxShape.circle,
-                            boxShadow: [
+                            boxShadow: const [
                               BoxShadow(
                                 color: Colors.black26,
                                 blurRadius: 4,
@@ -396,8 +411,10 @@ class _ExploreScreenState extends State<ExploreScreen>
                               ),
                             ],
                           ),
-                          child: const Icon(
-                            Icons.fitness_center_rounded,
+                          child: Icon(
+                            isBuilding
+                                ? Icons.location_city_rounded
+                                : Icons.fitness_center_rounded,
                             color: Colors.white,
                             size: 20,
                           ),
@@ -415,8 +432,8 @@ class _ExploreScreenState extends State<ExploreScreen>
                                 decoration: BoxDecoration(
                                   color: Colors.blue,
                                   shape: BoxShape.circle,
-                                  border: Border.all(
-                                      color: Colors.white, width: 3),
+                                  border:
+                                      Border.all(color: Colors.white, width: 3),
                                   boxShadow: const [
                                     BoxShadow(
                                         color: Colors.black26,

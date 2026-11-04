@@ -22,24 +22,53 @@ class SuperAdminService {
   Future<Map<String, int>> getDashboardStats() async {
     final results = await Future.wait([
       _firestore.collection('users').count().get(),
-      _firestore.collection('users').where('role', isEqualTo: 'gym_seeker').count().get(),
-      _firestore.collection('users').where('role', isEqualTo: 'gym_owner').count().get(),
-      _firestore.collection('users').where('role', isEqualTo: 'gym_owner').where('accountStatus', isEqualTo: 'pending').count().get(),
+      _firestore
+          .collection('users')
+          .where('role', isEqualTo: 'gym_seeker')
+          .count()
+          .get(),
+      _firestore
+          .collection('users')
+          .where('role', isEqualTo: 'gym_owner')
+          .count()
+          .get(),
+      _firestore
+          .collection('users')
+          .where('role', isEqualTo: 'gym_owner')
+          .where('accountStatus', isEqualTo: 'pending')
+          .count()
+          .get(),
       _firestore.collection('gyms').count().get(),
       _firestore.collection('bookings').count().get(),
       _firestore.collection('events').count().get(),
       _firestore.collection('promotions').count().get(),
-      _firestore.collection('users').where('accountStatus', isEqualTo: 'suspended').count().get(),
-      _firestore.collection('contentReports').where('status', isEqualTo: 'pending').count().get(),
+      _firestore
+          .collection('users')
+          .where('accountStatus', isEqualTo: 'suspended')
+          .count()
+          .get(),
+      _firestore
+          .collection('contentReports')
+          .where('status', isEqualTo: 'pending')
+          .count()
+          .get(),
     ]);
 
     // Personal records require collection group queries
     int verifiedPRs = 0;
     int pendingPRs = 0;
     try {
-      final verifiedSnap = await _firestore.collectionGroup('personalRecords').where('status', isEqualTo: 'verified').count().get();
+      final verifiedSnap = await _firestore
+          .collectionGroup('personalRecords')
+          .where('status', isEqualTo: 'verified')
+          .count()
+          .get();
       verifiedPRs = verifiedSnap.count ?? 0;
-      final pendingSnap = await _firestore.collectionGroup('personalRecords').where('status', isEqualTo: 'pending').count().get();
+      final pendingSnap = await _firestore
+          .collectionGroup('personalRecords')
+          .where('status', isEqualTo: 'pending')
+          .count()
+          .get();
       pendingPRs = pendingSnap.count ?? 0;
     } catch (_) {
       // Collection group index might not exist yet
@@ -544,7 +573,8 @@ class SuperAdminService {
 
     final snapshot = await query.get();
     List<Map<String, dynamic>> bookings = snapshot.docs.map((doc) {
-      final data = Map<String, dynamic>.from(doc.data() as Map<String, dynamic>);
+      final data =
+          Map<String, dynamic>.from(doc.data() as Map<String, dynamic>);
       data['id'] = doc.id;
       return data;
     }).toList();
@@ -552,8 +582,14 @@ class SuperAdminService {
     if (searchQuery != null && searchQuery.isNotEmpty) {
       final lowerQuery = searchQuery.toLowerCase();
       bookings = bookings.where((b) {
-        return (b['gymName'] ?? '').toString().toLowerCase().contains(lowerQuery) ||
-            (b['userName'] ?? '').toString().toLowerCase().contains(lowerQuery) ||
+        return (b['gymName'] ?? '')
+                .toString()
+                .toLowerCase()
+                .contains(lowerQuery) ||
+            (b['userName'] ?? '')
+                .toString()
+                .toLowerCase()
+                .contains(lowerQuery) ||
             (b['id'] ?? '').toString().toLowerCase().contains(lowerQuery) ||
             (b['userId'] ?? '').toString().toLowerCase().contains(lowerQuery);
       }).toList();
@@ -811,7 +847,10 @@ class SuperAdminService {
       if (searchQuery != null && searchQuery.isNotEmpty) {
         final lowerQuery = searchQuery.toLowerCase();
         records = records.where((r) {
-          return (r['userName'] ?? '').toString().toLowerCase().contains(lowerQuery) ||
+          return (r['userName'] ?? '')
+                  .toString()
+                  .toLowerCase()
+                  .contains(lowerQuery) ||
               (r['gymId'] ?? '').toString().toLowerCase().contains(lowerQuery);
         }).toList();
       }
@@ -950,7 +989,8 @@ class SuperAdminService {
     required String senderId,
     required String senderName,
   }) async {
-    final isScheduled = scheduledDate != null && scheduledDate.isAfter(DateTime.now());
+    final isScheduled =
+        scheduledDate != null && scheduledDate.isAfter(DateTime.now());
 
     final notif = AdminNotificationModel(
       id: '',

@@ -15,12 +15,13 @@ class StorageService {
   /// Returns the download URL if successful.
   Future<String> _uploadImageToImgBB(File file) async {
     if (_imgBbApiKey == 'YOUR_IMGBB_API_KEY_HERE') {
-      throw Exception('Please create a free API key at api.imgbb.com and paste it in lib/services/storage_service.dart');
+      throw Exception(
+          'Please create a free API key at api.imgbb.com and paste it in lib/services/storage_service.dart');
     }
 
     try {
       final url = Uri.parse('https://api.imgbb.com/1/upload');
-      
+
       final request = http.MultipartRequest('POST', url)
         ..fields['key'] = _imgBbApiKey
         ..files.add(await http.MultipartFile.fromPath('image', file.path));
@@ -36,7 +37,8 @@ class StorageService {
           throw Exception('ImgBB API error: ${data['error']['message']}');
         }
       } else {
-        throw Exception('Failed to upload image. Status: ${response.statusCode}');
+        throw Exception(
+            'Failed to upload image. Status: ${response.statusCode}');
       }
     } catch (e) {
       debugPrint('[StorageService] Error: $e');

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
 import '../models/gym_model.dart';
@@ -419,7 +418,8 @@ class SuperAdminProvider extends ChangeNotifier {
   List<ContentReportModel> _reports = [];
   List<ContentReportModel> get reports => _reports;
 
-  Future<void> loadReports({String? contentTypeFilter, String? statusFilter}) async {
+  Future<void> loadReports(
+      {String? contentTypeFilter, String? statusFilter}) async {
     _setLoading(true);
     _setError(null);
     try {

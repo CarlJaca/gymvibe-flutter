@@ -16,14 +16,16 @@ class _OwnerReviewsScreenState extends State<OwnerReviewsScreen> {
       'name': 'John D.',
       'avatar': 'https://i.pravatar.cc/80?img=11',
       'rating': 5,
-      'text': 'Great equipment and amazing trainers! Very recommended gym in Davao.',
+      'text':
+          'Great equipment and amazing trainers! Very recommended gym in Davao.',
       'time': '2h ago',
     },
     {
       'name': 'Sarah M.',
       'avatar': 'https://i.pravatar.cc/80?img=47',
       'rating': 5,
-      'text': 'I love the atmosphere and friendly staff. The classes are motivating!',
+      'text':
+          'I love the atmosphere and friendly staff. The classes are motivating!',
       'time': '5d ago',
     },
     {
@@ -37,7 +39,8 @@ class _OwnerReviewsScreenState extends State<OwnerReviewsScreen> {
       'name': 'Ana L.',
       'avatar': 'https://i.pravatar.cc/80?img=32',
       'rating': 4,
-      'text': 'Nice gym! Love the morning classes. Could use more cardio machines.',
+      'text':
+          'Nice gym! Love the morning classes. Could use more cardio machines.',
       'time': '45d ago',
     },
     {
@@ -68,14 +71,12 @@ class _OwnerReviewsScreenState extends State<OwnerReviewsScreen> {
               padding: EdgeInsets.symmetric(
                   horizontal: AppPadding.md, vertical: AppPadding.sm),
               child: Text('Reviews',
-                  style: TextStyle(
-                      fontSize: 22, fontWeight: FontWeight.bold)),
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
             ),
 
             // ── Stats Row ───────────────────────────────────────────
             Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: AppPadding.md),
+              padding: const EdgeInsets.symmetric(horizontal: AppPadding.md),
               child: Container(
                 padding: const EdgeInsets.all(AppPadding.md),
                 decoration: BoxDecoration(
@@ -110,8 +111,7 @@ class _OwnerReviewsScreenState extends State<OwnerReviewsScreen> {
                         const SizedBox(height: 2),
                         Text('${_reviews.length} Reviews',
                             style: const TextStyle(
-                                color: AppColors.textSecondary,
-                                fontSize: 12)),
+                                color: AppColors.textSecondary, fontSize: 12)),
                       ],
                     ),
                     const SizedBox(width: AppPadding.lg),
@@ -121,7 +121,8 @@ class _OwnerReviewsScreenState extends State<OwnerReviewsScreen> {
                           final count = _reviews
                               .where((r) => r['rating'] == stars)
                               .length;
-                          final frac = _reviews.isEmpty ? 0.0 : count / _reviews.length;
+                          final frac =
+                              _reviews.isEmpty ? 0.0 : count / _reviews.length;
                           return Padding(
                             padding: const EdgeInsets.symmetric(vertical: 2),
                             child: Row(
@@ -166,8 +167,7 @@ class _OwnerReviewsScreenState extends State<OwnerReviewsScreen> {
               height: 38,
               child: ListView(
                 scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppPadding.md),
+                padding: const EdgeInsets.symmetric(horizontal: AppPadding.md),
                 children: [
                   _filterChip('All', 0),
                   _filterChip('5 ★', 5),
@@ -185,11 +185,10 @@ class _OwnerReviewsScreenState extends State<OwnerReviewsScreen> {
               child: _filtered.isEmpty
                   ? const Center(
                       child: Text('No reviews for this rating.',
-                          style:
-                              TextStyle(color: AppColors.textSecondary)))
+                          style: TextStyle(color: AppColors.textSecondary)))
                   : ListView.builder(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: AppPadding.md),
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: AppPadding.md),
                       itemCount: _filtered.length,
                       itemBuilder: (_, i) => _buildReviewCard(_filtered[i]),
                     ),
@@ -279,9 +278,7 @@ class _OwnerReviewsScreenState extends State<OwnerReviewsScreen> {
           // ── Review Text ──────────────────────────────────────────
           Text(review['text'],
               style: const TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: 13,
-                  height: 1.5)),
+                  color: AppColors.textSecondary, fontSize: 13, height: 1.5)),
           const SizedBox(height: AppPadding.sm),
 
           // ── Actions ──────────────────────────────────────────────
@@ -299,8 +296,7 @@ class _OwnerReviewsScreenState extends State<OwnerReviewsScreen> {
               TextButton.icon(
                 onPressed: () {},
                 icon: const Icon(Icons.star_border_rounded, size: 14),
-                label: const Text('Highlight',
-                    style: TextStyle(fontSize: 12)),
+                label: const Text('Highlight', style: TextStyle(fontSize: 12)),
                 style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
                     foregroundColor: AppColors.textSecondary),
@@ -309,8 +305,7 @@ class _OwnerReviewsScreenState extends State<OwnerReviewsScreen> {
               TextButton.icon(
                 onPressed: () {},
                 icon: const Icon(Icons.flag_outlined, size: 14),
-                label:
-                    const Text('Report', style: TextStyle(fontSize: 12)),
+                label: const Text('Report', style: TextStyle(fontSize: 12)),
                 style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
                     foregroundColor: AppColors.textMuted),

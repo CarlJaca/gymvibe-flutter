@@ -23,7 +23,8 @@ class SuperAdminUserDetailsSheet extends StatelessWidget {
         return Container(
           decoration: const BoxDecoration(
             color: AppColors.surface,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
+            borderRadius:
+                BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
           ),
           child: SingleChildScrollView(
             controller: scrollController,
@@ -58,12 +59,14 @@ class SuperAdminUserDetailsSheet extends StatelessWidget {
                 const SizedBox(height: 12),
                 Text(
                   user.name,
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   user.email,
-                  style: const TextStyle(fontSize: 14, color: AppColors.textSecondary),
+                  style: const TextStyle(
+                      fontSize: 14, color: AppColors.textSecondary),
                 ),
                 const SizedBox(height: 12),
 
@@ -71,15 +74,28 @@ class SuperAdminUserDetailsSheet extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _buildBadge(user.role == 'gym_seeker' ? 'Gym Seeker' : user.role == 'gym_owner' ? 'Gym Owner' : 'Super Admin',
-                      user.role == 'gym_seeker' ? const Color(0xFF4FC3F7) : user.role == 'gym_owner' ? const Color(0xFFBA68C8) : AppColors.primary),
+                    _buildBadge(
+                        user.role == 'gym_seeker'
+                            ? 'Gym Seeker'
+                            : user.role == 'gym_owner'
+                                ? 'Gym Owner'
+                                : 'Super Admin',
+                        user.role == 'gym_seeker'
+                            ? const Color(0xFF4FC3F7)
+                            : user.role == 'gym_owner'
+                                ? const Color(0xFFBA68C8)
+                                : AppColors.primary),
                     const SizedBox(width: 8),
                     _buildBadge(
-                      user.accountStatus[0].toUpperCase() + user.accountStatus.substring(1),
-                      user.accountStatus == 'active' ? AppColors.success
-                          : user.accountStatus == 'suspended' ? AppColors.error
-                          : user.accountStatus == 'pending' ? AppColors.accentOrange
-                          : AppColors.textMuted,
+                      user.accountStatus[0].toUpperCase() +
+                          user.accountStatus.substring(1),
+                      user.accountStatus == 'active'
+                          ? AppColors.success
+                          : user.accountStatus == 'suspended'
+                              ? AppColors.error
+                              : user.accountStatus == 'pending'
+                                  ? AppColors.accentOrange
+                                  : AppColors.textMuted,
                     ),
                   ],
                 ),
@@ -87,13 +103,27 @@ class SuperAdminUserDetailsSheet extends StatelessWidget {
 
                 // ── Details ────────────────────────────────────────
                 _buildDetailRow(Icons.badge_outlined, 'User ID', user.id),
-                _buildDetailRow(Icons.phone_outlined, 'Phone Number', user.contactNumber ?? 'Not provided'),
-                _buildDetailRow(Icons.calendar_today_outlined, 'Joined Date',
-                    user.createdAt != null ? DateFormat('MMM d, yyyy hh:mm a').format(user.createdAt!) : 'Unknown'),
-                _buildDetailRow(Icons.access_time, 'Last Login',
-                    user.lastLogin != null ? DateFormat('MMM d, yyyy hh:mm a').format(user.lastLogin!) : 'Unknown'),
-                _buildDetailRow(Icons.info_outline, 'Account Status',
-                    user.accountStatus[0].toUpperCase() + user.accountStatus.substring(1)),
+                _buildDetailRow(Icons.phone_outlined, 'Phone Number',
+                    user.contactNumber ?? 'Not provided'),
+                _buildDetailRow(
+                    Icons.calendar_today_outlined,
+                    'Joined Date',
+                    user.createdAt != null
+                        ? DateFormat('MMM d, yyyy hh:mm a')
+                            .format(user.createdAt!)
+                        : 'Unknown'),
+                _buildDetailRow(
+                    Icons.access_time,
+                    'Last Login',
+                    user.lastLogin != null
+                        ? DateFormat('MMM d, yyyy hh:mm a')
+                            .format(user.lastLogin!)
+                        : 'Unknown'),
+                _buildDetailRow(
+                    Icons.info_outline,
+                    'Account Status',
+                    user.accountStatus[0].toUpperCase() +
+                        user.accountStatus.substring(1)),
 
                 const SizedBox(height: 24),
 
@@ -185,7 +215,8 @@ class SuperAdminUserDetailsSheet extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: color),
+        style:
+            TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: color),
       ),
     );
   }
@@ -197,7 +228,9 @@ class SuperAdminUserDetailsSheet extends StatelessWidget {
         children: [
           Icon(icon, size: 18, color: AppColors.textMuted),
           const SizedBox(width: 12),
-          Text(label, style: const TextStyle(fontSize: 13, color: AppColors.textSecondary)),
+          Text(label,
+              style: const TextStyle(
+                  fontSize: 13, color: AppColors.textSecondary)),
           const Spacer(),
           Flexible(
             child: Text(
@@ -212,7 +245,8 @@ class SuperAdminUserDetailsSheet extends StatelessWidget {
     );
   }
 
-  Widget _buildActionIcon(BuildContext context, IconData icon, String label, VoidCallback onTap) {
+  Widget _buildActionIcon(
+      BuildContext context, IconData icon, String label, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -227,13 +261,17 @@ class SuperAdminUserDetailsSheet extends StatelessWidget {
             child: Icon(icon, size: 22, color: AppColors.primary),
           ),
           const SizedBox(height: 6),
-          Text(label, style: const TextStyle(fontSize: 10, color: AppColors.textSecondary), textAlign: TextAlign.center),
+          Text(label,
+              style:
+                  const TextStyle(fontSize: 10, color: AppColors.textSecondary),
+              textAlign: TextAlign.center),
         ],
       ),
     );
   }
 
-  Widget _buildActionButton(BuildContext context, String label, Color color, VoidCallback onTap) {
+  Widget _buildActionButton(
+      BuildContext context, String label, Color color, VoidCallback onTap) {
     return SizedBox(
       height: 42,
       child: ElevatedButton(
@@ -241,9 +279,11 @@ class SuperAdminUserDetailsSheet extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.sm)),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.sm)),
         ),
-        child: Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+        child: Text(label,
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
       ),
     );
   }
@@ -261,33 +301,39 @@ class SuperAdminUserDetailsSheet extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Suspend ${user.name}?', style: const TextStyle(color: AppColors.textSecondary)),
+            Text('Suspend ${user.name}?',
+                style: const TextStyle(color: AppColors.textSecondary)),
             const SizedBox(height: 16),
             TextField(
               controller: reasonCtrl,
               maxLines: 3,
-              decoration: const InputDecoration(hintText: 'Reason for suspension (required)'),
+              decoration: const InputDecoration(
+                  hintText: 'Reason for suspension (required)'),
             ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
           ElevatedButton(
             onPressed: () {
               if (reasonCtrl.text.trim().isEmpty) return;
               context.read<SuperAdminProvider>().suspendUser(
-                userId: user.id,
-                reason: reasonCtrl.text.trim(),
-                adminId: authProvider.currentUser!.id,
-                adminName: authProvider.userName,
-              );
+                    userId: user.id,
+                    reason: reasonCtrl.text.trim(),
+                    adminId: authProvider.currentUser!.id,
+                    adminName: authProvider.userName,
+                  );
               Navigator.pop(ctx);
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('User suspended'), backgroundColor: AppColors.accentOrange),
+                const SnackBar(
+                    content: Text('User suspended'),
+                    backgroundColor: AppColors.accentOrange),
               );
             },
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.accentOrange),
+            style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.accentOrange),
             child: const Text('Suspend'),
           ),
         ],
@@ -306,30 +352,35 @@ class SuperAdminUserDetailsSheet extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Deactivate ${user.name}?', style: const TextStyle(color: AppColors.textSecondary)),
+            Text('Deactivate ${user.name}?',
+                style: const TextStyle(color: AppColors.textSecondary)),
             const SizedBox(height: 16),
             TextField(
               controller: reasonCtrl,
               maxLines: 3,
-              decoration: const InputDecoration(hintText: 'Reason for deactivation (required)'),
+              decoration: const InputDecoration(
+                  hintText: 'Reason for deactivation (required)'),
             ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
           ElevatedButton(
             onPressed: () {
               if (reasonCtrl.text.trim().isEmpty) return;
               context.read<SuperAdminProvider>().deactivateUser(
-                userId: user.id,
-                reason: reasonCtrl.text.trim(),
-                adminId: authProvider.currentUser!.id,
-                adminName: authProvider.userName,
-              );
+                    userId: user.id,
+                    reason: reasonCtrl.text.trim(),
+                    adminId: authProvider.currentUser!.id,
+                    adminName: authProvider.userName,
+                  );
               Navigator.pop(ctx);
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('User deactivated'), backgroundColor: AppColors.error),
+                const SnackBar(
+                    content: Text('User deactivated'),
+                    backgroundColor: AppColors.error),
               );
             },
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
@@ -342,13 +393,15 @@ class SuperAdminUserDetailsSheet extends StatelessWidget {
 
   void _reactivateUser(BuildContext context, AuthProvider authProvider) {
     context.read<SuperAdminProvider>().reactivateUser(
-      userId: user.id,
-      adminId: authProvider.currentUser!.id,
-      adminName: authProvider.userName,
-    );
+          userId: user.id,
+          adminId: authProvider.currentUser!.id,
+          adminName: authProvider.userName,
+        );
     Navigator.pop(context);
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('User reactivated'), backgroundColor: AppColors.success),
+      const SnackBar(
+          content: Text('User reactivated'),
+          backgroundColor: AppColors.success),
     );
   }
 
@@ -363,14 +416,17 @@ class SuperAdminUserDetailsSheet extends StatelessWidget {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Change role for ${user.name}', style: const TextStyle(color: AppColors.textSecondary)),
+              Text('Change role for ${user.name}',
+                  style: const TextStyle(color: AppColors.textSecondary)),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
                 initialValue: selectedRole,
                 dropdownColor: AppColors.surfaceElevated,
                 items: const [
-                  DropdownMenuItem(value: 'gym_seeker', child: Text('Gym User')),
-                  DropdownMenuItem(value: 'gym_owner', child: Text('Gym Owner')),
+                  DropdownMenuItem(
+                      value: 'gym_seeker', child: Text('Gym User')),
+                  DropdownMenuItem(
+                      value: 'gym_owner', child: Text('Gym Owner')),
                 ],
                 onChanged: (v) => setDialogState(() => selectedRole = v),
                 decoration: const InputDecoration(labelText: 'Role'),
@@ -378,20 +434,24 @@ class SuperAdminUserDetailsSheet extends StatelessWidget {
             ],
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+            TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text('Cancel')),
             ElevatedButton(
               onPressed: () {
                 if (selectedRole == null || selectedRole == user.role) return;
                 context.read<SuperAdminProvider>().changeUserRole(
-                  userId: user.id,
-                  newRole: selectedRole!,
-                  adminId: authProvider.currentUser!.id,
-                  adminName: authProvider.userName,
-                );
+                      userId: user.id,
+                      newRole: selectedRole!,
+                      adminId: authProvider.currentUser!.id,
+                      adminName: authProvider.userName,
+                    );
                 Navigator.pop(ctx);
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Role changed to $selectedRole'), backgroundColor: AppColors.primary),
+                  SnackBar(
+                      content: Text('Role changed to $selectedRole'),
+                      backgroundColor: AppColors.primary),
                 );
               },
               child: const Text('Confirm'),
@@ -403,7 +463,8 @@ class SuperAdminUserDetailsSheet extends StatelessWidget {
   }
 
   void _viewBookings(BuildContext context) async {
-    final bookings = await context.read<SuperAdminProvider>().getUserBookings(user.id);
+    final bookings =
+        await context.read<SuperAdminProvider>().getUserBookings(user.id);
     if (!context.mounted) return;
     showDialog(
       context: context,
@@ -418,9 +479,12 @@ class SuperAdminUserDetailsSheet extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.calendar_today_rounded, size: 48, color: AppColors.textMuted),
+                      Icon(Icons.calendar_today_rounded,
+                          size: 48, color: AppColors.textMuted),
                       SizedBox(height: 16),
-                      Text('No bookings found', style: TextStyle(color: AppColors.textSecondary, fontSize: 16)),
+                      Text('No bookings found',
+                          style: TextStyle(
+                              color: AppColors.textSecondary, fontSize: 16)),
                     ],
                   ),
                 )
@@ -430,17 +494,26 @@ class SuperAdminUserDetailsSheet extends StatelessWidget {
                     final b = bookings[i];
                     return ListTile(
                       dense: true,
-                      title: Text(b['gymName'] ?? 'Gym', style: const TextStyle(fontSize: 13)),
-                      subtitle: Text('${b['dateStr'] ?? ''} - ${b['status'] ?? ''}', style: const TextStyle(fontSize: 11)),
-                      trailing: Text(b['status'] ?? '', style: TextStyle(
-                        fontSize: 11,
-                        color: b['status'] == 'Confirmed' ? AppColors.success : AppColors.textMuted,
-                      )),
+                      title: Text(b['gymName'] ?? 'Gym',
+                          style: const TextStyle(fontSize: 13)),
+                      subtitle: Text(
+                          '${b['dateStr'] ?? ''} - ${b['status'] ?? ''}',
+                          style: const TextStyle(fontSize: 11)),
+                      trailing: Text(b['status'] ?? '',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: b['status'] == 'Confirmed'
+                                ? AppColors.success
+                                : AppColors.textMuted,
+                          )),
                     );
                   },
                 ),
         ),
-        actions: [TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Close'))],
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx), child: const Text('Close'))
+        ],
       ),
     );
   }
@@ -453,9 +526,16 @@ class SuperAdminUserDetailsSheet extends StatelessWidget {
         title: Text('${user.name}\'s Reviews'),
         content: const SizedBox(
           height: 200,
-          child: Center(child: Text('Reviews are stored within gym documents.\nUse Content Moderation to manage.', textAlign: TextAlign.center, style: TextStyle(color: AppColors.textSecondary))),
+          child: Center(
+              child: Text(
+                  'Reviews are stored within gym documents.\nUse Content Moderation to manage.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: AppColors.textSecondary))),
         ),
-        actions: [TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Close'))],
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx), child: const Text('Close'))
+        ],
       ),
     );
   }
@@ -476,9 +556,12 @@ class SuperAdminUserDetailsSheet extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.emoji_events_rounded, size: 48, color: AppColors.textMuted),
+                      Icon(Icons.emoji_events_rounded,
+                          size: 48, color: AppColors.textMuted),
                       SizedBox(height: 16),
-                      Text('No records found', style: TextStyle(color: AppColors.textSecondary, fontSize: 16)),
+                      Text('No records found',
+                          style: TextStyle(
+                              color: AppColors.textSecondary, fontSize: 16)),
                     ],
                   ),
                 )
@@ -488,14 +571,22 @@ class SuperAdminUserDetailsSheet extends StatelessWidget {
                     final pr = prs[i];
                     return ListTile(
                       dense: true,
-                      title: Text('${pr.category.displayName} - ${pr.weight} kg', style: const TextStyle(fontSize: 13)),
-                      subtitle: Text(pr.date, style: const TextStyle(fontSize: 11)),
-                      trailing: Text(pr.status.displayName, style: TextStyle(fontSize: 11, color: pr.status.color)),
+                      title: Text(
+                          '${pr.category.displayName} - ${pr.weight} kg',
+                          style: const TextStyle(fontSize: 13)),
+                      subtitle:
+                          Text(pr.date, style: const TextStyle(fontSize: 11)),
+                      trailing: Text(pr.status.displayName,
+                          style:
+                              TextStyle(fontSize: 11, color: pr.status.color)),
                     );
                   },
                 ),
         ),
-        actions: [TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Close'))],
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx), child: const Text('Close'))
+        ],
       ),
     );
   }

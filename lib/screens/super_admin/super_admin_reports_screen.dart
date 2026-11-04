@@ -9,7 +9,8 @@ class SuperAdminReportsScreen extends StatefulWidget {
   const SuperAdminReportsScreen({super.key});
 
   @override
-  State<SuperAdminReportsScreen> createState() => _SuperAdminReportsScreenState();
+  State<SuperAdminReportsScreen> createState() =>
+      _SuperAdminReportsScreenState();
 }
 
 class _SuperAdminReportsScreenState extends State<SuperAdminReportsScreen> {
@@ -26,17 +27,17 @@ class _SuperAdminReportsScreenState extends State<SuperAdminReportsScreen> {
 
   void _onSearch(String query) {
     context.read<SuperAdminProvider>().loadAuditLogs(
-      searchQuery: query.isNotEmpty ? query : null,
-      actionFilter: _actionFilter,
-    );
+          searchQuery: query.isNotEmpty ? query : null,
+          actionFilter: _actionFilter,
+        );
   }
 
   void _setActionFilter(String? action) {
     setState(() => _actionFilter = action);
     context.read<SuperAdminProvider>().loadAuditLogs(
-      searchQuery: _searchCtrl.text.isNotEmpty ? _searchCtrl.text : null,
-      actionFilter: action,
-    );
+          searchQuery: _searchCtrl.text.isNotEmpty ? _searchCtrl.text : null,
+          actionFilter: action,
+        );
   }
 
   @override
@@ -48,9 +49,9 @@ class _SuperAdminReportsScreenState extends State<SuperAdminReportsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Reports & Audit Logs', style: Theme.of(context).textTheme.headlineLarge),
+          Text('Reports & Audit Logs',
+              style: Theme.of(context).textTheme.headlineLarge),
           const SizedBox(height: 16),
-          
           Row(
             children: [
               Expanded(
@@ -79,10 +80,14 @@ class _SuperAdminReportsScreenState extends State<SuperAdminReportsScreen> {
                       value: _actionFilter,
                       isExpanded: true,
                       dropdownColor: AppColors.surfaceElevated,
-                      hint: const Text('All Actions', style: TextStyle(color: AppColors.textSecondary, fontSize: 14)),
+                      hint: const Text('All Actions',
+                          style: TextStyle(
+                              color: AppColors.textSecondary, fontSize: 14)),
                       items: [
-                        const DropdownMenuItem(value: null, child: Text('All Actions')),
-                        ...provider.actionTypes.map((act) => DropdownMenuItem(value: act, child: Text(act))),
+                        const DropdownMenuItem(
+                            value: null, child: Text('All Actions')),
+                        ...provider.actionTypes.map((act) =>
+                            DropdownMenuItem(value: act, child: Text(act))),
                       ],
                       onChanged: _setActionFilter,
                     ),
@@ -92,7 +97,6 @@ class _SuperAdminReportsScreenState extends State<SuperAdminReportsScreen> {
             ],
           ),
           const SizedBox(height: 16),
-
           Expanded(
             child: _buildContent(provider),
           ),
@@ -110,11 +114,14 @@ class _SuperAdminReportsScreenState extends State<SuperAdminReportsScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.description_rounded, size: 48, color: AppColors.textMuted),
+            Icon(Icons.description_rounded,
+                size: 48, color: AppColors.textMuted),
             SizedBox(height: 16),
-            Text('No audit logs found', style: TextStyle(color: AppColors.textSecondary, fontSize: 16)),
+            Text('No audit logs found',
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 16)),
             SizedBox(height: 8),
-            Text('Admin actions and reports will be logged here.', style: TextStyle(color: AppColors.textMuted, fontSize: 13)),
+            Text('Admin actions and reports will be logged here.',
+                style: TextStyle(color: AppColors.textMuted, fontSize: 13)),
           ],
         ),
       );
@@ -138,7 +145,8 @@ class _SuperAdminReportsScreenState extends State<SuperAdminReportsScreen> {
       ),
       child: ExpansionTile(
         tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        title: Text(log.description, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+        title: Text(log.description,
+            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
         subtitle: Text(
           'By ${log.actorName} • ${DateFormat('MMM d, yyyy hh:mm a').format(log.createdAt)}',
           style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
@@ -152,8 +160,7 @@ class _SuperAdminReportsScreenState extends State<SuperAdminReportsScreen> {
           _buildDetailRow('Actor ID', log.actorId),
           _buildDetailRow('Target Type', log.targetType),
           _buildDetailRow('Target ID', log.targetId),
-          if (log.reason.isNotEmpty)
-            _buildDetailRow('Reason', log.reason),
+          if (log.reason.isNotEmpty) _buildDetailRow('Reason', log.reason),
         ],
       ),
     );
@@ -161,7 +168,10 @@ class _SuperAdminReportsScreenState extends State<SuperAdminReportsScreen> {
 
   Widget _buildActionBadge(String action) {
     Color color = AppColors.primary;
-    if (action.contains('suspended') || action.contains('removed') || action.contains('deactivated') || action.contains('rejected')) {
+    if (action.contains('suspended') ||
+        action.contains('removed') ||
+        action.contains('deactivated') ||
+        action.contains('rejected')) {
       color = AppColors.error;
     } else if (action.contains('flagged') || action.contains('disputed')) {
       color = AppColors.accentOrange;
@@ -176,7 +186,8 @@ class _SuperAdminReportsScreenState extends State<SuperAdminReportsScreen> {
       ),
       child: Text(
         action.toUpperCase(),
-        style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: color),
+        style:
+            TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: color),
       ),
     );
   }
@@ -187,8 +198,15 @@ class _SuperAdminReportsScreenState extends State<SuperAdminReportsScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(width: 100, child: Text(label, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary))),
-          Expanded(child: Text(value, style: const TextStyle(fontSize: 12, fontFamily: 'monospace'))),
+          SizedBox(
+              width: 100,
+              child: Text(label,
+                  style: const TextStyle(
+                      fontSize: 12, color: AppColors.textSecondary))),
+          Expanded(
+              child: Text(value,
+                  style:
+                      const TextStyle(fontSize: 12, fontFamily: 'monospace'))),
         ],
       ),
     );

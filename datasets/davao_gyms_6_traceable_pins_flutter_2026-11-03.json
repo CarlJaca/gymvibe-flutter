@@ -1,0 +1,276 @@
+[
+  {
+    "name": "Dstars Fitness Gym",
+    "branch": "Matina",
+    "district": "Matina",
+    "address": "3rd Floor, Centerpoint Plaza, Gen. Douglas MacArthur Highway, Matina Crossing, Talomo, Davao City 8000",
+    "latitude": 7.05884,
+    "longitude": 125.56933,
+    "maps_url": "https://www.google.com/maps?q=7.0588400,125.5693300",
+    "phone": "09209787878",
+    "operating_hours": "Daily 24 hours",
+    "website_or_facebook": "https://dstarsfitnessgym.com/",
+    "workout_types": [
+      "Strength Training",
+      "Cardio"
+    ],
+    "facilities": [
+      "Free Weights",
+      "Machines",
+      "Cardio Equipment",
+      "Sauna",
+      "Personal Trainers"
+    ],
+    "schedule_type": [
+      "Flexible"
+    ],
+    "trainer_availability": [
+      "Morning",
+      "Afternoon",
+      "Evening"
+    ],
+    "membership_types": [
+      "Monthly",
+      "Daily"
+    ],
+    "monthly_price_php": 1000,
+    "session_price_php": 200,
+    "source_url": "https://dstarsfitnessgym.com/",
+    "coordinate_basis": "Derived",
+    "contact_basis": "Verified",
+    "attributes_basis": "Estimated",
+    "price_basis": "Estimated",
+    "notes": "OSM CENTER POINT PLAZA building centroid; not exact 3rd-floor door. OSM lists two building levels while gym states 3rd floor. Gym amenities include sauna per local reporting. Monthly fee on official website; daily fee on third-party price directory; trainer shifts estimated. Verify building and unit before pinning. Coordinate source: https://mapcarta.com/W37235635",
+    "has_verified_map_point": true
+  },
+  {
+    "name": "CrossFit Madayaw",
+    "branch": "South",
+    "district": "Matina",
+    "address": "Door 1, Building 3, MS Land Compound Complex, MacArthur Highway, Matina, Davao City 8000",
+    "latitude": 7.06089,
+    "longitude": 125.58676,
+    "maps_url": "https://www.google.com/maps?q=7.0608900,125.5867600",
+    "phone": "09159288297",
+    "operating_hours": "Mon-Sat 06:00-13:00 and 13:30-20:30; Sun 13:00-17:00",
+    "website_or_facebook": "https://www.facebook.com/CrossFitMadayaw/",
+    "workout_types": [
+      "CrossFit",
+      "Group Classes",
+      "Strength Training",
+      "Cardio"
+    ],
+    "facilities": [
+      "Free Weights",
+      "Cardio Equipment",
+      "Personal Trainers"
+    ],
+    "schedule_type": [
+      "Morning",
+      "Evening"
+    ],
+    "trainer_availability": [
+      "Morning",
+      "Afternoon",
+      "Evening"
+    ],
+    "membership_types": [
+      "Monthly",
+      "Daily"
+    ],
+    "monthly_price_php": 3200,
+    "session_price_php": 300,
+    "source_url": "https://www.facebook.com/CrossFitMadayaw/",
+    "coordinate_basis": "Derived",
+    "contact_basis": "Verified",
+    "attributes_basis": "Estimated",
+    "price_basis": "Estimated",
+    "notes": "Exact CrossFit Madayaw location mapped as OSM node 11665166700. Class availability inferred from listing hours; current membership and session prices estimated; historical pricing may differ. Daily means estimated drop-in class access. Coordinate source: https://mapcarta.com/N11665166700",
+    "has_verified_map_point": true
+  },
+  {
+    "name": "Strive Fitness Davao",
+    "branch": "Main",
+    "district": "Matina",
+    "address": "3rd Floor, JJEY Building, Tulip Drive, Matina, Davao City 8000",
+    "latitude": 7.0585101,
+    "longitude": 125.5882669,
+    "maps_url": "https://www.google.com/maps?q=7.0585101,125.5882669",
+    "phone": "09691910084",
+    "operating_hours": "Mon-Fri 07:00-21:00; Sat 07:00-19:00; Sun closed",
+    "website_or_facebook": "https://strivefitnessdavao.com/",
+    "workout_types": [
+      "Boxing",
+      "Strength Training",
+      "Cardio",
+      "Group Classes",
+      "Zumba"
+    ],
+    "facilities": [
+      "Free Weights",
+      "Machines",
+      "Personal Trainers"
+    ],
+    "schedule_type": [
+      "Morning",
+      "Evening"
+    ],
+    "trainer_availability": [
+      "Morning",
+      "Evening"
+    ],
+    "membership_types": [
+      "Monthly",
+      "Daily"
+    ],
+    "monthly_price_php": 1500,
+    "session_price_php": 250,
+    "source_url": "https://strivefitnessdavao.com/",
+    "coordinate_basis": "Verified",
+    "contact_basis": "Verified",
+    "attributes_basis": "Estimated",
+    "price_basis": "Estimated",
+    "notes": "Exact gym listing Google Maps !3d/!4d linked from owner website; Google maps page could not be fully rendered but destination URL exposed coordinates. Public contact numbers differ between old owner site and newer Google listing; using newer number. Session fee and trainer shifts estimated. Coordinate source: https://www.google.com/maps/place/Strive+Fitness+Davao/@7.0585101,125.5860782,17z/data=!3m1!4b1!4m5!3m4!1s0x32f97382677159ab:0xa24cd2cabcf95f5a!8m2!3d7.0585101!4d125.5882669",
+    "has_verified_map_point": true
+  },
+  {
+    "name": "Anytime Fitness",
+    "branch": "SM City Ecoland (The Annex)",
+    "district": "Ecoland",
+    "address": "2F, SM City Davao Annex, Quimpo Boulevard corner Tulip Drive, Ecoland, Davao City 8000",
+    "latitude": 7.04906,
+    "longitude": 125.5885,
+    "maps_url": "https://www.google.com/maps?q=7.0490600,125.5885000",
+    "phone": "09950849283",
+    "operating_hours": "Gym access daily 24 hours; staff Mon-Fri 10:00-21:00, Sat-Sun 10:00-19:00 (staff hours to reconfirm)",
+    "website_or_facebook": "https://www.google.com/maps/search/?api=1&query=Anytime+Fitness+The+Annex+SM+City+Davao&query_place_id=ChIJ9QHKTBVz-TIRfte4cu-NmdY",
+    "workout_types": [
+      "Strength Training",
+      "Cardio",
+      "Group Classes"
+    ],
+    "facilities": [
+      "Free Weights",
+      "Machines",
+      "Cardio Equipment",
+      "Locker Room",
+      "Shower Area",
+      "Personal Trainers",
+      "Parking",
+      "AC"
+    ],
+    "schedule_type": [
+      "Flexible"
+    ],
+    "trainer_availability": [
+      "Morning",
+      "Afternoon",
+      "Evening"
+    ],
+    "membership_types": [
+      "Monthly",
+      "Daily"
+    ],
+    "monthly_price_php": 7000,
+    "session_price_php": 500,
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Anytime+Fitness+The+Annex+SM+City+Davao&query_place_id=ChIJ9QHKTBVz-TIRfte4cu-NmdY",
+    "coordinate_basis": "Derived",
+    "contact_basis": "Verified",
+    "attributes_basis": "Estimated",
+    "price_basis": "Estimated",
+    "notes": "OSM centroid for whole SM City Davao mall, not exact second-floor gym entrance; verify before pinning. Price directory reports PHP 7000 for one month and PHP 500 daily; 12-month option much cheaper per month; variable club contracts/promotions. Google gym listing phone differs from older third-party listings. Trainer coverage and amenity operational state require confirmation. Coordinate source: https://mapcarta.com/W28978622",
+    "has_verified_map_point": true
+  },
+  {
+    "name": "Garage Fitness Compound",
+    "branch": "Main",
+    "district": "Bangkal",
+    "address": "Km 6 Union Avenue, Bangkal, Talomo, Davao City 8000",
+    "latitude": 7.0629784,
+    "longitude": 125.5612116,
+    "maps_url": "https://www.google.com/maps?q=7.0629784,125.5612116",
+    "phone": "09369920830",
+    "operating_hours": "Mon-Sat 05:00-23:00; Sun 08:00-17:00",
+    "website_or_facebook": "https://garagefitnesscompound.com/",
+    "workout_types": [
+      "Strength Training",
+      "Cardio",
+      "CrossFit",
+      "Boxing",
+      "Group Classes"
+    ],
+    "facilities": [
+      "Free Weights",
+      "Machines",
+      "Cardio Equipment",
+      "Sauna",
+      "Personal Trainers",
+      "Parking"
+    ],
+    "schedule_type": [
+      "Flexible",
+      "Morning",
+      "Evening"
+    ],
+    "trainer_availability": [
+      "Morning",
+      "Evening"
+    ],
+    "membership_types": [
+      "Monthly",
+      "Daily"
+    ],
+    "monthly_price_php": 1150,
+    "session_price_php": 150,
+    "source_url": "https://garagefitnesscompound.com/rates",
+    "coordinate_basis": "Derived",
+    "contact_basis": "Verified",
+    "attributes_basis": "Verified",
+    "price_basis": "Verified",
+    "notes": "Coordinate from gym-specific Google Maps directions URL exposed by GalawGo club listing, not a guessed local landmark. Prices for regular gym access; CrossFit classes are a different program (PHP 2450 monthly; PHP 350 session). Sauna is a separate recovery facility; extra fee possible. Trainer availability inferred from published group class schedule. Coordinate source: https://www.google.com/maps/dir/?api=1&destination=7.0629784,125.5612116",
+    "has_verified_map_point": true
+  },
+  {
+    "name": "Ultradynamic Fitness Gym Prime",
+    "branch": "Bangkal Talomo",
+    "district": "Bangkal",
+    "address": "7th Avenue, St. Bangkal, Talomo, Davao City 8000 (Google listing Plus Code 3H66+599)",
+    "latitude": 7.0604125,
+    "longitude": 125.5609844,
+    "maps_url": "https://www.google.com/maps?q=7.0604125,125.5609844",
+    "phone": "09618677817",
+    "operating_hours": "Mon-Sat 05:00-00:00; Sun closed per Google listing",
+    "website_or_facebook": "https://ultradynamicfitness.com/davao-bangkal-branch",
+    "workout_types": [
+      "Strength Training",
+      "Cardio",
+      "Boxing"
+    ],
+    "facilities": [
+      "Free Weights",
+      "Machines",
+      "Cardio Equipment",
+      "Personal Trainers"
+    ],
+    "schedule_type": [
+      "Flexible"
+    ],
+    "trainer_availability": [
+      "Afternoon",
+      "Evening"
+    ],
+    "membership_types": [
+      "Monthly",
+      "Daily"
+    ],
+    "monthly_price_php": 1200,
+    "session_price_php": 150,
+    "source_url": "https://ultradynamicfitness.com/davao-bangkal-branch",
+    "coordinate_basis": "Derived",
+    "contact_basis": "Verified",
+    "attributes_basis": "Estimated",
+    "price_basis": "Verified",
+    "notes": "Decoded center of gym-specific Google listing Plus Code 3H66+599 using Davao City full-code reference 6QV7: resulting full code 6QV73H66+599; cell center is not a surveyed front door. Training availability guessed; coaching is an additional charge. 2026 individual customer reviews raise coaching-service concerns. Coordinate source: https://www.google.com/maps/search/?api=1&query=Ultradynamic+Fitness+Gym+Prime+Bangkal&query_place_id=ChIJ0-C3mGcN-TIRtr2iqVJGVmw",
+    "has_verified_map_point": true
+  }
+]

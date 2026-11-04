@@ -21,15 +21,19 @@ class _EditGymLocationScreenState extends State<EditGymLocationScreen> {
   void initState() {
     super.initState();
     _mapController = MapController();
-    
+
     // Initialize with gym's current coordinates, or fallback to default (e.g. Davao City)
     final gymProv = context.read<GymProvider>();
     final gym = gymProv.ownerGym;
-    
-    if (gym.latitude != 0.0 && gym.longitude != 0.0) {
-      _currentPosition = LatLng(gym.latitude, gym.longitude);
+
+    if (gym.latitude != null &&
+        gym.longitude != null &&
+        gym.latitude != 0.0 &&
+        gym.longitude != 0.0) {
+      _currentPosition = LatLng(gym.latitude!, gym.longitude!);
     } else {
-      _currentPosition = const LatLng(7.0702, 125.6125); // Default to Davao City center
+      _currentPosition =
+          const LatLng(7.0702, 125.6125); // Default to Davao City center
     }
   }
 
@@ -47,24 +51,26 @@ class _EditGymLocationScreenState extends State<EditGymLocationScreen> {
 
   Future<void> _saveLocation() async {
     if (_currentPosition == null) return;
-    
+
     setState(() => _isLoading = true);
-    
+
     final gymProv = context.read<GymProvider>();
     final gym = gymProv.ownerGym;
-    
+
     final updatedGym = gym.copyWith(
       latitude: _currentPosition!.latitude,
       longitude: _currentPosition!.longitude,
     );
-    
+
     await gymProv.updateOwnerGym(updatedGym);
-    
+
     setState(() => _isLoading = false);
-    
+
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Gym location updated successfully!'), backgroundColor: AppColors.success),
+        const SnackBar(
+            content: Text('Gym location updated successfully!'),
+            backgroundColor: AppColors.success),
       );
       Navigator.pop(context);
     }
@@ -74,7 +80,8 @@ class _EditGymLocationScreenState extends State<EditGymLocationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Gym Location', style: TextStyle(color: AppColors.textPrimary)),
+        title: const Text('Edit Gym Location',
+            style: TextStyle(color: AppColors.textPrimary)),
         backgroundColor: AppColors.surface,
         elevation: 0,
         iconTheme: const IconThemeData(color: AppColors.textPrimary),
@@ -86,12 +93,14 @@ class _EditGymLocationScreenState extends State<EditGymLocationScreen> {
             color: AppColors.surface,
             child: const Row(
               children: [
-                Icon(Icons.info_outline_rounded, color: AppColors.primary, size: 20),
+                Icon(Icons.info_outline_rounded,
+                    color: AppColors.primary, size: 20),
                 SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     'Tap anywhere on the map to place your gym marker. This helps job seekers find you.',
-                    style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                    style:
+                        TextStyle(color: AppColors.textSecondary, fontSize: 13),
                   ),
                 ),
               ],
@@ -135,11 +144,13 @@ class _EditGymLocationScreenState extends State<EditGymLocationScreen> {
           Container(
             padding: const EdgeInsets.all(AppPadding.lg),
             decoration: const BoxDecoration(
-              color: AppColors.surfaceElevated,
-              boxShadow: [
-                BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, -2))
-              ]
-            ),
+                color: AppColors.surfaceElevated,
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 10,
+                      offset: Offset(0, -2))
+                ]),
             child: SafeArea(
               child: SizedBox(
                 width: double.infinity,
@@ -148,14 +159,21 @@ class _EditGymLocationScreenState extends State<EditGymLocationScreen> {
                   onPressed: _isLoading ? null : _saveLocation,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(AppRadius.md)),
                   ),
                   child: _isLoading
                       ? const SizedBox(
-                          width: 24, height: 24,
-                          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                              color: Colors.white, strokeWidth: 2),
                         )
-                      : const Text('Save Location', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                      : const Text('Save Location',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold)),
                 ),
               ),
             ),

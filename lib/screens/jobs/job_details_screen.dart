@@ -120,8 +120,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
               children: [
                 _chip(Icons.schedule_rounded,
                     employmentTypeLabel(job.employmentType)),
-                _chip(Icons.laptop_mac_rounded,
-                    workSetupLabel(job.workSetup)),
+                _chip(Icons.laptop_mac_rounded, workSetupLabel(job.workSetup)),
                 _chip(Icons.location_on_outlined, job.location),
                 _chip(Icons.payments_outlined, job.salaryDisplay),
                 _chip(Icons.people_outline_rounded,
@@ -132,8 +131,8 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
             if (job.applicationDeadline != null) ...[
               const SizedBox(height: 12),
               Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 12, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
                   color: job.isExpired
                       ? AppColors.error.withValues(alpha: 0.1)
@@ -157,9 +156,8 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
-                        color: job.isExpired
-                            ? AppColors.error
-                            : AppColors.primary,
+                        color:
+                            job.isExpired ? AppColors.error : AppColors.primary,
                       ),
                     ),
                   ],
@@ -176,24 +174,20 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
             const SizedBox(height: 8),
             Text(job.description,
                 style: const TextStyle(
-                    fontSize: 14,
-                    color: AppColors.textSecondary,
-                    height: 1.5)),
+                    fontSize: 14, color: AppColors.textSecondary, height: 1.5)),
 
             if (job.responsibilities.isNotEmpty) ...[
               const SizedBox(height: 20),
               _sectionTitle('Responsibilities'),
               const SizedBox(height: 8),
-              ...job.responsibilities
-                  .map((r) => _bulletPoint(r)),
+              ...job.responsibilities.map((r) => _bulletPoint(r)),
             ],
 
             if (job.qualifications.isNotEmpty) ...[
               const SizedBox(height: 20),
               _sectionTitle('Qualifications'),
               const SizedBox(height: 8),
-              ...job.qualifications
-                  .map((q) => _bulletPoint(q)),
+              ...job.qualifications.map((q) => _bulletPoint(q)),
             ],
 
             if (job.requiredSkills.isNotEmpty) ...[
@@ -208,13 +202,11 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
-                            color: AppColors.primary
-                                .withValues(alpha: 0.08),
-                            borderRadius:
-                                BorderRadius.circular(AppRadius.full),
+                            color: AppColors.primary.withValues(alpha: 0.08),
+                            borderRadius: BorderRadius.circular(AppRadius.full),
                             border: Border.all(
-                                color: AppColors.primary
-                                    .withValues(alpha: 0.3)),
+                                color:
+                                    AppColors.primary.withValues(alpha: 0.3)),
                           ),
                           child: Text(s,
                               style: const TextStyle(
@@ -258,8 +250,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                       Text(
                         'Paid ${job.salaryPeriod == SalaryPeriod.hourly ? 'hourly' : job.salaryPeriod == SalaryPeriod.daily ? 'daily' : 'monthly'}',
                         style: const TextStyle(
-                            fontSize: 12,
-                            color: AppColors.textSecondary),
+                            fontSize: 12, color: AppColors.textSecondary),
                       ),
                   ],
                 ),
@@ -270,8 +261,8 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
               const SizedBox(height: 20),
               Text(
                 'Posted on ${_formatDate(job.createdAt!)}',
-                style: const TextStyle(
-                    fontSize: 12, color: AppColors.textMuted),
+                style:
+                    const TextStyle(fontSize: 12, color: AppColors.textMuted),
               ),
             ],
 
@@ -310,8 +301,8 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
         width: double.infinity,
         height: 48,
         child: OutlinedButton.icon(
-          icon: const Icon(Icons.check_circle_rounded,
-              color: AppColors.success),
+          icon:
+              const Icon(Icons.check_circle_rounded, color: AppColors.success),
           label: const Text('Application Submitted'),
           style: OutlinedButton.styleFrom(
             foregroundColor: AppColors.success,
@@ -323,8 +314,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (_) => const MyApplicationsScreen()),
+              MaterialPageRoute(builder: (_) => const MyApplicationsScreen()),
             );
           },
         ),
@@ -399,9 +389,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
           Expanded(
             child: Text(text,
                 style: const TextStyle(
-                    fontSize: 14,
-                    color: AppColors.textSecondary,
-                    height: 1.4)),
+                    fontSize: 14, color: AppColors.textSecondary, height: 1.4)),
           ),
         ],
       ),
@@ -422,8 +410,8 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
           Icon(icon, size: 14, color: AppColors.primary),
           const SizedBox(width: 6),
           Text(text,
-              style: const TextStyle(
-                  fontSize: 12, color: AppColors.textPrimary)),
+              style:
+                  const TextStyle(fontSize: 12, color: AppColors.textPrimary)),
         ],
       ),
     );
@@ -431,8 +419,19 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
 
   String _formatDate(DateTime date) {
     final months = [
-      '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      '',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return '${months[date.month]} ${date.day}, ${date.year}';
   }

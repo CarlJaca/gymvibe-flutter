@@ -127,7 +127,8 @@ class _EditJobPostingScreenState extends State<EditJobPostingScreen> {
       data['minimumSalary'] = double.tryParse(_minSalaryController.text.trim());
       data['salaryPeriod'] = salaryPeriodToString(_salaryPeriod);
       if (_salaryType == SalaryType.range) {
-        data['maximumSalary'] = double.tryParse(_maxSalaryController.text.trim());
+        data['maximumSalary'] =
+            double.tryParse(_maxSalaryController.text.trim());
       }
     }
 
@@ -135,8 +136,8 @@ class _EditJobPostingScreenState extends State<EditJobPostingScreen> {
       data['applicationDeadline'] = _deadline;
     }
 
-    final success =
-        await prov.updateJobPosting(widget.job.jobId, data, auth.currentUser!.id);
+    final success = await prov.updateJobPosting(
+        widget.job.jobId, data, auth.currentUser!.id);
     if (success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -167,12 +168,12 @@ class _EditJobPostingScreenState extends State<EditJobPostingScreen> {
             _label('Job Title *'),
             TextFormField(
               controller: _titleController,
-              decoration: const InputDecoration(hintText: 'e.g. Fitness Trainer'),
+              decoration:
+                  const InputDecoration(hintText: 'e.g. Fitness Trainer'),
               validator: (v) =>
                   v == null || v.trim().isEmpty ? 'Required' : null,
             ),
             const SizedBox(height: 14),
-
             _label('Job Category'),
             _buildDropdown<String>(
               value: _selectedCategory,
@@ -182,7 +183,6 @@ class _EditJobPostingScreenState extends State<EditJobPostingScreen> {
               onChanged: (v) => setState(() => _selectedCategory = v!),
             ),
             const SizedBox(height: 14),
-
             _label('Employment Type'),
             _buildDropdown<EmploymentType>(
               value: _employmentType,
@@ -193,7 +193,6 @@ class _EditJobPostingScreenState extends State<EditJobPostingScreen> {
               onChanged: (v) => setState(() => _employmentType = v!),
             ),
             const SizedBox(height: 14),
-
             _label('Work Setup'),
             _buildDropdown<WorkSetup>(
               value: _workSetup,
@@ -204,15 +203,12 @@ class _EditJobPostingScreenState extends State<EditJobPostingScreen> {
               onChanged: (v) => setState(() => _workSetup = v!),
             ),
             const SizedBox(height: 14),
-
             _label('Location'),
             TextFormField(
               controller: _locationController,
-              decoration:
-                  const InputDecoration(hintText: 'e.g. Davao City'),
+              decoration: const InputDecoration(hintText: 'e.g. Davao City'),
             ),
             const SizedBox(height: 14),
-
             _label('Job Description *'),
             TextFormField(
               controller: _descriptionController,
@@ -223,27 +219,22 @@ class _EditJobPostingScreenState extends State<EditJobPostingScreen> {
                   v == null || v.trim().isEmpty ? 'Required' : null,
             ),
             const SizedBox(height: 14),
-
             _listSection('Responsibilities', _responsibilities,
                 _responsibilityController),
             const SizedBox(height: 14),
-            _listSection('Qualifications', _qualifications,
-                _qualificationController),
+            _listSection(
+                'Qualifications', _qualifications, _qualificationController),
             const SizedBox(height: 14),
             _listSection('Required Skills', _skills, _skillController),
             const SizedBox(height: 14),
-
             _label('Salary Type'),
             _buildDropdown<SalaryType>(
               value: _salaryType,
               items: const [
+                DropdownMenuItem(value: SalaryType.fixed, child: Text('Fixed')),
+                DropdownMenuItem(value: SalaryType.range, child: Text('Range')),
                 DropdownMenuItem(
-                    value: SalaryType.fixed, child: Text('Fixed')),
-                DropdownMenuItem(
-                    value: SalaryType.range, child: Text('Range')),
-                DropdownMenuItem(
-                    value: SalaryType.negotiable,
-                    child: Text('Negotiable')),
+                    value: SalaryType.negotiable, child: Text('Negotiable')),
                 DropdownMenuItem(
                     value: SalaryType.notDisclosed,
                     child: Text('Not Disclosed')),
@@ -293,10 +284,8 @@ class _EditJobPostingScreenState extends State<EditJobPostingScreen> {
               ),
             ],
             const SizedBox(height: 14),
-
             _listSection('Benefits', _benefits, _benefitController),
             const SizedBox(height: 14),
-
             _label('Number of Openings'),
             TextFormField(
               controller: _openingsController,
@@ -308,13 +297,12 @@ class _EditJobPostingScreenState extends State<EditJobPostingScreen> {
               },
             ),
             const SizedBox(height: 14),
-
             _label('Application Deadline'),
             GestureDetector(
               onTap: _pickDeadline,
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 16, vertical: 14),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 decoration: BoxDecoration(
                   color: AppColors.surface,
                   borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -341,7 +329,6 @@ class _EditJobPostingScreenState extends State<EditJobPostingScreen> {
               ),
             ),
             const SizedBox(height: 24),
-
             SizedBox(
               width: double.infinity,
               height: 48,
@@ -349,7 +336,8 @@ class _EditJobPostingScreenState extends State<EditJobPostingScreen> {
                 onPressed: prov.isSubmitting ? null : _save,
                 child: prov.isSubmitting
                     ? const SizedBox(
-                        width: 20, height: 20,
+                        width: 20,
+                        height: 20,
                         child: CircularProgressIndicator(
                             strokeWidth: 2, color: Colors.white))
                     : const Text('Save Changes',
@@ -375,8 +363,8 @@ class _EditJobPostingScreenState extends State<EditJobPostingScreen> {
             Expanded(
               child: TextFormField(
                 controller: controller,
-                decoration: InputDecoration(
-                    hintText: 'Add ${title.toLowerCase()}...'),
+                decoration:
+                    InputDecoration(hintText: 'Add ${title.toLowerCase()}...'),
               ),
             ),
             const SizedBox(width: 8),
@@ -400,8 +388,8 @@ class _EditJobPostingScreenState extends State<EditJobPostingScreen> {
             runSpacing: 6,
             children: items.asMap().entries.map((e) {
               return Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 10, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
                   color: AppColors.surfaceElevated,
                   borderRadius: BorderRadius.circular(AppRadius.full),
@@ -412,12 +400,10 @@ class _EditJobPostingScreenState extends State<EditJobPostingScreen> {
                   children: [
                     Text(e.value,
                         style: const TextStyle(
-                            fontSize: 12,
-                            color: AppColors.textPrimary)),
+                            fontSize: 12, color: AppColors.textPrimary)),
                     const SizedBox(width: 4),
                     GestureDetector(
-                      onTap: () =>
-                          setState(() => items.removeAt(e.key)),
+                      onTap: () => setState(() => items.removeAt(e.key)),
                       child: const Icon(Icons.close_rounded,
                           size: 14, color: AppColors.textMuted),
                     ),
@@ -448,8 +434,7 @@ class _EditJobPostingScreenState extends State<EditJobPostingScreen> {
           value: value,
           isExpanded: true,
           dropdownColor: AppColors.surfaceElevated,
-          style: const TextStyle(
-              fontSize: 14, color: AppColors.textPrimary),
+          style: const TextStyle(fontSize: 14, color: AppColors.textPrimary),
           items: items,
           onChanged: onChanged,
         ),
@@ -470,8 +455,19 @@ class _EditJobPostingScreenState extends State<EditJobPostingScreen> {
 
   String _formatDate(DateTime date) {
     final months = [
-      '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      '',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return '${months[date.month]} ${date.day}, ${date.year}';
   }

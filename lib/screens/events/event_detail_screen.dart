@@ -8,17 +8,19 @@ class EventDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final event = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final event =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     final eventsProv = Provider.of<EventsProvider>(context);
-    final isRegistered = eventsProv.myRegisteredEvents.any((e) => e['id'] == event['id']);
-    
+    final isRegistered =
+        eventsProv.myRegisteredEvents.any((e) => e['id'] == event['id']);
+
     final int slots = (event['maxSlots'] as num?)?.toInt() ?? 50;
     final int registered = (event['registeredCount'] as num?)?.toInt() ?? 0;
     final bool isFull = registered >= slots;
-    
+
     // Safety check for whatToBring
-    final List<String> whatToBring = event['whatToBring'] != null 
-        ? List<String>.from(event['whatToBring']) 
+    final List<String> whatToBring = event['whatToBring'] != null
+        ? List<String>.from(event['whatToBring'])
         : [];
 
     return Scaffold(
@@ -37,7 +39,8 @@ class EventDetailScreen extends StatelessWidget {
                   color: Colors.black.withValues(alpha: 0.5),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.arrow_back_rounded, color: Colors.white, size: 20),
+                child: const Icon(Icons.arrow_back_rounded,
+                    color: Colors.white, size: 20),
               ),
               onPressed: () => Navigator.pop(context),
             ),
@@ -49,11 +52,13 @@ class EventDetailScreen extends StatelessWidget {
                     color: Colors.black.withValues(alpha: 0.5),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.favorite_border_rounded, color: Colors.white, size: 20),
+                  child: const Icon(Icons.favorite_border_rounded,
+                      color: Colors.white, size: 20),
                 ),
                 onPressed: () {
                   eventsProv.markInterested(event['id']);
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Marked as Interested!')));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Marked as Interested!')));
                 },
               ),
               IconButton(
@@ -63,10 +68,12 @@ class EventDetailScreen extends StatelessWidget {
                     color: Colors.black.withValues(alpha: 0.5),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.share_rounded, color: Colors.white, size: 20),
+                  child: const Icon(Icons.share_rounded,
+                      color: Colors.white, size: 20),
                 ),
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Sharing event...')));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Sharing event...')));
                 },
               ),
               const SizedBox(width: 8),
@@ -121,7 +128,8 @@ class EventDetailScreen extends StatelessWidget {
                         ),
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
                           color: AppColors.primary.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(AppRadius.full),
@@ -140,24 +148,34 @@ class EventDetailScreen extends StatelessWidget {
                   const SizedBox(height: AppPadding.lg),
 
                   // Date, Time & Venue
-                  _buildIconRow(Icons.calendar_month_rounded, '${event['date']}'),
+                  _buildIconRow(
+                      Icons.calendar_month_rounded, '${event['date']}'),
                   const SizedBox(height: 12),
                   _buildIconRow(Icons.access_time_rounded, '${event['time']}'),
                   const SizedBox(height: 12),
-                  _buildIconRow(Icons.location_on_rounded, '${event['location']}\n${event['address']}', isMultiline: true),
+                  _buildIconRow(Icons.location_on_rounded,
+                      '${event['location']}\n${event['address']}',
+                      isMultiline: true),
                   const SizedBox(height: 12),
-                  _buildIconRow(Icons.directions_run_rounded, event['distance'] ?? 'Unknown distance'),
+                  _buildIconRow(Icons.directions_run_rounded,
+                      event['distance'] ?? 'Unknown distance'),
                   const SizedBox(height: AppPadding.xl),
 
                   // Event Description
                   const Text(
                     'About This Event',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     event['description'] ?? 'No description provided.',
-                    style: const TextStyle(color: AppColors.textSecondary, fontSize: 14, height: 1.5),
+                    style: const TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 14,
+                        height: 1.5),
                   ),
                   const SizedBox(height: AppPadding.xl),
 
@@ -170,9 +188,12 @@ class EventDetailScreen extends StatelessWidget {
                     mainAxisSpacing: 12,
                     crossAxisSpacing: 12,
                     children: [
-                      _buildGridItem('Instructor', event['instructor'] ?? 'TBA'),
-                      _buildGridItem('Difficulty', event['difficulty'] ?? 'All Levels'),
-                      _buildGridItem('Duration', event['duration'] ?? 'Unknown'),
+                      _buildGridItem(
+                          'Instructor', event['instructor'] ?? 'TBA'),
+                      _buildGridItem(
+                          'Difficulty', event['difficulty'] ?? 'All Levels'),
+                      _buildGridItem(
+                          'Duration', event['duration'] ?? 'Unknown'),
                       _buildGridItem('Max Slots', '$slots'),
                     ],
                   ),
@@ -182,26 +203,36 @@ class EventDetailScreen extends StatelessWidget {
                   if (whatToBring.isNotEmpty) ...[
                     const Text(
                       'What to Bring',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary),
                     ),
                     const SizedBox(height: 12),
                     ...whatToBring.map((item) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.check_circle_outline_rounded, color: AppColors.primary, size: 20),
-                          const SizedBox(width: 12),
-                          Text(item, style: const TextStyle(color: AppColors.textSecondary, fontSize: 14)),
-                        ],
-                      ),
-                    )),
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.check_circle_outline_rounded,
+                                  color: AppColors.primary, size: 20),
+                              const SizedBox(width: 12),
+                              Text(item,
+                                  style: const TextStyle(
+                                      color: AppColors.textSecondary,
+                                      fontSize: 14)),
+                            ],
+                          ),
+                        )),
                     const SizedBox(height: AppPadding.xl),
                   ],
 
                   // Registration Progress
                   const Text(
                     'Registration Progress',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary),
                   ),
                   const SizedBox(height: 16),
                   Container(
@@ -218,12 +249,18 @@ class EventDetailScreen extends StatelessWidget {
                           children: [
                             Text(
                               '$registered / $slots Joined',
-                              style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
+                              style: const TextStyle(
+                                  color: AppColors.textPrimary,
+                                  fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              isFull ? 'Sold Out' : '${slots - registered} Spots Left!',
+                              isFull
+                                  ? 'Sold Out'
+                                  : '${slots - registered} Spots Left!',
                               style: TextStyle(
-                                color: isFull ? AppColors.error : AppColors.primary,
+                                color: isFull
+                                    ? AppColors.error
+                                    : AppColors.primary,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 12,
                               ),
@@ -234,14 +271,15 @@ class EventDetailScreen extends StatelessWidget {
                         LinearProgressIndicator(
                           value: registered / slots,
                           backgroundColor: AppColors.backgroundDark,
-                          valueColor: AlwaysStoppedAnimation<Color>(isFull ? AppColors.error : AppColors.primary),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              isFull ? AppColors.error : AppColors.primary),
                           minHeight: 8,
                           borderRadius: BorderRadius.circular(AppRadius.full),
                         ),
                       ],
                     ),
                   ),
-                  
+
                   const SizedBox(height: 100), // padding for bottom bar
                 ],
               ),
@@ -267,17 +305,28 @@ class EventDetailScreen extends StatelessWidget {
             width: double.infinity,
             height: 50,
             child: ElevatedButton(
-              onPressed: (isFull || isRegistered) ? null : () {
-                Navigator.pushNamed(context, '/event-registration', arguments: event);
-              },
+              onPressed: (isFull || isRegistered)
+                  ? null
+                  : () {
+                      Navigator.pushNamed(context, '/event-registration',
+                          arguments: event);
+                    },
               style: ElevatedButton.styleFrom(
-                backgroundColor: (isFull || isRegistered) ? AppColors.surface : AppColors.primary,
-                foregroundColor: (isFull || isRegistered) ? AppColors.textMuted : AppColors.backgroundDark,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.full)),
+                backgroundColor: (isFull || isRegistered)
+                    ? AppColors.surface
+                    : AppColors.primary,
+                foregroundColor: (isFull || isRegistered)
+                    ? AppColors.textMuted
+                    : AppColors.backgroundDark,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppRadius.full)),
               ),
               child: Text(
-                isRegistered ? 'Registered' : (isFull ? 'Registration Full' : 'Register Now'),
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                isRegistered
+                    ? 'Registered'
+                    : (isFull ? 'Registration Full' : 'Register Now'),
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
           ),
@@ -288,14 +337,16 @@ class EventDetailScreen extends StatelessWidget {
 
   Widget _buildIconRow(IconData icon, String text, {bool isMultiline = false}) {
     return Row(
-      crossAxisAlignment: isMultiline ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+      crossAxisAlignment:
+          isMultiline ? CrossAxisAlignment.start : CrossAxisAlignment.center,
       children: [
         Icon(icon, color: AppColors.primary, size: 20),
         const SizedBox(width: 12),
         Expanded(
           child: Text(
             text,
-            style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+            style:
+                const TextStyle(color: AppColors.textSecondary, fontSize: 14),
           ),
         ),
       ],
@@ -314,9 +365,16 @@ class EventDetailScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(label, style: const TextStyle(color: AppColors.textMuted, fontSize: 11)),
+          Text(label,
+              style: const TextStyle(color: AppColors.textMuted, fontSize: 11)),
           const SizedBox(height: 4),
-          Text(value, style: const TextStyle(color: AppColors.textPrimary, fontSize: 13, fontWeight: FontWeight.bold), maxLines: 1, overflow: TextOverflow.ellipsis),
+          Text(value,
+              style: const TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis),
         ],
       ),
     );

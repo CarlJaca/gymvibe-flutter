@@ -30,26 +30,34 @@ class ExploreGymTile extends StatelessWidget {
             // ── Thumbnail ────────────────────────────────────────────────
             ClipRRect(
               borderRadius: BorderRadius.circular(AppRadius.md),
-              child: CachedNetworkImage(
-                imageUrl: gym.imageUrl,
-                width: 70,
-                height: 70,
-                fit: BoxFit.cover,
-                placeholder: (_, __) => Container(
-                  width: 70,
-                  height: 70,
-                  color: AppColors.surfaceElevated,
-                  child: const Icon(Icons.fitness_center,
-                      color: AppColors.textSecondary, size: 24),
-                ),
-                errorWidget: (_, __, ___) => Container(
-                  width: 70,
-                  height: 70,
-                  color: AppColors.surfaceElevated,
-                  child: const Icon(Icons.fitness_center,
-                      color: AppColors.textSecondary, size: 24),
-                ),
-              ),
+              child: gym.imageUrl.isNotEmpty
+                  ? CachedNetworkImage(
+                      imageUrl: gym.imageUrl,
+                      width: 70,
+                      height: 70,
+                      fit: BoxFit.cover,
+                      placeholder: (_, __) => Container(
+                        width: 70,
+                        height: 70,
+                        color: AppColors.surfaceElevated,
+                        child: const Icon(Icons.fitness_center,
+                            color: AppColors.textSecondary, size: 24),
+                      ),
+                      errorWidget: (_, __, ___) => Container(
+                        width: 70,
+                        height: 70,
+                        color: AppColors.surfaceElevated,
+                        child: const Icon(Icons.fitness_center,
+                            color: AppColors.textSecondary, size: 24),
+                      ),
+                    )
+                  : Container(
+                      width: 70,
+                      height: 70,
+                      color: AppColors.surfaceElevated,
+                      child: const Icon(Icons.fitness_center,
+                          color: AppColors.textSecondary, size: 24),
+                    ),
             ),
             const SizedBox(width: 14),
 
@@ -93,11 +101,32 @@ class ExploreGymTile extends StatelessWidget {
                       ),
                       Consumer<LocationProvider>(
                         builder: (context, locProv, _) {
-                          final dynamicDist = locProv.calculateDistance(gym.latitude, gym.longitude);
+                          if (!gym.canShowMapMarker) {
+                            return const Text(
+                              'Pin not verified',
+                              style: TextStyle(
+                                color: AppColors.textSecondary,
+                                fontSize: 11,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            );
+                          }
+                          final dynamicDist = locProv.calculateDistanceNullable(
+                              gym.latitude, gym.longitude);
+                          if (dynamicDist == null) {
+                            return const Text('—',
+                                style: TextStyle(
+                                    color: AppColors.primary,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600));
+                          }
+                          final prefix = gym.isBuildingLevel ? '≈ ' : '';
                           return Text(
-                            dynamicDist != null ? '${dynamicDist.toStringAsFixed(1)} km' : '${gym.distanceKm.toStringAsFixed(1)} km',
-                            style: const TextStyle(
-                              color: AppColors.primary,
+                            '$prefix${dynamicDist.toStringAsFixed(1)} km',
+                            style: TextStyle(
+                              color: gym.isBuildingLevel
+                                  ? Colors.orange
+                                  : AppColors.primary,
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
                             ),

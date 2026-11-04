@@ -3,24 +3,15 @@ import '../core/utils/secure_logger.dart';
 import '../models/job_posting_model.dart';
 import '../models/leaderboard_model.dart';
 import '../providers/calendar_provider.dart';
-import 'gym_service.dart';
 
 class FirebaseSeeder {
   static Future<void> seedDatabase() async {
     SecureLogger.log('--- SEEDING DATABASE ---');
     try {
       final firestore = FirebaseFirestore.instance;
-      final gyms = GymService.instance.fetchGyms();
-      
-      final batch = firestore.batch();
-      
-      for (final gym in gyms) {
-        final docRef = firestore.collection('gyms').doc(gym.id);
-        batch.set(docRef, gym.toJson());
-      }
-      
-      await batch.commit();
-      SecureLogger.log('Successfully seeded ${gyms.length} gyms to Firestore.');
+      // Gym seeding removed — real gym data loaded from bundled JSON asset
+      SecureLogger.log(
+          'Gym data now loaded from assets/data/davao_gyms.json (not seeded to Firestore).');
 
       // Seed additional collections
       await _seedJobPostings(firestore);
@@ -51,7 +42,8 @@ class FirebaseSeeder {
           gymId: '1',
           ownerId: 'owner_seed_1',
           gymName: 'Dstar Gym Matina',
-          gymLogoUrl: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=200&q=80',
+          gymLogoUrl:
+              'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=200&q=80',
           jobTitle: 'Certified Personal Trainer',
           jobCategory: 'Personal Trainer',
           employmentType: EmploymentType.fullTime,
@@ -72,12 +64,22 @@ class FirebaseSeeder {
             'Strong communication and interpersonal skills',
             'CPR/AED certified',
           ],
-          requiredSkills: ['Strength Training', 'Nutrition', 'Client Assessment', 'Program Design'],
+          requiredSkills: [
+            'Strength Training',
+            'Nutrition',
+            'Client Assessment',
+            'Program Design'
+          ],
           salaryType: SalaryType.range,
           minimumSalary: 15000,
           maximumSalary: 25000,
           salaryPeriod: SalaryPeriod.monthly,
-          benefits: ['Free Gym Access', 'Commission on PT Sessions', 'Health Insurance', 'Uniform Provided'],
+          benefits: [
+            'Free Gym Access',
+            'Commission on PT Sessions',
+            'Health Insurance',
+            'Uniform Provided'
+          ],
           numberOfOpenings: 2,
           applicationDeadline: now.add(const Duration(days: 30)),
           status: JobStatus.active,
@@ -89,7 +91,8 @@ class FirebaseSeeder {
           gymId: '4',
           ownerId: 'owner_seed_2',
           gymName: 'Elevation Gym Buhangin',
-          gymLogoUrl: 'https://images.unsplash.com/photo-1558611848-73f7eb4001a1?w=200&q=80',
+          gymLogoUrl:
+              'https://images.unsplash.com/photo-1558611848-73f7eb4001a1?w=200&q=80',
           jobTitle: 'Group Fitness Instructor',
           jobCategory: 'Group Class Instructor',
           employmentType: EmploymentType.partTime,
@@ -109,11 +112,20 @@ class FirebaseSeeder {
             'Experience leading group classes',
             'High energy and motivational personality',
           ],
-          requiredSkills: ['Group Fitness', 'HIIT', 'Zumba', 'Circuit Training'],
+          requiredSkills: [
+            'Group Fitness',
+            'HIIT',
+            'Zumba',
+            'Circuit Training'
+          ],
           salaryType: SalaryType.fixed,
           minimumSalary: 500,
           salaryPeriod: SalaryPeriod.daily,
-          benefits: ['Free Gym Access', 'Flexible Schedule', 'Performance Bonuses'],
+          benefits: [
+            'Free Gym Access',
+            'Flexible Schedule',
+            'Performance Bonuses'
+          ],
           numberOfOpenings: 1,
           applicationDeadline: now.add(const Duration(days: 21)),
           status: JobStatus.active,
@@ -125,7 +137,8 @@ class FirebaseSeeder {
           gymId: '2',
           ownerId: 'owner_seed_3',
           gymName: 'Ultradynamic Gym Buhangin',
-          gymLogoUrl: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=200&q=80',
+          gymLogoUrl:
+              'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=200&q=80',
           jobTitle: 'Front Desk Receptionist',
           jobCategory: 'Receptionist',
           employmentType: EmploymentType.fullTime,
@@ -146,7 +159,12 @@ class FirebaseSeeder {
             'Proficient in basic computer applications',
             'Friendly, approachable demeanor',
           ],
-          requiredSkills: ['Customer Service', 'Communication', 'Computer Skills', 'Organization'],
+          requiredSkills: [
+            'Customer Service',
+            'Communication',
+            'Computer Skills',
+            'Organization'
+          ],
           salaryType: SalaryType.fixed,
           minimumSalary: 12000,
           salaryPeriod: SalaryPeriod.monthly,
@@ -162,7 +180,8 @@ class FirebaseSeeder {
           gymId: '5',
           ownerId: 'owner_seed_4',
           gymName: 'The Metro Fitness & Family Gym',
-          gymLogoUrl: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=200&q=80',
+          gymLogoUrl:
+              'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=200&q=80',
           jobTitle: 'Gym Maintenance Staff',
           jobCategory: 'Maintenance Staff',
           employmentType: EmploymentType.fullTime,
@@ -183,7 +202,12 @@ class FirebaseSeeder {
             'Physical fitness to handle manual tasks',
             'Reliable and punctual',
           ],
-          requiredSkills: ['Equipment Maintenance', 'Cleaning', 'Organization', 'Reliability'],
+          requiredSkills: [
+            'Equipment Maintenance',
+            'Cleaning',
+            'Organization',
+            'Reliability'
+          ],
           salaryType: SalaryType.fixed,
           minimumSalary: 10000,
           salaryPeriod: SalaryPeriod.monthly,
@@ -199,7 +223,8 @@ class FirebaseSeeder {
           gymId: '6',
           ownerId: 'owner_seed_5',
           gymName: 'Dallas Gym Matina',
-          gymLogoUrl: 'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=200&q=80',
+          gymLogoUrl:
+              'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=200&q=80',
           jobTitle: 'Social Media Manager (Part-Time)',
           jobCategory: 'Social Media Assistant',
           employmentType: EmploymentType.partTime,
@@ -220,9 +245,19 @@ class FirebaseSeeder {
             'Creative with strong visual design sense',
             'Basic photo and video editing skills',
           ],
-          requiredSkills: ['Social Media', 'Content Creation', 'Photography', 'Video Editing', 'Marketing'],
+          requiredSkills: [
+            'Social Media',
+            'Content Creation',
+            'Photography',
+            'Video Editing',
+            'Marketing'
+          ],
           salaryType: SalaryType.negotiable,
-          benefits: ['Free Gym Access', 'Flexible Working Hours', 'Work From Home Options'],
+          benefits: [
+            'Free Gym Access',
+            'Flexible Working Hours',
+            'Work From Home Options'
+          ],
           numberOfOpenings: 1,
           applicationDeadline: now.add(const Duration(days: 60)),
           status: JobStatus.active,
@@ -237,7 +272,8 @@ class FirebaseSeeder {
         batch.set(docRef, job.toJson());
       }
       await batch.commit();
-      SecureLogger.log('Successfully seeded ${jobPostings.length} job postings.');
+      SecureLogger.log(
+          'Successfully seeded ${jobPostings.length} job postings.');
     } catch (e) {
       SecureLogger.logError('Error seeding job postings', e);
     }
@@ -270,67 +306,146 @@ class FirebaseSeeder {
       final workoutPlan = <int, List<Map<String, dynamic>>>{
         // Week 1
         1: [
-          {'id': 'cal_1_1', 'type': WorkoutType.chestDay.name, 'notes': 'Bench press 4x8, incline dumbbell press 3x10, cable flyes 3x12'},
+          {
+            'id': 'cal_1_1',
+            'type': WorkoutType.chestDay.name,
+            'notes':
+                'Bench press 4x8, incline dumbbell press 3x10, cable flyes 3x12'
+          },
         ],
         2: [
-          {'id': 'cal_2_1', 'type': WorkoutType.cardioDay.name, 'notes': '30 min treadmill, 15 min stair climber'},
+          {
+            'id': 'cal_2_1',
+            'type': WorkoutType.cardioDay.name,
+            'notes': '30 min treadmill, 15 min stair climber'
+          },
         ],
         3: [
-          {'id': 'cal_3_1', 'type': WorkoutType.backDay.name, 'notes': 'Deadlift 5x5, barbell rows 4x8, lat pulldowns 3x12'},
+          {
+            'id': 'cal_3_1',
+            'type': WorkoutType.backDay.name,
+            'notes': 'Deadlift 5x5, barbell rows 4x8, lat pulldowns 3x12'
+          },
         ],
         4: [
-          {'id': 'cal_4_1', 'type': WorkoutType.restDay.name, 'notes': 'Active recovery — light stretching'},
+          {
+            'id': 'cal_4_1',
+            'type': WorkoutType.restDay.name,
+            'notes': 'Active recovery — light stretching'
+          },
         ],
         5: [
-          {'id': 'cal_5_1', 'type': WorkoutType.legDay.name, 'notes': 'Squat 5x5, leg press 4x10, leg curls 3x12, calf raises 4x15'},
+          {
+            'id': 'cal_5_1',
+            'type': WorkoutType.legDay.name,
+            'notes':
+                'Squat 5x5, leg press 4x10, leg curls 3x12, calf raises 4x15'
+          },
         ],
         // Week 2
         7: [
-          {'id': 'cal_7_1', 'type': WorkoutType.strengthTraining.name, 'notes': 'Full body compound lifts — squat, bench, deadlift'},
+          {
+            'id': 'cal_7_1',
+            'type': WorkoutType.strengthTraining.name,
+            'notes': 'Full body compound lifts — squat, bench, deadlift'
+          },
         ],
         8: [
-          {'id': 'cal_8_1', 'type': WorkoutType.cardioDay.name, 'notes': '20 min HIIT session + abs'},
+          {
+            'id': 'cal_8_1',
+            'type': WorkoutType.cardioDay.name,
+            'notes': '20 min HIIT session + abs'
+          },
         ],
         9: [
-          {'id': 'cal_9_1', 'type': WorkoutType.chestDay.name, 'notes': 'Dumbbell press 4x10, push-ups 3xFailure, pec deck 3x12'},
+          {
+            'id': 'cal_9_1',
+            'type': WorkoutType.chestDay.name,
+            'notes': 'Dumbbell press 4x10, push-ups 3xFailure, pec deck 3x12'
+          },
         ],
         10: [
-          {'id': 'cal_10_1', 'type': WorkoutType.gymSession.name, 'notes': 'Open gym — worked on weak points'},
+          {
+            'id': 'cal_10_1',
+            'type': WorkoutType.gymSession.name,
+            'notes': 'Open gym — worked on weak points'
+          },
         ],
         11: [
           {'id': 'cal_11_1', 'type': WorkoutType.restDay.name, 'notes': ''},
         ],
         12: [
-          {'id': 'cal_12_1', 'type': WorkoutType.backDay.name, 'notes': 'Pull-ups 4xMax, seated rows 4x10, face pulls 3x15'},
+          {
+            'id': 'cal_12_1',
+            'type': WorkoutType.backDay.name,
+            'notes': 'Pull-ups 4xMax, seated rows 4x10, face pulls 3x15'
+          },
         ],
         // Week 3
         14: [
-          {'id': 'cal_14_1', 'type': WorkoutType.legDay.name, 'notes': 'Front squat 4x8, Romanian deadlift 4x10, lunges 3x12 each leg'},
+          {
+            'id': 'cal_14_1',
+            'type': WorkoutType.legDay.name,
+            'notes':
+                'Front squat 4x8, Romanian deadlift 4x10, lunges 3x12 each leg'
+          },
         ],
         15: [
-          {'id': 'cal_15_1', 'type': WorkoutType.cardioDay.name, 'notes': '40 min cycling + stretching'},
+          {
+            'id': 'cal_15_1',
+            'type': WorkoutType.cardioDay.name,
+            'notes': '40 min cycling + stretching'
+          },
         ],
         16: [
-          {'id': 'cal_16_1', 'type': WorkoutType.chestDay.name, 'notes': 'Chest day — progressive overload on bench press'},
+          {
+            'id': 'cal_16_1',
+            'type': WorkoutType.chestDay.name,
+            'notes': 'Chest day — progressive overload on bench press'
+          },
         ],
         17: [
-          {'id': 'cal_17_1', 'type': WorkoutType.strengthTraining.name, 'notes': 'Olympic lifts — clean and jerk practice'},
+          {
+            'id': 'cal_17_1',
+            'type': WorkoutType.strengthTraining.name,
+            'notes': 'Olympic lifts — clean and jerk practice'
+          },
         ],
         18: [
-          {'id': 'cal_18_1', 'type': WorkoutType.restDay.name, 'notes': 'Rest day — massage and foam rolling'},
+          {
+            'id': 'cal_18_1',
+            'type': WorkoutType.restDay.name,
+            'notes': 'Rest day — massage and foam rolling'
+          },
         ],
         // Week 4
         21: [
-          {'id': 'cal_21_1', 'type': WorkoutType.backDay.name, 'notes': 'Heavy deadlift day — working up to 1RM attempt'},
+          {
+            'id': 'cal_21_1',
+            'type': WorkoutType.backDay.name,
+            'notes': 'Heavy deadlift day — working up to 1RM attempt'
+          },
         ],
         22: [
-          {'id': 'cal_22_1', 'type': WorkoutType.cardioDay.name, 'notes': 'Swimming 45 min'},
+          {
+            'id': 'cal_22_1',
+            'type': WorkoutType.cardioDay.name,
+            'notes': 'Swimming 45 min'
+          },
         ],
         23: [
-          {'id': 'cal_23_1', 'type': WorkoutType.legDay.name, 'notes': 'Squat PR attempt + accessory work'},
+          {
+            'id': 'cal_23_1',
+            'type': WorkoutType.legDay.name,
+            'notes': 'Squat PR attempt + accessory work'
+          },
         ],
         24: [
-          {'id': 'cal_24_1', 'type': WorkoutType.gymSession.name, 'notes': 'Arms and shoulders — dumbbell circuit'},
+          {
+            'id': 'cal_24_1',
+            'type': WorkoutType.gymSession.name,
+            'notes': 'Arms and shoulders — dumbbell circuit'
+          },
         ],
         25: [
           {'id': 'cal_25_1', 'type': WorkoutType.restDay.name, 'notes': ''},
@@ -603,7 +718,8 @@ class FirebaseSeeder {
         batch.set(docRef, record.toJson());
       }
       await batch.commit();
-      SecureLogger.log('Successfully seeded ${records.length} leaderboard records.');
+      SecureLogger.log(
+          'Successfully seeded ${records.length} leaderboard records.');
     } catch (e) {
       SecureLogger.logError('Error seeding leaderboard data', e);
     }
@@ -626,15 +742,18 @@ class FirebaseSeeder {
         {
           'id': 'comm_1',
           'name': 'Davao Powerlifters',
-          'imageUrl': 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=200&q=80',
+          'imageUrl':
+              'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=200&q=80',
           'memberCount': 342,
           'isComingSoon': false,
-          'description': 'A community for powerlifting enthusiasts in Davao City.',
+          'description':
+              'A community for powerlifting enthusiasts in Davao City.',
         },
         {
           'id': 'comm_2',
           'name': 'HIIT & Cardio Davao',
-          'imageUrl': 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=200&q=80',
+          'imageUrl':
+              'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=200&q=80',
           'memberCount': 891,
           'isComingSoon': false,
           'description': 'Cardio, HIIT, and endurance training group.',
@@ -642,7 +761,8 @@ class FirebaseSeeder {
         {
           'id': 'comm_3',
           'name': 'Yoga & Wellness',
-          'imageUrl': 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=200&q=80',
+          'imageUrl':
+              'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=200&q=80',
           'memberCount': 0,
           'isComingSoon': true,
           'description': 'Find your zen with our yoga and wellness community.',
@@ -650,7 +770,8 @@ class FirebaseSeeder {
       ];
 
       for (var comm in communities) {
-        final docRef = firestore.collection('communities').doc(comm['id'] as String);
+        final docRef =
+            firestore.collection('communities').doc(comm['id'] as String);
         batch.set(docRef, comm);
       }
 
@@ -665,7 +786,8 @@ class FirebaseSeeder {
           'communityId': 'comm_1',
           'communityName': 'Davao Powerlifters',
           'caption': 'Hit a new PR on deadlifts today! 220kg felt smooth! 💪🔥',
-          'imageUrl': 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&q=80',
+          'imageUrl':
+              'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&q=80',
           'likeCount': 45,
           'commentCount': 12,
           'likedBy': [],
@@ -679,7 +801,8 @@ class FirebaseSeeder {
           'userLocation': 'Davao City',
           'communityId': 'comm_2',
           'communityName': 'HIIT & Cardio Davao',
-          'caption': 'Morning run done! 5km before breakfast. Who else is up early?',
+          'caption':
+              'Morning run done! 5km before breakfast. Who else is up early?',
           'imageUrl': null,
           'likeCount': 120,
           'commentCount': 34,
@@ -724,8 +847,10 @@ class FirebaseSeeder {
           'isFeatured': true,
           'isSaved': false,
           'hasReminder': true,
-          'imageUrl': 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400&q=80',
-          'description': 'Join us for a 4-week summer fitness challenge. Top 3 transformations win free supplements!',
+          'imageUrl':
+              'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400&q=80',
+          'description':
+              'Join us for a 4-week summer fitness challenge. Top 3 transformations win free supplements!',
           'price': '₱500',
           'attendees': 24,
           'maxAttendees': 50,
@@ -742,8 +867,10 @@ class FirebaseSeeder {
           'isFeatured': false,
           'isSaved': true,
           'hasReminder': false,
-          'imageUrl': 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&q=80',
-          'description': 'Annual powerlifting meet for all weight classes. Register early to secure your spot!',
+          'imageUrl':
+              'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&q=80',
+          'description':
+              'Annual powerlifting meet for all weight classes. Register early to secure your spot!',
           'price': '₱1500',
           'attendees': 45,
           'maxAttendees': 100,
@@ -784,7 +911,8 @@ class FirebaseSeeder {
           'isClaimed': false,
           'claimedCount': 120,
           'code': 'SUMMER20',
-          'description': 'Get 20% off when you sign up for our annual membership plan. Valid for new members only.',
+          'description':
+              'Get 20% off when you sign up for our annual membership plan. Valid for new members only.',
         },
         {
           'id': 'promo_2',
@@ -796,7 +924,8 @@ class FirebaseSeeder {
           'isClaimed': true,
           'claimedCount': 45,
           'code': 'FREETRAIN',
-          'description': 'Claim one free personal training session to jumpstart your fitness journey.',
+          'description':
+              'Claim one free personal training session to jumpstart your fitness journey.',
         },
         {
           'id': 'promo_3',
@@ -808,12 +937,14 @@ class FirebaseSeeder {
           'isClaimed': false,
           'claimedCount': 89,
           'code': 'SHAKEFRIDAY',
-          'description': 'Cool down with our buy 1 take 1 promo on all protein shakes at the gym bar.',
+          'description':
+              'Cool down with our buy 1 take 1 promo on all protein shakes at the gym bar.',
         },
       ];
 
       for (var promo in promotions) {
-        final docRef = firestore.collection('promotions').doc(promo['id'] as String);
+        final docRef =
+            firestore.collection('promotions').doc(promo['id'] as String);
         batch.set(docRef, promo);
       }
 

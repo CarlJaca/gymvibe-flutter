@@ -43,14 +43,14 @@ class _OwnerLoginScreenState extends State<OwnerLoginScreen> {
 
     final provider = context.read<AuthProvider>();
     final success = await provider.signIn(
-      email: email, 
+      email: email,
       password: pass,
       isOwnerLogin: true,
     );
 
     if (success && mounted) {
       SecureLogger.log('Owner login successful');
-      
+
       if (provider.isSuperAdmin) {
         SecureLogger.log('Navigating to super admin portal');
         Navigator.pushReplacementNamed(context, AppRoutes.superAdminPortal);
@@ -60,7 +60,9 @@ class _OwnerLoginScreenState extends State<OwnerLoginScreen> {
       // Set the owner ID so GymProvider can look up the correct gym
       final user = provider.currentUser;
       if (user != null) {
-        context.read<GymProvider>().setCurrentOwner(user.id, gymName: user.gymName);
+        context
+            .read<GymProvider>()
+            .setCurrentOwner(user.id, gymName: user.gymName);
       }
       SecureLogger.log('Navigating to owner portal');
       Navigator.pushReplacementNamed(context, AppRoutes.ownerPortal);
@@ -74,11 +76,14 @@ class _OwnerLoginScreenState extends State<OwnerLoginScreen> {
       builder: (context) {
         return AlertDialog(
           backgroundColor: AppColors.surface,
-          title: const Text('Reset Password', style: TextStyle(color: AppColors.textPrimary)),
+          title: const Text('Reset Password',
+              style: TextStyle(color: AppColors.textPrimary)),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('Enter your email to receive a password reset link.', style: TextStyle(color: AppColors.textSecondary, fontSize: 14)),
+              const Text('Enter your email to receive a password reset link.',
+                  style:
+                      TextStyle(color: AppColors.textSecondary, fontSize: 14)),
               const SizedBox(height: 16),
               TextField(
                 controller: emailCtrl,
@@ -99,10 +104,10 @@ class _OwnerLoginScreenState extends State<OwnerLoginScreen> {
               onPressed: () async {
                 final email = emailCtrl.text.trim();
                 if (email.isEmpty) return;
-                
+
                 final provider = context.read<AuthProvider>();
                 final success = await provider.resetPassword(email);
-                
+
                 if (!context.mounted) return;
                 Navigator.pop(context); // Close dialog
                 if (success) {
@@ -111,7 +116,9 @@ class _OwnerLoginScreenState extends State<OwnerLoginScreen> {
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(provider.errorMessage ?? 'Failed to reset password')),
+                    SnackBar(
+                        content: Text(provider.errorMessage ??
+                            'Failed to reset password')),
                   );
                 }
               },
@@ -131,7 +138,8 @@ class _OwnerLoginScreenState extends State<OwnerLoginScreen> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => Navigator.pushReplacementNamed(context, AppRoutes.login),
+          onPressed: () =>
+              Navigator.pushReplacementNamed(context, AppRoutes.login),
         ),
       ),
       body: SingleChildScrollView(
@@ -170,7 +178,8 @@ class _OwnerLoginScreenState extends State<OwnerLoginScreen> {
               TextFormField(
                 controller: _passCtrl,
                 obscureText: _obscureText,
-                validator: (value) => InputValidators.validateRequired(value, fieldName: 'Password'),
+                validator: (value) => InputValidators.validateRequired(value,
+                    fieldName: 'Password'),
                 decoration: InputDecoration(
                   hintText: 'Password',
                   prefixIcon: const Icon(Icons.lock_outline_rounded),
@@ -190,14 +199,16 @@ class _OwnerLoginScreenState extends State<OwnerLoginScreen> {
                     return Padding(
                       padding: const EdgeInsets.only(top: 12),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
                         decoration: BoxDecoration(
                           color: AppColors.error.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.warning_amber_rounded, color: AppColors.error, size: 18),
+                            const Icon(Icons.warning_amber_rounded,
+                                color: AppColors.error, size: 18),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
@@ -231,7 +242,9 @@ class _OwnerLoginScreenState extends State<OwnerLoginScreen> {
                   return SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: (auth.isLoading || isRateLimited) ? null : _handleLogin,
+                      onPressed: (auth.isLoading || isRateLimited)
+                          ? null
+                          : _handleLogin,
                       child: auth.isLoading
                           ? const SizedBox(
                               width: 20,
@@ -254,8 +267,8 @@ class _OwnerLoginScreenState extends State<OwnerLoginScreen> {
                   const Text("Don't have an owner account?",
                       style: TextStyle(color: AppColors.textSecondary)),
                   TextButton(
-                    onPressed: () =>
-                        Navigator.pushReplacementNamed(context, AppRoutes.ownerRegister),
+                    onPressed: () => Navigator.pushReplacementNamed(
+                        context, AppRoutes.ownerRegister),
                     child: const Text('Register Gym'),
                   ),
                 ],

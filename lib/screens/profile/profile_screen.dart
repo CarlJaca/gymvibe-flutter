@@ -34,35 +34,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       if (result != null && result.files.single.path != null) {
         setState(() => _isUploadingAvatar = true);
-        
+
         final file = File(result.files.single.path!);
         if (!mounted) return;
         final auth = context.read<AuthProvider>();
-        
+
         if (auth.currentUser == null) return;
-        
-        final newUrl = await storageService.uploadUserAvatar(auth.currentUser!.id, file);
-        
+
+        final newUrl =
+            await storageService.uploadUserAvatar(auth.currentUser!.id, file);
+
         await auth.updateUserProfile({'avatarUrl': newUrl});
-        
+
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Avatar updated!'), backgroundColor: AppColors.success),
+            const SnackBar(
+                content: Text('Avatar updated!'),
+                backgroundColor: AppColors.success),
           );
         }
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${e.toString()}'), backgroundColor: AppColors.error),
+          SnackBar(
+              content: Text('Error: ${e.toString()}'),
+              backgroundColor: AppColors.error),
         );
       }
     } finally {
       if (mounted) setState(() => _isUploadingAvatar = false);
     }
   }
-
-
 
   void _showComingSoon(String feature) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -103,7 +106,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 shape: BoxShape.circle,
                               ),
                               child: const Center(
-                                child: CircularProgressIndicator(color: Colors.white),
+                                child: CircularProgressIndicator(
+                                    color: Colors.white),
                               ),
                             ),
                           ),
@@ -155,8 +159,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 32, vertical: 10),
                         shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(AppRadius.lg),
+                          borderRadius: BorderRadius.circular(AppRadius.lg),
                         ),
                       ),
                       child: const Text('Edit Profile'),
@@ -171,9 +174,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Consumer2<EventsProvider, NotificationProvider>(
                   builder: (context, eventsProv, notifProv, _) {
                     final eventsJoined = eventsProv.myRegisteredEvents.length;
-                    final notificationsCount = notifProv.customerNotifications.length;
-                    const activeMemberships = 0; // Replace with actual logic when available
-                    const bookings = 0;          // Replace with actual logic when available
+                    final notificationsCount =
+                        notifProv.customerNotifications.length;
+                    const activeMemberships =
+                        0; // Replace with actual logic when available
+                    const bookings =
+                        0; // Replace with actual logic when available
 
                     return GridView.count(
                       crossAxisCount: 2,
@@ -183,61 +189,81 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       physics: const NeverScrollableScrollPhysics(),
                       childAspectRatio: 2.5,
                       children: [
-                        _buildDashboardMetric('Memberships', activeMemberships.toString(), Icons.card_membership_rounded),
-                        _buildDashboardMetric('Bookings', bookings.toString(), Icons.book_online_rounded),
-                        _buildDashboardMetric('Events Joined', eventsJoined.toString(), Icons.event_available_rounded),
-                        _buildDashboardMetric('Notifications', notificationsCount.toString(), Icons.notifications_active_rounded),
+                        _buildDashboardMetric(
+                            'Memberships',
+                            activeMemberships.toString(),
+                            Icons.card_membership_rounded),
+                        _buildDashboardMetric('Bookings', bookings.toString(),
+                            Icons.book_online_rounded),
+                        _buildDashboardMetric(
+                            'Events Joined',
+                            eventsJoined.toString(),
+                            Icons.event_available_rounded),
+                        _buildDashboardMetric(
+                            'Notifications',
+                            notificationsCount.toString(),
+                            Icons.notifications_active_rounded),
                       ],
                     );
                   },
                 ),
                 const SizedBox(height: AppPadding.xl),
 
-
-
                 // ── My Activity ─────────────────────────────────────────
                 _buildSectionTitle('My Activity'),
                 const SizedBox(height: AppPadding.sm),
-                _buildMenuItem(
-                    Icons.calendar_today_rounded, 'My Bookings',
-                    onTap: () => Navigator.pushNamed(context, AppRoutes.myBookings)),
-                _buildMenuItem(
-                    Icons.star_outline_rounded, 'Reviews', 
-                    onTap: () => Navigator.pushNamed(context, AppRoutes.myReviews)),
+                _buildMenuItem(Icons.calendar_today_rounded, 'My Bookings',
+                    onTap: () =>
+                        Navigator.pushNamed(context, AppRoutes.myBookings)),
+                _buildMenuItem(Icons.star_outline_rounded, 'Reviews',
+                    onTap: () =>
+                        Navigator.pushNamed(context, AppRoutes.myReviews)),
                 _buildMenuItem(
                     Icons.favorite_border_rounded, 'Saved Gyms/Events',
                     onTap: () =>
                         Navigator.pushNamed(context, AppRoutes.favorites)),
-                _buildMenuItem(
-                    Icons.event_outlined, 'Event Registrations',
+                _buildMenuItem(Icons.event_outlined, 'Event Registrations',
                     onTap: () =>
                         Navigator.pushNamed(context, AppRoutes.myEvents)),
-                _buildMenuItem(
-                    Icons.work_outline_rounded, 'Job Opportunities',
+                _buildMenuItem(Icons.work_outline_rounded, 'Job Opportunities',
                     onTap: () => Navigator.pushNamed(context, AppRoutes.jobs)),
-                _buildMenuItem(
-                    Icons.assignment_outlined, 'My Applications',
-                    onTap: () => Navigator.pushNamed(context, AppRoutes.myApplications)),
+                _buildMenuItem(Icons.assignment_outlined, 'My Applications',
+                    onTap: () =>
+                        Navigator.pushNamed(context, AppRoutes.myApplications)),
                 _buildMenuItem(
                     Icons.card_membership_rounded, 'Membership History',
-                    onTap: () => Navigator.pushNamed(context, AppRoutes.membershipHistory)),
+                    onTap: () => Navigator.pushNamed(
+                        context, AppRoutes.membershipHistory)),
                 const SizedBox(height: AppPadding.lg),
 
                 // ── Account Settings ────────────────────────────────────
                 _buildSectionTitle('Account Settings'),
                 const SizedBox(height: AppPadding.sm),
-                _buildMenuItem(Icons.person_outline_rounded, 'Personal Information',
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PersonalInformationScreen()))),
+                _buildMenuItem(
+                    Icons.person_outline_rounded, 'Personal Information',
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) =>
+                                const PersonalInformationScreen()))),
                 _buildMenuItem(Icons.payment_rounded, 'Payment Methods',
                     onTap: () => _showComingSoon('Payment Methods')),
                 _buildMenuItem(Icons.card_giftcard_rounded, 'Rewards & Loyalty',
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const RewardsLoyaltyScreen()))),
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const RewardsLoyaltyScreen()))),
                 _buildMenuItem(Icons.settings_outlined, 'Settings',
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen()))),
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const SettingsScreen()))),
                 _buildMenuItem(Icons.help_outline_rounded, 'Help & Support',
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HelpSupportScreen()))),
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const HelpSupportScreen()))),
                 const SizedBox(height: AppPadding.lg),
-
 
                 // ── Logout ──────────────────────────────────────────────
                 ListTile(
@@ -250,7 +276,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   onTap: () {
                     auth.signOut();
-                    Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (route) => false);
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, AppRoutes.login, (route) => false);
                   },
                 ),
                 const SizedBox(height: AppPadding.xl),
@@ -322,8 +349,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-
-
   Widget _buildMenuItem(IconData icon, String title,
       {required VoidCallback onTap}) {
     return Padding(
@@ -333,14 +358,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
         borderRadius: BorderRadius.circular(AppRadius.md),
         clipBehavior: Clip.antiAlias,
         child: ListTile(
-        leading: Icon(icon, color: AppColors.primary),
-        title: Text(title,
-            style:
-                const TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
-        trailing: const Icon(Icons.chevron_right_rounded,
-            color: AppColors.textSecondary),
-        onTap: onTap,
-      ),
+          leading: Icon(icon, color: AppColors.primary),
+          title: Text(title,
+              style:
+                  const TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+          trailing: const Icon(Icons.chevron_right_rounded,
+              color: AppColors.textSecondary),
+          onTap: onTap,
+        ),
       ),
     );
   }

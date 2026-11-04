@@ -20,7 +20,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
   @override
   void initState() {
     super.initState();
-    
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<CommunityProvider>().loadCommunityData();
     });
@@ -40,11 +40,13 @@ class _CommunityScreenState extends State<CommunityScreen> {
           children: [
             // ── Header ──────────────────────────────────────────────────
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppPadding.sm, vertical: AppPadding.sm),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppPadding.sm, vertical: AppPadding.sm),
               child: Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
+                    icon: const Icon(Icons.arrow_back_rounded,
+                        color: AppColors.textPrimary),
                     onPressed: () => Navigator.pop(context),
                   ),
                   const Spacer(),
@@ -58,8 +60,10 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   ),
                   const Spacer(),
                   IconButton(
-                    icon: const Icon(Icons.search_rounded, color: AppColors.primary),
-                    onPressed: () => Navigator.pushNamed(context, AppRoutes.searchLanding),
+                    icon: const Icon(Icons.search_rounded,
+                        color: AppColors.primary),
+                    onPressed: () =>
+                        Navigator.pushNamed(context, AppRoutes.searchLanding),
                   ),
                 ],
               ),
@@ -69,7 +73,9 @@ class _CommunityScreenState extends State<CommunityScreen> {
               child: Consumer<CommunityProvider>(
                 builder: (context, provider, child) {
                   if (provider.isLoading) {
-                    return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+                    return const Center(
+                        child: CircularProgressIndicator(
+                            color: AppColors.primary));
                   }
 
                   return RefreshIndicator(
@@ -91,48 +97,57 @@ class _CommunityScreenState extends State<CommunityScreen> {
                           child: ListView.separated(
                             scrollDirection: Axis.horizontal,
                             itemCount: provider.communities.length,
-                            separatorBuilder: (_, __) => const SizedBox(width: 16),
+                            separatorBuilder: (_, __) =>
+                                const SizedBox(width: 16),
                             itemBuilder: (context, index) {
                               final comm = provider.communities[index];
-                                    final isSelected = provider.selectedCommunity?.id == comm.id;
-                                    return GestureDetector(
-                                      onTap: () {
-                                        provider.selectCommunity(isSelected ? null : comm);
-                                      },
-                                      child: SizedBox(
-                                        width: 80,
-                                        child: Column(
-                                          children: [
-                                            Container(
-                                              padding: const EdgeInsets.all(2),
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                border: isSelected
-                                                    ? Border.all(color: AppColors.primary, width: 2)
-                                                    : null,
-                                              ),
-                                              child: CircleAvatar(
-                                                radius: 30,
-                                                backgroundImage: NetworkImage(comm.imageUrl),
-                                                backgroundColor: AppColors.surfaceElevated,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 8),
-                                            Text(
-                                              comm.name.toUpperCase(),
-                                              style: TextStyle(
-                                                fontSize: 9,
-                                                fontWeight: FontWeight.bold,
-                                                color: isSelected ? AppColors.primary : AppColors.textPrimary,
-                                              ),
-                                              textAlign: TextAlign.center,
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ],
+                              final isSelected =
+                                  provider.selectedCommunity?.id == comm.id;
+                              return GestureDetector(
+                                onTap: () {
+                                  provider.selectCommunity(
+                                      isSelected ? null : comm);
+                                },
+                                child: SizedBox(
+                                  width: 80,
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(2),
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: isSelected
+                                              ? Border.all(
+                                                  color: AppColors.primary,
+                                                  width: 2)
+                                              : null,
+                                        ),
+                                        child: CircleAvatar(
+                                          radius: 30,
+                                          backgroundImage:
+                                              NetworkImage(comm.imageUrl),
+                                          backgroundColor:
+                                              AppColors.surfaceElevated,
                                         ),
                                       ),
-                                    );
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        comm.name.toUpperCase(),
+                                        style: TextStyle(
+                                          fontSize: 9,
+                                          fontWeight: FontWeight.bold,
+                                          color: isSelected
+                                              ? AppColors.primary
+                                              : AppColors.textPrimary,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
                             },
                           ),
                         ),
@@ -153,7 +168,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                   Consumer<AuthProvider>(
                                     builder: (context, auth, _) => CircleAvatar(
                                       radius: 18,
-                                      backgroundImage: NetworkImage(auth.userAvatar),
+                                      backgroundImage:
+                                          NetworkImage(auth.userAvatar),
                                     ),
                                   ),
                                   const SizedBox(width: 12),
@@ -181,21 +197,28 @@ class _CommunityScreenState extends State<CommunityScreen> {
                               const Divider(),
                               const SizedBox(height: 8),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   TextButton.icon(
                                     onPressed: () {},
-                                    icon: const Icon(Icons.image_outlined, size: 20),
-                                    label: const Text('Add your post in', style: TextStyle(fontSize: 12)),
-                                    style: TextButton.styleFrom(foregroundColor: AppColors.textSecondary),
+                                    icon: const Icon(Icons.image_outlined,
+                                        size: 20),
+                                    label: const Text('Add your post in',
+                                        style: TextStyle(fontSize: 12)),
+                                    style: TextButton.styleFrom(
+                                        foregroundColor:
+                                            AppColors.textSecondary),
                                   ),
                                   ElevatedButton(
                                     onPressed: provider.postText.trim().isEmpty
                                         ? null
                                         : () {
-                                            final auth = context.read<AuthProvider>();
+                                            final auth =
+                                                context.read<AuthProvider>();
                                             provider.publishPost(
-                                              userId: auth.currentUser?.id ?? '',
+                                              userId:
+                                                  auth.currentUser?.id ?? '',
                                               userName: auth.userName,
                                               userAvatarUrl: auth.userAvatar,
                                               userLocation: auth.userLocation,
@@ -204,10 +227,14 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                             FocusScope.of(context).unfocus();
                                           },
                                     style: ElevatedButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.full)),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 10),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                              AppRadius.full)),
                                     ),
-                                    child: const Text('Publish Post', style: TextStyle(fontSize: 12)),
+                                    child: const Text('Publish Post',
+                                        style: TextStyle(fontSize: 12)),
                                   ),
                                 ],
                               ),
@@ -217,7 +244,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
                         const SizedBox(height: AppPadding.xl),
 
                         // ── Feed ─────────────────────────────────────────
-                        ...provider.filteredPosts.map((post) => PostCard(post: post)),
+                        ...provider.filteredPosts
+                            .map((post) => PostCard(post: post)),
                       ],
                     ),
                   );

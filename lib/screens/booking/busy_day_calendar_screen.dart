@@ -54,10 +54,12 @@ class _BusyDayCalendarScreenState extends State<BusyDayCalendarScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
+          icon: const Icon(Icons.arrow_back_rounded,
+              color: AppColors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Busy Day Calendar', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('Busy Day Calendar',
+            style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
       ),
       body: SafeArea(
@@ -70,16 +72,19 @@ class _BusyDayCalendarScreenState extends State<BusyDayCalendarScreen> {
               decoration: BoxDecoration(
                 color: AppColors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+                border:
+                    Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
               ),
               child: const Row(
                 children: [
-                  Icon(Icons.lightbulb_outline_rounded, color: AppColors.primary, size: 20),
+                  Icon(Icons.lightbulb_outline_rounded,
+                      color: AppColors.primary, size: 20),
                   SizedBox(width: 10),
                   Expanded(
                     child: Text(
                       'Book on Low or Moderate days for a better workout experience.',
-                      style: TextStyle(fontSize: 13, color: AppColors.textPrimary),
+                      style:
+                          TextStyle(fontSize: 13, color: AppColors.textPrimary),
                     ),
                   ),
                 ],
@@ -97,10 +102,12 @@ class _BusyDayCalendarScreenState extends State<BusyDayCalendarScreen> {
                 child: Consumer<CrowdStatusProvider>(
                   builder: (context, crowdProv, _) {
                     return TableCalendar(
-                      firstDay: DateTime.now().subtract(const Duration(days: 30)),
+                      firstDay:
+                          DateTime.now().subtract(const Duration(days: 30)),
                       lastDay: DateTime.now().add(const Duration(days: 90)),
                       focusedDay: _focusedDay,
-                      selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                      selectedDayPredicate: (day) =>
+                          isSameDay(_selectedDay, day),
                       onDaySelected: (selectedDay, focusedDay) {
                         if (!_isDateBlocked(selectedDay)) {
                           setState(() {
@@ -117,26 +124,41 @@ class _BusyDayCalendarScreenState extends State<BusyDayCalendarScreen> {
                       headerStyle: const HeaderStyle(
                         formatButtonVisible: false,
                         titleCentered: true,
-                        titleTextStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
-                        leftChevronIcon: Icon(Icons.chevron_left_rounded, color: AppColors.textPrimary),
-                        rightChevronIcon: Icon(Icons.chevron_right_rounded, color: AppColors.textPrimary),
+                        titleTextStyle: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary),
+                        leftChevronIcon: Icon(Icons.chevron_left_rounded,
+                            color: AppColors.textPrimary),
+                        rightChevronIcon: Icon(Icons.chevron_right_rounded,
+                            color: AppColors.textPrimary),
                       ),
                       daysOfWeekStyle: const DaysOfWeekStyle(
-                        weekdayStyle: TextStyle(color: AppColors.textSecondary, fontWeight: FontWeight.w600),
-                        weekendStyle: TextStyle(color: AppColors.textSecondary, fontWeight: FontWeight.w600),
+                        weekdayStyle: TextStyle(
+                            color: AppColors.textSecondary,
+                            fontWeight: FontWeight.w600),
+                        weekendStyle: TextStyle(
+                            color: AppColors.textSecondary,
+                            fontWeight: FontWeight.w600),
                       ),
                       calendarBuilders: CalendarBuilders(
-                        defaultBuilder: (context, day, focusedDay) => _buildCalendarCell(day, crowdProv),
-                        selectedBuilder: (context, day, focusedDay) => _buildCalendarCell(day, crowdProv, isSelected: true),
-                        todayBuilder: (context, day, focusedDay) => _buildCalendarCell(day, crowdProv, isToday: true),
-                        disabledBuilder: (context, day, focusedDay) => _buildCalendarCell(day, crowdProv, isDisabled: true),
+                        defaultBuilder: (context, day, focusedDay) =>
+                            _buildCalendarCell(day, crowdProv),
+                        selectedBuilder: (context, day, focusedDay) =>
+                            _buildCalendarCell(day, crowdProv,
+                                isSelected: true),
+                        todayBuilder: (context, day, focusedDay) =>
+                            _buildCalendarCell(day, crowdProv, isToday: true),
+                        disabledBuilder: (context, day, focusedDay) =>
+                            _buildCalendarCell(day, crowdProv,
+                                isDisabled: true),
                       ),
                     );
                   },
                 ),
               ),
             ),
-            
+
             // ─── Legend ──────────────────────────────────────────────────
             Container(
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
@@ -157,7 +179,8 @@ class _BusyDayCalendarScreenState extends State<BusyDayCalendarScreen> {
               child: SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _selectedDay != null && !_isDateBlocked(_selectedDay!)
+                  onPressed: _selectedDay != null &&
+                          !_isDateBlocked(_selectedDay!)
                       ? () {
                           // Navigate to booking screen, could pass the selected date if needed,
                           // but the booking screen has its own date picker. It's better to just navigate.
@@ -173,9 +196,12 @@ class _BusyDayCalendarScreenState extends State<BusyDayCalendarScreen> {
                     backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16)),
                   ),
-                  child: const Text('Book Selected Date', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  child: const Text('Book Selected Date',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 ),
               ),
             ),
@@ -185,7 +211,9 @@ class _BusyDayCalendarScreenState extends State<BusyDayCalendarScreen> {
     );
   }
 
-  Widget _buildCalendarCell(DateTime day, CrowdStatusProvider crowdProv, {
+  Widget _buildCalendarCell(
+    DateTime day,
+    CrowdStatusProvider crowdProv, {
     bool isSelected = false,
     bool isToday = false,
     bool isDisabled = false,
@@ -204,14 +232,20 @@ class _BusyDayCalendarScreenState extends State<BusyDayCalendarScreen> {
       decoration: BoxDecoration(
         color: isSelected ? AppColors.primary : Colors.transparent,
         borderRadius: BorderRadius.circular(12),
-        border: isToday && !isSelected ? Border.all(color: AppColors.primary, width: 2) : null,
+        border: isToday && !isSelected
+            ? Border.all(color: AppColors.primary, width: 2)
+            : null,
       ),
       child: Stack(
         alignment: Alignment.center,
         children: [
           Text(
             '${day.day}',
-            style: TextStyle(color: textColor, fontWeight: isSelected || isToday ? FontWeight.bold : FontWeight.normal),
+            style: TextStyle(
+                color: textColor,
+                fontWeight: isSelected || isToday
+                    ? FontWeight.bold
+                    : FontWeight.normal),
           ),
           if (!isBlocked && !isDisabled)
             Positioned(

@@ -140,9 +140,8 @@ class _MembershipScreenState extends State<MembershipScreen> {
       decoration: BoxDecoration(
         color: AppColors.surfaceElevated,
         borderRadius: BorderRadius.circular(20),
-        border: recommended
-            ? Border.all(color: AppColors.primary, width: 2)
-            : null,
+        border:
+            recommended ? Border.all(color: AppColors.primary, width: 2) : null,
       ),
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -152,7 +151,8 @@ class _MembershipScreenState extends State<MembershipScreen> {
             Center(
               child: Container(
                 margin: const EdgeInsets.only(bottom: 16),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                 decoration: BoxDecoration(
                   color: AppColors.primary,
                   borderRadius: BorderRadius.circular(16),
@@ -231,9 +231,8 @@ class _MembershipScreenState extends State<MembershipScreen> {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: recommended
-                    ? AppColors.primary
-                    : AppColors.surface,
+                backgroundColor:
+                    recommended ? AppColors.primary : AppColors.surface,
                 foregroundColor: AppColors.textPrimary,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(

@@ -54,8 +54,8 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
                   ];
                   return ListView(
                     scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: AppPadding.md),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: AppPadding.md),
                     children: filters.map((f) {
                       final label = f == 'all'
                           ? 'All'
@@ -67,8 +67,8 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
                         child: FilterChipWidget(
                           label: label,
                           isSelected: (prov.statusFilter ?? 'all') == f,
-                          onTap: () => prov.setStatusFilter(
-                              f == 'all' ? null : f),
+                          onTap: () =>
+                              prov.setStatusFilter(f == 'all' ? null : f),
                         ),
                       );
                     }).toList(),
@@ -84,8 +84,8 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
                 builder: (context, prov, _) {
                   if (prov.isLoading) {
                     return const Center(
-                      child: CircularProgressIndicator(
-                          color: AppColors.primary),
+                      child:
+                          CircularProgressIndicator(color: AppColors.primary),
                     );
                   }
 
@@ -98,8 +98,8 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
                         children: [
                           Icon(Icons.description_outlined,
                               size: 64,
-                              color: AppColors.textMuted
-                                  .withValues(alpha: 0.5)),
+                              color:
+                                  AppColors.textMuted.withValues(alpha: 0.5)),
                           const SizedBox(height: 12),
                           const Text('No applications yet',
                               style: TextStyle(
@@ -109,8 +109,7 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
                           const Text(
                               'Browse job postings and submit your first application',
                               style: TextStyle(
-                                  color: AppColors.textMuted,
-                                  fontSize: 13),
+                                  color: AppColors.textMuted, fontSize: 13),
                               textAlign: TextAlign.center),
                         ],
                       ),
@@ -122,12 +121,11 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
                     backgroundColor: AppColors.surfaceElevated,
                     onRefresh: () {
                       final auth = context.read<AuthProvider>();
-                      return prov
-                          .loadMyApplications(auth.currentUser!.id);
+                      return prov.loadMyApplications(auth.currentUser!.id);
                     },
                     child: ListView.builder(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: AppPadding.md),
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: AppPadding.md),
                       itemCount: apps.length,
                       itemBuilder: (context, index) =>
                           _buildApplicationCard(context, apps[index]),
@@ -142,8 +140,7 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
     );
   }
 
-  Widget _buildApplicationCard(
-      BuildContext context, JobApplicationModel app) {
+  Widget _buildApplicationCard(BuildContext context, JobApplicationModel app) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -178,8 +175,7 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
                       const SizedBox(height: 2),
                       Text(app.gymName,
                           style: const TextStyle(
-                              fontSize: 13,
-                              color: AppColors.textSecondary)),
+                              fontSize: 13, color: AppColors.textSecondary)),
                     ],
                   ),
                 ),
@@ -196,8 +192,8 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
                   app.submittedAt != null
                       ? 'Submitted ${_formatDate(app.submittedAt!)}'
                       : 'Date unknown',
-                  style: const TextStyle(
-                      fontSize: 11, color: AppColors.textMuted),
+                  style:
+                      const TextStyle(fontSize: 11, color: AppColors.textMuted),
                 ),
                 if (app.interviewDate != null &&
                     app.status == ApplicationStatus.interview) ...[
@@ -215,13 +211,12 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
                 ],
               ],
             ),
-            if (app.updatedAt != null &&
-                app.updatedAt != app.submittedAt) ...[
+            if (app.updatedAt != null && app.updatedAt != app.submittedAt) ...[
               const SizedBox(height: 4),
               Text(
                 'Updated ${_formatDate(app.updatedAt!)}',
-                style: const TextStyle(
-                    fontSize: 11, color: AppColors.textMuted),
+                style:
+                    const TextStyle(fontSize: 11, color: AppColors.textMuted),
               ),
             ],
           ],
@@ -280,8 +275,19 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
 
   String _formatDate(DateTime date) {
     final months = [
-      '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      '',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return '${months[date.month]} ${date.day}, ${date.year}';
   }

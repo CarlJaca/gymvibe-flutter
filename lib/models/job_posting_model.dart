@@ -267,7 +267,8 @@ class JobPostingModel {
 
   /// Whether this posting is past its application deadline.
   bool get isExpired =>
-      applicationDeadline != null && applicationDeadline!.isBefore(DateTime.now());
+      applicationDeadline != null &&
+      applicationDeadline!.isBefore(DateTime.now());
 
   /// Human-readable salary string.
   String get salaryDisplay {
@@ -277,10 +278,12 @@ class JobPostingModel {
       case SalaryType.notDisclosed:
         return 'Not Disclosed';
       case SalaryType.fixed:
-        final period = salaryPeriod != null ? salaryPeriodLabel(salaryPeriod!) : '';
+        final period =
+            salaryPeriod != null ? salaryPeriodLabel(salaryPeriod!) : '';
         return '₱${minimumSalary?.toStringAsFixed(0) ?? '0'}$period';
       case SalaryType.range:
-        final period = salaryPeriod != null ? salaryPeriodLabel(salaryPeriod!) : '';
+        final period =
+            salaryPeriod != null ? salaryPeriodLabel(salaryPeriod!) : '';
         return '₱${minimumSalary?.toStringAsFixed(0) ?? '0'} – ₱${maximumSalary?.toStringAsFixed(0) ?? '0'}$period';
     }
   }
@@ -362,12 +365,14 @@ class JobPostingModel {
       'salaryType': salaryTypeToString(salaryType),
       'benefits': benefits,
       'numberOfOpenings': numberOfOpenings,
-      'applicationDeadline':
-          applicationDeadline != null ? Timestamp.fromDate(applicationDeadline!) : null,
+      'applicationDeadline': applicationDeadline != null
+          ? Timestamp.fromDate(applicationDeadline!)
+          : null,
       'status': jobStatusToString(status),
       'applicationCount': applicationCount,
-      'createdAt':
-          createdAt != null ? Timestamp.fromDate(createdAt!) : FieldValue.serverTimestamp(),
+      'createdAt': createdAt != null
+          ? Timestamp.fromDate(createdAt!)
+          : FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
       'closedAt': closedAt != null ? Timestamp.fromDate(closedAt!) : null,
     };
@@ -386,7 +391,8 @@ class JobPostingModel {
     return data;
   }
 
-  factory JobPostingModel.fromJson(Map<String, dynamic> json, String documentId) {
+  factory JobPostingModel.fromJson(
+      Map<String, dynamic> json, String documentId) {
     return JobPostingModel(
       jobId: documentId,
       gymId: json['gymId'] ?? '',
@@ -405,8 +411,9 @@ class JobPostingModel {
       salaryType: stringToSalaryType(json['salaryType']),
       minimumSalary: (json['minimumSalary'] as num?)?.toDouble(),
       maximumSalary: (json['maximumSalary'] as num?)?.toDouble(),
-      salaryPeriod:
-          json['salaryPeriod'] != null ? stringToSalaryPeriod(json['salaryPeriod']) : null,
+      salaryPeriod: json['salaryPeriod'] != null
+          ? stringToSalaryPeriod(json['salaryPeriod'])
+          : null,
       benefits: List<String>.from(json['benefits'] ?? []),
       numberOfOpenings: json['numberOfOpenings'] ?? 1,
       applicationDeadline: _parseTimestamp(json['applicationDeadline']),

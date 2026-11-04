@@ -9,7 +9,8 @@ class OwnerPrVerificationScreen extends StatefulWidget {
   const OwnerPrVerificationScreen({super.key});
 
   @override
-  State<OwnerPrVerificationScreen> createState() => _OwnerPrVerificationScreenState();
+  State<OwnerPrVerificationScreen> createState() =>
+      _OwnerPrVerificationScreenState();
 }
 
 class _OwnerPrVerificationScreenState extends State<OwnerPrVerificationScreen> {
@@ -61,7 +62,8 @@ class _OwnerPrVerificationScreenState extends State<OwnerPrVerificationScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.verified_rounded, size: 64, color: AppColors.primary.withValues(alpha: 0.5)),
+          Icon(Icons.verified_rounded,
+              size: 64, color: AppColors.primary.withValues(alpha: 0.5)),
           const SizedBox(height: 16),
           const Text(
             'All caught up!',
@@ -81,7 +83,8 @@ class _OwnerPrVerificationScreenState extends State<OwnerPrVerificationScreen> {
     );
   }
 
-  Widget _buildPendingCard(PersonalRecord record, LeaderboardProvider provider) {
+  Widget _buildPendingCard(
+      PersonalRecord record, LeaderboardProvider provider) {
     final gymId = context.read<GymProvider>().ownerGym.id;
 
     return Container(
@@ -106,8 +109,12 @@ class _OwnerPrVerificationScreenState extends State<OwnerPrVerificationScreen> {
                 backgroundColor: AppColors.surface,
                 child: record.userAvatarUrl.isEmpty
                     ? Text(
-                        record.userName.isNotEmpty ? record.userName[0].toUpperCase() : '?',
-                        style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
+                        record.userName.isNotEmpty
+                            ? record.userName[0].toUpperCase()
+                            : '?',
+                        style: const TextStyle(
+                            color: AppColors.textPrimary,
+                            fontWeight: FontWeight.bold),
                       )
                     : null,
               ),
@@ -135,7 +142,8 @@ class _OwnerPrVerificationScreenState extends State<OwnerPrVerificationScreen> {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.orange.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(AppRadius.full),
@@ -206,12 +214,16 @@ class _OwnerPrVerificationScreenState extends State<OwnerPrVerificationScreen> {
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(ctx, false),
-                            child: const Text('Cancel', style: TextStyle(color: AppColors.textSecondary)),
+                            child: const Text('Cancel',
+                                style:
+                                    TextStyle(color: AppColors.textSecondary)),
                           ),
                           ElevatedButton(
                             onPressed: () => Navigator.pop(ctx, true),
-                            style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
-                            child: const Text('Reject', style: TextStyle(color: Colors.white)),
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.error),
+                            child: const Text('Reject',
+                                style: TextStyle(color: Colors.white)),
                           ),
                         ],
                       ),
@@ -249,7 +261,8 @@ class _OwnerPrVerificationScreenState extends State<OwnerPrVerificationScreen> {
                     if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text('Record verified! Now visible on leaderboard.'),
+                          content: Text(
+                              'Record verified! Now visible on leaderboard.'),
                           backgroundColor: AppColors.success,
                         ),
                       );

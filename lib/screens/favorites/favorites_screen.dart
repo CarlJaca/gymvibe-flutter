@@ -42,8 +42,12 @@ class FavoritesScreen extends StatelessWidget {
             labelColor: AppColors.primary,
             unselectedLabelColor: AppColors.textSecondary,
             tabs: [
-              Tab(text: 'Fav Gyms', icon: Icon(Icons.favorite_rounded, size: 18)),
-              Tab(text: 'Saved Gyms', icon: Icon(Icons.bookmark_rounded, size: 18)),
+              Tab(
+                  text: 'Fav Gyms',
+                  icon: Icon(Icons.favorite_rounded, size: 18)),
+              Tab(
+                  text: 'Saved Gyms',
+                  icon: Icon(Icons.bookmark_rounded, size: 18)),
               Tab(text: 'Events', icon: Icon(Icons.event_rounded, size: 18)),
             ],
           ),
@@ -62,9 +66,18 @@ class FavoritesScreen extends StatelessWidget {
 
             return TabBarView(
               children: [
-                _buildList(favoriteGyms, Icons.favorite_border_rounded, 'No favorite gyms', 'Tap the heart icon to save gyms here.', isEvent: false),
-                _buildList(savedGyms, Icons.bookmark_border_rounded, 'No saved gyms', 'Tap the bookmark icon to save gyms here.', isEvent: false),
-                _buildList(savedEvents, Icons.event_busy_rounded, 'No saved events', 'Tap the bookmark icon to save events here.', isEvent: true),
+                _buildList(favoriteGyms, Icons.favorite_border_rounded,
+                    'No favorite gyms', 'Tap the heart icon to save gyms here.',
+                    isEvent: false),
+                _buildList(savedGyms, Icons.bookmark_border_rounded,
+                    'No saved gyms', 'Tap the bookmark icon to save gyms here.',
+                    isEvent: false),
+                _buildList(
+                    savedEvents,
+                    Icons.event_busy_rounded,
+                    'No saved events',
+                    'Tap the bookmark icon to save events here.',
+                    isEvent: true),
               ],
             );
           },
@@ -73,7 +86,9 @@ class FavoritesScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildList(List<dynamic> items, IconData icon, String title, String subtitle, {bool isEvent = false}) {
+  Widget _buildList(
+      List<dynamic> items, IconData icon, String title, String subtitle,
+      {bool isEvent = false}) {
     if (items.isEmpty) {
       return Center(
         child: Column(
@@ -106,7 +121,8 @@ class FavoritesScreen extends StatelessWidget {
         if (isEvent) {
           final event = items[index];
           return Container(
-            margin: const EdgeInsets.symmetric(horizontal: AppPadding.md, vertical: AppPadding.sm),
+            margin: const EdgeInsets.symmetric(
+                horizontal: AppPadding.md, vertical: AppPadding.sm),
             decoration: BoxDecoration(
               color: AppColors.surface,
               borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -116,15 +132,22 @@ class FavoritesScreen extends StatelessWidget {
               contentPadding: const EdgeInsets.all(AppPadding.sm),
               leading: ClipRRect(
                 borderRadius: BorderRadius.circular(AppRadius.md),
-                child: Image.network(event['image'], width: 60, height: 60, fit: BoxFit.cover),
+                child: Image.network(event['image'],
+                    width: 60, height: 60, fit: BoxFit.cover),
               ),
-              title: Text(event['title'], style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-              subtitle: Text('${event['date']} • ${event['time']}', style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+              title: Text(event['title'],
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.white)),
+              subtitle: Text('${event['date']} • ${event['time']}',
+                  style: const TextStyle(
+                      color: AppColors.textSecondary, fontSize: 12)),
               trailing: IconButton(
                 icon: const Icon(Icons.bookmark, color: AppColors.primary),
-                onPressed: () => context.read<EventsProvider>().toggleEventSave(event['id']),
+                onPressed: () =>
+                    context.read<EventsProvider>().toggleEventSave(event['id']),
               ),
-              onTap: () => Navigator.pushNamed(context, '/event-details', arguments: event),
+              onTap: () => Navigator.pushNamed(context, '/event-details',
+                  arguments: event),
             ),
           );
         }
@@ -133,7 +156,8 @@ class FavoritesScreen extends StatelessWidget {
           gym: items[index],
           onTap: () {
             context.read<GymProvider>().selectGym(items[index]);
-            Navigator.pushNamed(context, AppRoutes.gymDetails, arguments: items[index]);
+            Navigator.pushNamed(context, AppRoutes.gymDetails,
+                arguments: items[index]);
           },
         );
       },

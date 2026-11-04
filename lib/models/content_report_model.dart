@@ -2,7 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ContentReportModel {
   final String id;
-  final String contentType; // 'review', 'event', 'promotion', 'announcement', 'job_posting', 'profile', 'leaderboard'
+  final String
+      contentType; // 'review', 'event', 'promotion', 'announcement', 'job_posting', 'profile', 'leaderboard'
   final String contentId;
   final String reportedBy;
   final String reporterName;
@@ -39,7 +40,8 @@ class ContentReportModel {
     this.contentOwnerName,
   });
 
-  factory ContentReportModel.fromJson(Map<String, dynamic> json, String documentId) {
+  factory ContentReportModel.fromJson(
+      Map<String, dynamic> json, String documentId) {
     DateTime createdAt = DateTime.now();
     if (json['createdAt'] is Timestamp) {
       createdAt = (json['createdAt'] as Timestamp).toDate();

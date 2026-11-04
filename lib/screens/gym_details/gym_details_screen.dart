@@ -113,10 +113,25 @@ class GymDetailsScreen extends StatelessWidget {
           children: [
             Hero(
               tag: 'gym_image_${gym.id}',
-              child: CachedNetworkImage(
-                imageUrl: gym.imageUrl,
-                fit: BoxFit.cover,
-              ),
+              child: gym.imageUrl.isNotEmpty
+                  ? CachedNetworkImage(
+                      imageUrl: gym.imageUrl,
+                      fit: BoxFit.cover,
+                      errorWidget: (_, __, ___) => Container(
+                        color: AppColors.surface,
+                        child: const Center(
+                          child: Icon(Icons.fitness_center,
+                              color: AppColors.textSecondary, size: 60),
+                        ),
+                      ),
+                    )
+                  : Container(
+                      color: AppColors.surface,
+                      child: const Center(
+                        child: Icon(Icons.fitness_center,
+                            color: AppColors.textSecondary, size: 60),
+                      ),
+                    ),
             ),
             DecoratedBox(
               decoration: BoxDecoration(
@@ -141,7 +156,9 @@ class GymDetailsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    gym.name,
+                    gym.branch.isNotEmpty
+                        ? '${gym.name} — ${gym.branch}'
+                        : gym.name,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 26,
@@ -150,17 +167,27 @@ class GymDetailsScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      StarRating(rating: gym.rating, size: 16),
-                      const SizedBox(width: 8),
-                      Text(
-                        '${gym.rating.toStringAsFixed(1)} (${gym.reviewCount})',
-                        style: const TextStyle(
-                            color: AppColors.textSecondary, fontSize: 14),
-                      ),
-                    ],
-                  ),
+                  if (gym.rating > 0) ...[
+                    Row(
+                      children: [
+                        StarRating(rating: gym.rating, size: 16),
+                        const SizedBox(width: 8),
+                        Text(
+                          '${gym.rating.toStringAsFixed(1)} (${gym.reviewCount})',
+                          style: const TextStyle(
+                              color: AppColors.textSecondary, fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ] else ...[
+                    const Text(
+                      'No ratings yet',
+                      style: TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 14,
+                          fontStyle: FontStyle.italic),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -205,11 +232,13 @@ class GymDetailsScreen extends StatelessWidget {
     return Consumer<CrowdStatusProvider>(
       builder: (context, crowdProv, _) {
         final now = DateTime.now();
-        final dateStr = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
-        
+        final dateStr =
+            '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+
         final dayCount = crowdProv.getBookingCount(dateStr);
-        final estimatedLevel = CrowdService.calculateCrowdLevel(dayCount, gym.capacity);
-        
+        final estimatedLevel =
+            CrowdService.calculateCrowdLevel(dayCount, gym.capacity);
+
         final liveStatus = gym.currentLiveStatus;
         final liveLevel = CrowdService.liveStatusToCrowdLevel(liveStatus);
         final updatedAt = gym.statusUpdatedAt;
@@ -239,7 +268,9 @@ class GymDetailsScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text('Estimated from bookings',
-                                style: TextStyle(fontSize: 11, color: AppColors.textSecondary)),
+                                style: TextStyle(
+                                    fontSize: 11,
+                                    color: AppColors.textSecondary)),
                             const SizedBox(height: 6),
                             _buildCrowdBadge(estimatedLevel),
                           ],
@@ -251,7 +282,9 @@ class GymDetailsScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text('Live status (by owner)',
-                                  style: TextStyle(fontSize: 11, color: AppColors.textSecondary)),
+                                  style: TextStyle(
+                                      fontSize: 11,
+                                      color: AppColors.textSecondary)),
                               const SizedBox(height: 6),
                               _buildCrowdBadge(liveLevel),
                             ],
@@ -262,13 +295,15 @@ class GymDetailsScreen extends StatelessWidget {
                   const SizedBox(height: 8),
                   Text(
                     '$dayCount / ${gym.capacity} bookings',
-                    style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
+                    style: const TextStyle(
+                        fontSize: 12, color: AppColors.textMuted),
                   ),
                   if (updatedAt != null) ...[
                     const SizedBox(height: 2),
                     Text(
                       'Updated ${_timeAgoStr(updatedAt)}',
-                      style: const TextStyle(fontSize: 11, color: AppColors.textMuted),
+                      style: const TextStyle(
+                          fontSize: 11, color: AppColors.textMuted),
                     ),
                   ],
                 ],
@@ -279,13 +314,17 @@ class GymDetailsScreen extends StatelessWidget {
               width: double.infinity,
               child: OutlinedButton.icon(
                 onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.busyDayCalendar, arguments: gym);
+                  Navigator.pushNamed(context, AppRoutes.busyDayCalendar,
+                      arguments: gym);
                 },
-                icon: const Icon(Icons.calendar_month_rounded, size: 18, color: AppColors.primary),
-                label: const Text('View Busy Day Calendar', style: TextStyle(color: AppColors.primary)),
+                icon: const Icon(Icons.calendar_month_rounded,
+                    size: 18, color: AppColors.primary),
+                label: const Text('View Busy Day Calendar',
+                    style: TextStyle(color: AppColors.primary)),
                 style: OutlinedButton.styleFrom(
                   side: const BorderSide(color: AppColors.primary),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
                   padding: const EdgeInsets.symmetric(vertical: 12),
                 ),
               ),
@@ -312,7 +351,7 @@ class GymDetailsScreen extends StatelessWidget {
         color = const Color(0xFFF44336);
         break;
     }
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
@@ -352,7 +391,7 @@ class GymDetailsScreen extends StatelessWidget {
   // ─── 2b. Facilities Section ───────────────────────────────────────────────────
   Widget _buildFacilitiesSection() {
     if (gym.facilities.isEmpty) return const SizedBox.shrink();
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -369,9 +408,12 @@ class GymDetailsScreen extends StatelessWidget {
             return Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.check_circle_outline, color: AppColors.primary, size: 18),
+                const Icon(Icons.check_circle_outline,
+                    color: AppColors.primary, size: 18),
                 const SizedBox(width: 6),
-                Text(facility, style: const TextStyle(color: AppColors.textPrimary, fontSize: 14)),
+                Text(facility,
+                    style: const TextStyle(
+                        color: AppColors.textPrimary, fontSize: 14)),
               ],
             );
           }).toList(),
@@ -402,17 +444,46 @@ class GymDetailsScreen extends StatelessWidget {
           ),
           child: const Row(
             children: [
-              Icon(Icons.event_available_rounded, color: AppColors.primary, size: 20),
+              Icon(Icons.event_available_rounded,
+                  color: AppColors.primary, size: 20),
               SizedBox(width: 10),
               Expanded(
                 child: Text(
                   'Bookings are for one day only per time slot.',
-                  style: TextStyle(color: AppColors.textPrimary, fontSize: 13, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                      color: AppColors.textPrimary,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500),
                 ),
               ),
             ],
           ),
         ),
+        if (gym.isPriceEstimated) ...[
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            margin: const EdgeInsets.only(bottom: 12),
+            decoration: BoxDecoration(
+              color: Colors.orange.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.info_outline_rounded,
+                    color: Colors.orange, size: 14),
+                SizedBox(width: 6),
+                Text(
+                  'Prices are estimated and may vary',
+                  style: TextStyle(
+                      color: Colors.orange,
+                      fontSize: 11,
+                      fontStyle: FontStyle.italic),
+                ),
+              ],
+            ),
+          ),
+        ],
         if (gym.sessionPrice.isNotEmpty) ...[
           Text(
             'Session Pass: ${gym.sessionPrice}',
@@ -446,61 +517,154 @@ class GymDetailsScreen extends StatelessWidget {
           style: const TextStyle(
               color: AppColors.textPrimary, fontSize: 14, height: 1.5),
         ),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-            GestureDetector(
-              onTap: () {}, // Keep copy if needed, but 'View on Map' is better
-              child: const Text('Copy',
-                  style: TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 12,
-                      decoration: TextDecoration.underline)),
+        if (gym.phone.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          GestureDetector(
+            onTap: () async {
+              final url = Uri.parse('tel:${gym.phone}');
+              if (!await launchUrl(url)) {
+                debugPrint('Could not launch phone for ${gym.name}');
+              }
+            },
+            child: Row(
+              children: [
+                const Icon(Icons.phone_rounded,
+                    color: AppColors.primary, size: 16),
+                const SizedBox(width: 6),
+                Text(
+                  gym.phone,
+                  style: const TextStyle(
+                      color: AppColors.primary,
+                      fontSize: 14,
+                      decoration: TextDecoration.underline),
+                ),
+              ],
             ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        GestureDetector(
-          onTap: () => _launchDirections(gym),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(AppRadius.lg),
-            child: SizedBox(
-              height: 160,
-              width: double.infinity,
-              child: IgnorePointer(
-                child: FlutterMap(
-                  options: MapOptions(
-                    initialCenter: LatLng(gym.latitude, gym.longitude),
-                    initialZoom: 15,
-                    interactionOptions: const InteractionOptions(
-                      flags: InteractiveFlag.none,
+          ),
+        ],
+        if (!gym.canShowMapMarker) ...[
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.orange.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.orange.withValues(alpha: 0.4)),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.info_outline_rounded,
+                    color: Colors.orange, size: 16),
+                const SizedBox(width: 8),
+                const Expanded(
+                  child: Text(
+                    'Exact map pin not verified for this branch.',
+                    style: TextStyle(color: Colors.orange, fontSize: 12),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () => _launchDirections(gym),
+              icon: const Icon(Icons.open_in_new_rounded, size: 18),
+              label: const Text('Open in Google Maps'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.primary,
+                side: const BorderSide(color: AppColors.primary),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+            ),
+          ),
+        ] else ...[
+          if (gym.isBuildingLevel) ...[
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.blue.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.blue.withValues(alpha: 0.3)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.location_city_rounded,
+                      color: Colors.blue, size: 16),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Approximate building location${gym.address.contains('2F') || gym.address.contains('2nd') ? ' — ${gym.address.split(',').first}' : ''}',
+                      style: const TextStyle(color: Colors.blue, fontSize: 12),
                     ),
                   ),
-                  children: [
-                    TileLayer(
-                      urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                      userAgentPackageName: 'com.gymvibe.app',
+                ],
+              ),
+            ),
+          ],
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              GestureDetector(
+                onTap: () {}, // Keep copy if needed
+                child: const Text('Copy',
+                    style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 12,
+                        decoration: TextDecoration.underline)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          GestureDetector(
+            onTap: () => _launchDirections(gym),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(AppRadius.lg),
+              child: SizedBox(
+                height: 160,
+                width: double.infinity,
+                child: IgnorePointer(
+                  child: FlutterMap(
+                    options: MapOptions(
+                      initialCenter: LatLng(gym.latitude!, gym.longitude!),
+                      initialZoom: 15,
+                      interactionOptions: const InteractionOptions(
+                        flags: InteractiveFlag.none,
+                      ),
                     ),
-                    MarkerLayer(
-                      markers: [
-                        Marker(
-                          point: LatLng(gym.latitude, gym.longitude),
-                          width: 40,
-                          height: 40,
-                          child: const Icon(
-                            Icons.location_on,
-                            color: AppColors.primary,
-                            size: 40,
+                    children: [
+                      TileLayer(
+                        urlTemplate:
+                            'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        userAgentPackageName: 'com.gymvibe.app',
+                      ),
+                      MarkerLayer(
+                        markers: [
+                          Marker(
+                            point: LatLng(gym.latitude!, gym.longitude!),
+                            width: 40,
+                            height: 40,
+                            child: Icon(
+                              gym.isBuildingLevel
+                                  ? Icons.location_city
+                                  : Icons.location_on,
+                              color: gym.isBuildingLevel
+                                  ? Colors.orange
+                                  : AppColors.primary,
+                              size: 40,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
+        ],
       ],
     );
   }
@@ -586,7 +750,8 @@ class GymDetailsScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 4),
-                  Icon(Icons.arrow_forward_rounded, color: Colors.white, size: 14),
+                  Icon(Icons.arrow_forward_rounded,
+                      color: Colors.white, size: 14),
                 ],
               ),
             ),
@@ -598,7 +763,15 @@ class GymDetailsScreen extends StatelessWidget {
 
   // ─── 6. Socials Section ───────────────────────────────────────────────────────
   Widget _buildSocialsSection() {
-    if (gym.socials.isEmpty) return const SizedBox.shrink();
+    // Build socials from the real dataset field if the map is empty
+    final effectiveSocials = gym.socials.isNotEmpty
+        ? gym.socials
+        : <String, String>{
+            if (gym.websiteOrFacebook.isNotEmpty)
+              'Website': gym.websiteOrFacebook,
+          };
+
+    if (effectiveSocials.isEmpty) return const SizedBox.shrink();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -609,7 +782,7 @@ class GymDetailsScreen extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 color: AppColors.primary)),
         const SizedBox(height: 12),
-        ...gym.socials.entries.map((entry) {
+        ...effectiveSocials.entries.map((entry) {
           IconData icon;
           if (entry.key.toLowerCase().contains('facebook')) {
             icon = Icons.facebook_rounded;
@@ -644,69 +817,66 @@ class GymDetailsScreen extends StatelessWidget {
 
   // ─── 7. Reviews & Ratings Section ───────────────────────────────────────────
   Widget _buildReviewsSection(BuildContext context) {
-    return Consumer<GymProvider>(
-      builder: (context, gymProv, child) {
-        // Find the most up-to-date version of this gym
-        final currentGym = gymProv.allGyms.firstWhere(
-          (g) => g.id == gym.id, 
-          orElse: () => gym
-        );
+    return Consumer<GymProvider>(builder: (context, gymProv, child) {
+      // Find the most up-to-date version of this gym
+      final currentGym =
+          gymProv.allGyms.firstWhere((g) => g.id == gym.id, orElse: () => gym);
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('Reviews & Ratings',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                TextButton.icon(
-                  onPressed: () => _showWriteReviewDialog(context),
-                  icon: const Icon(Icons.edit_rounded, size: 18),
-                  label: const Text('Write a Review'),
-                  style: TextButton.styleFrom(
-                    foregroundColor: AppColors.primary,
-                  ),
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('Reviews & Ratings',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              TextButton.icon(
+                onPressed: () => _showWriteReviewDialog(context),
+                icon: const Icon(Icons.edit_rounded, size: 18),
+                label: const Text('Write a Review'),
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.primary,
                 ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                StarRating(rating: currentGym.rating, size: 16),
-                const SizedBox(width: 8),
-                Text(
-                  '${currentGym.rating.toStringAsFixed(1)} • ${currentGym.reviewCount} Reviews',
-                  style: const TextStyle(
-                      color: AppColors.textPrimary,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-    
-            // Progress Bars
-            if (currentGym.ratingBreakdown.isNotEmpty)
-              ...currentGym.ratingBreakdown.entries
-                  .map((e) => RatingProgressBar(label: e.key, rating: e.value)),
-    
-            const SizedBox(height: 32),
-    
-            // Review Cards
-            if (currentGym.reviews.isEmpty)
-              const Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 32),
-                  child: Text('No reviews yet. Be the first!', style: TextStyle(color: AppColors.textMuted)),
-                ),
-              )
-            else
-              ...currentGym.reviews.map((review) => ReviewCard(review: review)),
-          ],
-        );
-      }
-    );
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              StarRating(rating: currentGym.rating, size: 16),
+              const SizedBox(width: 8),
+              Text(
+                '${currentGym.rating.toStringAsFixed(1)} • ${currentGym.reviewCount} Reviews',
+                style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+
+          // Progress Bars
+          if (currentGym.ratingBreakdown.isNotEmpty)
+            ...currentGym.ratingBreakdown.entries
+                .map((e) => RatingProgressBar(label: e.key, rating: e.value)),
+
+          const SizedBox(height: 32),
+
+          // Review Cards
+          if (currentGym.reviews.isEmpty)
+            const Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 32),
+                child: Text('No reviews yet. Be the first!',
+                    style: TextStyle(color: AppColors.textMuted)),
+              ),
+            )
+          else
+            ...currentGym.reviews.map((review) => ReviewCard(review: review)),
+        ],
+      );
+    });
   }
 
   void _showWriteReviewDialog(BuildContext context) {
@@ -720,19 +890,24 @@ class GymDetailsScreen extends StatelessWidget {
           builder: (context, setState) {
             return AlertDialog(
               backgroundColor: AppColors.surface,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              title: const Text('Write a Review', style: TextStyle(color: AppColors.textPrimary)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
+              title: const Text('Write a Review',
+                  style: TextStyle(color: AppColors.textPrimary)),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text('Tap a star to rate:', style: TextStyle(color: AppColors.textSecondary)),
+                  const Text('Tap a star to rate:',
+                      style: TextStyle(color: AppColors.textSecondary)),
                   const SizedBox(height: 12),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(5, (index) {
                       return IconButton(
                         icon: Icon(
-                          index < rating ? Icons.star_rounded : Icons.star_border_rounded,
+                          index < rating
+                              ? Icons.star_rounded
+                              : Icons.star_border_rounded,
                           color: AppColors.star,
                           size: 32,
                         ),
@@ -765,39 +940,42 @@ class GymDetailsScreen extends StatelessWidget {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(ctx),
-                  child: const Text('Cancel', style: TextStyle(color: AppColors.textSecondary)),
+                  child: const Text('Cancel',
+                      style: TextStyle(color: AppColors.textSecondary)),
                 ),
                 ElevatedButton(
                   onPressed: () {
                     final authProv = context.read<AuthProvider>();
                     if (!authProv.isAuthenticated) {
                       Navigator.pop(ctx);
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please login to post a review.')));
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text('Please login to post a review.')));
                       return;
                     }
-                    
+
                     final user = authProv.currentUser!;
                     final newReview = ReviewModel(
                       id: 'r_${DateTime.now().millisecondsSinceEpoch}',
                       userName: user.name,
-                      userAvatarUrl: user.avatarUrl.isNotEmpty ? user.avatarUrl : 'https://i.pravatar.cc/150?u=${user.id}',
+                      userAvatarUrl: user.avatarUrl.isNotEmpty
+                          ? user.avatarUrl
+                          : 'https://i.pravatar.cc/150?u=${user.id}',
                       rating: rating,
                       comment: commentCtrl.text,
                       date: 'Just now',
                     );
-                    
+
                     context.read<GymProvider>().addReview(gym.id, newReview);
-                    
+
                     Navigator.pop(ctx);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Review posted successfully!'), 
-                        backgroundColor: AppColors.success
-                      )
-                    );
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Review posted successfully!'),
+                        backgroundColor: AppColors.success));
                   },
-                  style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
-                  child: const Text('Post', style: TextStyle(color: Colors.white)),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary),
+                  child:
+                      const Text('Post', style: TextStyle(color: Colors.white)),
                 ),
               ],
             );
@@ -837,10 +1015,17 @@ class GymDetailsScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AppRadius.md),
                 ),
                 child: IconButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    if (gym.phone.isNotEmpty) {
+                      final url = Uri.parse('tel:${gym.phone}');
+                      if (!await launchUrl(url)) {
+                        debugPrint('Could not launch phone for ${gym.name}');
+                      }
+                    }
+                  },
                   icon: const Icon(Icons.call_rounded, size: 20),
                   color: AppColors.textPrimary,
-                  tooltip: 'Call',
+                  tooltip: gym.phone.isNotEmpty ? 'Call ${gym.phone}' : 'Call',
                 ),
               ),
               const SizedBox(width: 8),
@@ -865,7 +1050,13 @@ class GymDetailsScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AppRadius.md),
                 ),
                 child: IconButton(
-                  onPressed: () => _showSchedule(context, gym.dailySchedule),
+                  onPressed: () {
+                    if (gym.dailySchedule.isNotEmpty) {
+                      _showSchedule(context, gym.dailySchedule);
+                    } else if (gym.operatingHours.isNotEmpty) {
+                      _showSchedule(context, {'Hours': gym.operatingHours});
+                    }
+                  },
                   icon: const Icon(Icons.calendar_month_rounded, size: 20),
                   color: AppColors.textPrimary,
                   tooltip: 'View Schedule',
@@ -902,11 +1093,21 @@ class GymDetailsScreen extends StatelessWidget {
   }
 
   Future<void> _launchDirections(GymModel gym) async {
-    if (gym.latitude == 0.0 || gym.longitude == 0.0) return;
-    
-    // Create universal map URL that works on both Android and iOS
-    final url = Uri.parse('https://www.google.com/maps/search/?api=1&query=${gym.latitude},${gym.longitude}');
-    
+    // Use the gym's maps_url (branch-specific search URL) if available
+    final String urlStr;
+    if (gym.mapsUrl != null && gym.mapsUrl!.isNotEmpty) {
+      urlStr = gym.mapsUrl!;
+    } else if (gym.canShowExactMapPin) {
+      urlStr =
+          'https://www.google.com/maps/search/?api=1&query=${gym.latitude},${gym.longitude}';
+    } else {
+      // Fallback: search by branch name + address
+      final query =
+          Uri.encodeComponent('${gym.name} ${gym.branch} ${gym.address}');
+      urlStr = 'https://www.google.com/maps/search/?api=1&query=$query';
+    }
+
+    final url = Uri.parse(urlStr);
     if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
       debugPrint('Could not launch directions for ${gym.name}');
     }

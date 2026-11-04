@@ -21,14 +21,12 @@ class RoleGuard extends StatelessWidget {
     return Consumer<AuthProvider>(
       builder: (context, auth, _) {
         final user = auth.currentUser;
-        
+
         // Check if the user exists and is actually an owner
         if (user == null || !user.isOwner) {
-          SecureLogger.logError(
-            'SECURITY VIOLATION', 
-            'Unauthorized access attempt to owner route ($routeName) by user: ${user?.id ?? "Guest"}'
-          );
-          
+          SecureLogger.logError('SECURITY VIOLATION',
+              'Unauthorized access attempt to owner route ($routeName) by user: ${user?.id ?? "Guest"}');
+
           // Redirect to the customer main screen in the next frame to avoid build-phase navigation errors
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (context.mounted) {
@@ -41,7 +39,7 @@ class RoleGuard extends StatelessWidget {
               Navigator.pushReplacementNamed(context, AppRoutes.main);
             }
           });
-          
+
           // Return an empty/loading screen while the redirect happens
           return const Scaffold(
             body: Center(

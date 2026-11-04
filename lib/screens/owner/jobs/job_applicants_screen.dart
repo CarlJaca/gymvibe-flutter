@@ -113,7 +113,8 @@ class _JobApplicantsScreenState extends State<JobApplicantsScreen> {
                     child: FilterChipWidget(
                       label: label,
                       isSelected: (_statusFilter ?? 'all') == f,
-                      onTap: () => setState(() => _statusFilter = f == 'all' ? null : f),
+                      onTap: () =>
+                          setState(() => _statusFilter = f == 'all' ? null : f),
                     ),
                   );
                 }).toList(),
@@ -139,7 +140,9 @@ class _JobApplicantsScreenState extends State<JobApplicantsScreen> {
                   }
                   if (_searchQuery.isNotEmpty) {
                     final q = _searchQuery.toLowerCase();
-                    apps = apps.where((a) => a.applicantName.toLowerCase().contains(q)).toList();
+                    apps = apps
+                        .where((a) => a.applicantName.toLowerCase().contains(q))
+                        .toList();
                   }
 
                   if (apps.isEmpty) {
@@ -149,7 +152,8 @@ class _JobApplicantsScreenState extends State<JobApplicantsScreen> {
                         children: [
                           Icon(Icons.people_outline_rounded,
                               size: 56,
-                              color: AppColors.textMuted.withValues(alpha: 0.5)),
+                              color:
+                                  AppColors.textMuted.withValues(alpha: 0.5)),
                           const SizedBox(height: 12),
                           const Text('No applicants found',
                               style: TextStyle(
@@ -165,8 +169,8 @@ class _JobApplicantsScreenState extends State<JobApplicantsScreen> {
                     backgroundColor: AppColors.surfaceElevated,
                     onRefresh: () => prov.loadApplicants(widget.job.jobId),
                     child: ListView.builder(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: AppPadding.md),
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: AppPadding.md),
                       itemCount: apps.length,
                       itemBuilder: (context, index) =>
                           _buildApplicantCard(context, apps[index]),
@@ -250,8 +254,8 @@ class _JobApplicantsScreenState extends State<JobApplicantsScreen> {
                   app.submittedAt != null
                       ? _formatDate(app.submittedAt!)
                       : 'Unknown date',
-                  style: const TextStyle(
-                      fontSize: 11, color: AppColors.textMuted),
+                  style:
+                      const TextStyle(fontSize: 11, color: AppColors.textMuted),
                 ),
                 if (app.status == ApplicationStatus.interview &&
                     app.interviewDate != null) ...[
@@ -350,16 +354,27 @@ class _JobApplicantsScreenState extends State<JobApplicantsScreen> {
       ),
       child: Text(
         jobStatusLabel(status),
-        style: TextStyle(
-            fontSize: 11, fontWeight: FontWeight.w600, color: color),
+        style:
+            TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: color),
       ),
     );
   }
 
   String _formatDate(DateTime date) {
     final months = [
-      '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      '',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return '${months[date.month]} ${date.day}, ${date.year}';
   }

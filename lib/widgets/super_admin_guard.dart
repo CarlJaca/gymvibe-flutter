@@ -30,7 +30,8 @@ class SuperAdminGuard extends StatelessWidget {
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('Access Denied. Super Admin privileges required.'),
+                  content:
+                      Text('Access Denied. Super Admin privileges required.'),
                   backgroundColor: Colors.red,
                 ),
               );

@@ -35,26 +35,52 @@ class GymCard extends StatelessWidget {
           child: Stack(
             children: [
               // ── Gym Image ────────────────────────────────────────────────
-              CachedNetworkImage(
-                imageUrl: gym.imageUrl,
-                height: AppSizes.gymCardHeight,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                placeholder: (_, __) => Container(
-                  height: AppSizes.gymCardHeight,
-                  color: AppColors.surface,
-                  child: const Center(
-                    child: CircularProgressIndicator(
-                        color: AppColors.primary, strokeWidth: 2),
-                  ),
-                ),
-                errorWidget: (_, __, ___) => Container(
-                  height: AppSizes.gymCardHeight,
-                  color: AppColors.surface,
-                  child: const Icon(Icons.fitness_center,
-                      color: AppColors.textSecondary, size: 40),
-                ),
-              ),
+              gym.imageUrl.isNotEmpty
+                  ? CachedNetworkImage(
+                      imageUrl: gym.imageUrl,
+                      height: AppSizes.gymCardHeight,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      placeholder: (_, __) => Container(
+                        height: AppSizes.gymCardHeight,
+                        color: AppColors.surface,
+                        child: const Center(
+                          child: CircularProgressIndicator(
+                              color: AppColors.primary, strokeWidth: 2),
+                        ),
+                      ),
+                      errorWidget: (_, __, ___) => Container(
+                        height: AppSizes.gymCardHeight,
+                        color: AppColors.surface,
+                        child: const Icon(Icons.fitness_center,
+                            color: AppColors.textSecondary, size: 40),
+                      ),
+                    )
+                  : Container(
+                      height: AppSizes.gymCardHeight,
+                      width: double.infinity,
+                      color: AppColors.surface,
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.fitness_center,
+                                color: AppColors.textSecondary, size: 40),
+                            const SizedBox(height: 8),
+                            Text(
+                              gym.branch.isNotEmpty
+                                  ? '${gym.name}\n${gym.branch}'
+                                  : gym.name,
+                              style: const TextStyle(
+                                color: AppColors.textSecondary,
+                                fontSize: 13,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
 
               // ── Gradient Overlay ─────────────────────────────────────────
               Positioned.fill(
@@ -80,8 +106,8 @@ class GymCard extends StatelessWidget {
                   top: 12,
                   left: 12,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
                       color: AppColors.success,
                       borderRadius: BorderRadius.circular(AppRadius.full),
@@ -161,11 +187,32 @@ class GymCard extends StatelessWidget {
                         ),
                         Consumer<LocationProvider>(
                           builder: (context, locProv, _) {
-                            final dynamicDist = locProv.calculateDistance(gym.latitude, gym.longitude);
+                            if (!gym.canShowMapMarker) {
+                              return const Text(
+                                'Pin not verified',
+                                style: TextStyle(
+                                    color: AppColors.textSecondary,
+                                    fontSize: 11,
+                                    fontStyle: FontStyle.italic),
+                              );
+                            }
+                            final dynamicDist =
+                                locProv.calculateDistanceNullable(
+                                    gym.latitude, gym.longitude);
+                            if (dynamicDist == null) {
+                              return const Text('—',
+                                  style: TextStyle(
+                                      color: AppColors.primary,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600));
+                            }
+                            final prefix = gym.isBuildingLevel ? '≈ ' : '';
                             return Text(
-                              dynamicDist != null ? '${dynamicDist.toStringAsFixed(1)} km' : '${gym.distanceKm.toStringAsFixed(1)} km',
-                              style: const TextStyle(
-                                  color: AppColors.primary,
+                              '$prefix${dynamicDist.toStringAsFixed(1)} km',
+                              style: TextStyle(
+                                  color: gym.isBuildingLevel
+                                      ? Colors.orange
+                                      : AppColors.primary,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600),
                             );

@@ -121,7 +121,8 @@ class PersonalRecord {
     };
   }
 
-  factory PersonalRecord.fromJson(Map<String, dynamic> json, String documentId) {
+  factory PersonalRecord.fromJson(
+      Map<String, dynamic> json, String documentId) {
     return PersonalRecord(
       id: documentId,
       userId: json['userId'] ?? '',

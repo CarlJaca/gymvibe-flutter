@@ -13,16 +13,23 @@ class OwnerCreateEventScreen extends StatefulWidget {
 }
 
 class _OwnerCreateEventScreenState extends State<OwnerCreateEventScreen> {
-  final _titleCtrl    = TextEditingController();
-  final _descCtrl     = TextEditingController();
+  final _titleCtrl = TextEditingController();
+  final _descCtrl = TextEditingController();
   final _locationCtrl = TextEditingController();
-  final _limitCtrl    = TextEditingController();
+  final _limitCtrl = TextEditingController();
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
   String? _selectedCategory;
 
   final List<String> _categories = [
-    'Zumba', 'HIIT', 'Strength', 'Yoga', 'Cardio', 'CrossFit', 'Running', 'Pilates'
+    'Zumba',
+    'HIIT',
+    'Strength',
+    'Yoga',
+    'Cardio',
+    'CrossFit',
+    'Running',
+    'Pilates'
   ];
 
   @override
@@ -83,8 +90,8 @@ class _OwnerCreateEventScreenState extends State<OwnerCreateEventScreen> {
                   const Expanded(
                     child: Text(
                       'Create New Event',
-                      style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -132,8 +139,10 @@ class _OwnerCreateEventScreenState extends State<OwnerCreateEventScreen> {
                                 color: AppColors.primary.withValues(alpha: 0.1),
                                 shape: BoxShape.circle,
                               ),
-                              child: const Icon(Icons.add_photo_alternate_rounded,
-                                  color: AppColors.primary, size: 26),
+                              child: const Icon(
+                                  Icons.add_photo_alternate_rounded,
+                                  color: AppColors.primary,
+                                  size: 26),
                             ),
                             const SizedBox(height: 10),
                             const Text('Add Event Image',
@@ -151,8 +160,8 @@ class _OwnerCreateEventScreenState extends State<OwnerCreateEventScreen> {
                     const SizedBox(height: 8),
                     TextField(
                       controller: _titleCtrl,
-                      decoration: const InputDecoration(
-                          hintText: 'Enter event title'),
+                      decoration:
+                          const InputDecoration(hintText: 'Enter event title'),
                     ),
                     const SizedBox(height: AppPadding.md),
 
@@ -264,8 +273,11 @@ class _OwnerCreateEventScreenState extends State<OwnerCreateEventScreen> {
                     notifProv.addNotification(NotificationItem(
                       id: '',
                       type: 'event',
-                      title: 'New Event: ${_titleCtrl.text.isEmpty ? 'Upcoming Event' : _titleCtrl.text}',
-                      subtitle: _descCtrl.text.isEmpty ? 'Check out our new event!' : _descCtrl.text,
+                      title:
+                          'New Event: ${_titleCtrl.text.isEmpty ? 'Upcoming Event' : _titleCtrl.text}',
+                      subtitle: _descCtrl.text.isEmpty
+                          ? 'Check out our new event!'
+                          : _descCtrl.text,
                       time: 'Just now',
                     ));
 
@@ -274,10 +286,18 @@ class _OwnerCreateEventScreenState extends State<OwnerCreateEventScreen> {
                     eventsProv.addEvent({
                       'id': 'e_${DateTime.now().millisecondsSinceEpoch}',
                       'gymId': gymProv.ownerGym.id,
-                      'title': _titleCtrl.text.isEmpty ? 'Upcoming Event' : _titleCtrl.text,
-                      'date': _selectedDate != null ? '${_selectedDate!.month}/${_selectedDate!.day}/${_selectedDate!.year}' : 'TBA',
-                      'time': _selectedTime != null ? _selectedTime!.format(context) : 'TBA',
-                      'location': _locationCtrl.text.isEmpty ? 'TBA' : _locationCtrl.text,
+                      'title': _titleCtrl.text.isEmpty
+                          ? 'Upcoming Event'
+                          : _titleCtrl.text,
+                      'date': _selectedDate != null
+                          ? '${_selectedDate!.month}/${_selectedDate!.day}/${_selectedDate!.year}'
+                          : 'TBA',
+                      'time': _selectedTime != null
+                          ? _selectedTime!.format(context)
+                          : 'TBA',
+                      'location': _locationCtrl.text.isEmpty
+                          ? 'TBA'
+                          : _locationCtrl.text,
                       'category': _selectedCategory ?? 'Workout',
                       'distance': '0.0 km away',
                       'instructor': 'Gym Staff',
@@ -285,9 +305,12 @@ class _OwnerCreateEventScreenState extends State<OwnerCreateEventScreen> {
                       'duration': '60 Minutes',
                       'maxSlots': int.tryParse(_limitCtrl.text) ?? 50,
                       'registeredCount': 0,
-                      'description': _descCtrl.text.isEmpty ? 'Join our new event at the gym.' : _descCtrl.text,
+                      'description': _descCtrl.text.isEmpty
+                          ? 'Join our new event at the gym.'
+                          : _descCtrl.text,
                       'whatToBring': ['Water bottle', 'Towel'],
-                      'image': 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=400&q=80',
+                      'image':
+                          'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=400&q=80',
                       'isFeatured': false,
                       'isSaved': false,
                       'hasReminder': false,
@@ -338,8 +361,8 @@ class _OwnerCreateEventScreenState extends State<OwnerCreateEventScreen> {
             Icon(icon, color: AppColors.textMuted, size: 20),
             const SizedBox(width: 12),
             Text(hint,
-                style: const TextStyle(
-                    color: AppColors.textMuted, fontSize: 14)),
+                style:
+                    const TextStyle(color: AppColors.textMuted, fontSize: 14)),
           ],
         ),
       ),

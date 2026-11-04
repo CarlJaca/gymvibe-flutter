@@ -5,15 +5,17 @@ import '../../core/constants/app_constants.dart';
 import '../../providers/super_admin_provider.dart';
 import '../../providers/auth_provider.dart';
 
-
 class SuperAdminNotificationsScreen extends StatefulWidget {
   const SuperAdminNotificationsScreen({super.key});
 
   @override
-  State<SuperAdminNotificationsScreen> createState() => _SuperAdminNotificationsScreenState();
+  State<SuperAdminNotificationsScreen> createState() =>
+      _SuperAdminNotificationsScreenState();
 }
 
-class _SuperAdminNotificationsScreenState extends State<SuperAdminNotificationsScreen> with SingleTickerProviderStateMixin {
+class _SuperAdminNotificationsScreenState
+    extends State<SuperAdminNotificationsScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final _titleCtrl = TextEditingController();
   final _msgCtrl = TextEditingController();
@@ -40,7 +42,8 @@ class _SuperAdminNotificationsScreenState extends State<SuperAdminNotificationsS
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Notifications', style: Theme.of(context).textTheme.headlineLarge),
+          Text('Notifications',
+              style: Theme.of(context).textTheme.headlineLarge),
           const SizedBox(height: 16),
           TabBar(
             controller: _tabController,
@@ -78,28 +81,36 @@ class _SuperAdminNotificationsScreenState extends State<SuperAdminNotificationsS
           children: [
             const Text('Title', style: TextStyle(fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
-            TextField(controller: _titleCtrl, decoration: const InputDecoration(hintText: 'New Maintenance Notice')),
+            TextField(
+                controller: _titleCtrl,
+                decoration:
+                    const InputDecoration(hintText: 'New Maintenance Notice')),
             const SizedBox(height: 20),
-            
-            const Text('Message', style: TextStyle(fontWeight: FontWeight.w600)),
+            const Text('Message',
+                style: TextStyle(fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
-            TextField(controller: _msgCtrl, maxLines: 5, decoration: const InputDecoration(hintText: 'Type your message here...')),
+            TextField(
+                controller: _msgCtrl,
+                maxLines: 5,
+                decoration: const InputDecoration(
+                    hintText: 'Type your message here...')),
             const SizedBox(height: 20),
-
-            const Text('Target Audience', style: TextStyle(fontWeight: FontWeight.w600)),
+            const Text('Target Audience',
+                style: TextStyle(fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
               initialValue: _audience,
               dropdownColor: AppColors.surfaceElevated,
               items: const [
                 DropdownMenuItem(value: 'all', child: Text('All Users')),
-                DropdownMenuItem(value: 'gym_seekers', child: Text('Gym Seekers Only')),
-                DropdownMenuItem(value: 'gym_owners', child: Text('Gym Owners Only')),
+                DropdownMenuItem(
+                    value: 'gym_seekers', child: Text('Gym Seekers Only')),
+                DropdownMenuItem(
+                    value: 'gym_owners', child: Text('Gym Owners Only')),
               ],
               onChanged: (v) => setState(() => _audience = v!),
             ),
             const SizedBox(height: 20),
-
             Row(
               children: [
                 Radio<bool>(
@@ -123,7 +134,6 @@ class _SuperAdminNotificationsScreenState extends State<SuperAdminNotificationsS
                 const Text('Schedule'),
               ],
             ),
-
             if (_isScheduled) ...[
               const SizedBox(height: 16),
               Row(
@@ -131,13 +141,17 @@ class _SuperAdminNotificationsScreenState extends State<SuperAdminNotificationsS
                   Expanded(
                     child: OutlinedButton.icon(
                       icon: const Icon(Icons.calendar_today, size: 18),
-                      label: Text(_scheduledDate == null ? 'Select Date' : DateFormat('MMM d, yyyy').format(_scheduledDate!)),
+                      label: Text(_scheduledDate == null
+                          ? 'Select Date'
+                          : DateFormat('MMM d, yyyy').format(_scheduledDate!)),
                       onPressed: () async {
                         final date = await showDatePicker(
                           context: context,
-                          initialDate: DateTime.now().add(const Duration(days: 1)),
+                          initialDate:
+                              DateTime.now().add(const Duration(days: 1)),
                           firstDate: DateTime.now(),
-                          lastDate: DateTime.now().add(const Duration(days: 365)),
+                          lastDate:
+                              DateTime.now().add(const Duration(days: 365)),
                         );
                         if (date != null) setState(() => _scheduledDate = date);
                       },
@@ -147,7 +161,9 @@ class _SuperAdminNotificationsScreenState extends State<SuperAdminNotificationsS
                   Expanded(
                     child: OutlinedButton.icon(
                       icon: const Icon(Icons.access_time, size: 18),
-                      label: Text(_scheduledTime == null ? 'Select Time' : _scheduledTime!.format(context)),
+                      label: Text(_scheduledTime == null
+                          ? 'Select Time'
+                          : _scheduledTime!.format(context)),
                       onPressed: () async {
                         final time = await showTimePicker(
                           context: context,
@@ -160,14 +176,15 @@ class _SuperAdminNotificationsScreenState extends State<SuperAdminNotificationsS
                 ],
               ),
             ],
-
             const SizedBox(height: 32),
             SizedBox(
               width: double.infinity,
               height: 48,
               child: ElevatedButton(
                 onPressed: _handleSend,
-                child: Text(_isScheduled ? 'Schedule Announcement' : 'Send Announcement'),
+                child: Text(_isScheduled
+                    ? 'Schedule Announcement'
+                    : 'Send Announcement'),
               ),
             ),
           ],
@@ -181,7 +198,9 @@ class _SuperAdminNotificationsScreenState extends State<SuperAdminNotificationsS
       return const Center(child: CircularProgressIndicator());
     }
     if (provider.notifications.isEmpty) {
-      return const Center(child: Text('No announcements found', style: TextStyle(color: AppColors.textSecondary)));
+      return const Center(
+          child: Text('No announcements found',
+              style: TextStyle(color: AppColors.textSecondary)));
     }
     return ListView.builder(
       itemCount: provider.notifications.length,
@@ -202,30 +221,45 @@ class _SuperAdminNotificationsScreenState extends State<SuperAdminNotificationsS
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: (isSched ? AppColors.accentOrange : AppColors.success).withValues(alpha: 0.15),
+                      color:
+                          (isSched ? AppColors.accentOrange : AppColors.success)
+                              .withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(
                       isSched ? 'SCHEDULED' : 'SENT',
-                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: isSched ? AppColors.accentOrange : AppColors.success),
+                      style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: isSched
+                              ? AppColors.accentOrange
+                              : AppColors.success),
                     ),
                   ),
                   const Spacer(),
                   Text(
-                    isSched ? 'For: ${DateFormat('MMM d, yyyy h:mm a').format(n.scheduledDate!)}'
-                            : 'Sent: ${DateFormat('MMM d, yyyy h:mm a').format(n.sentDate!)}',
-                    style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
+                    isSched
+                        ? 'For: ${DateFormat('MMM d, yyyy h:mm a').format(n.scheduledDate!)}'
+                        : 'Sent: ${DateFormat('MMM d, yyyy h:mm a').format(n.sentDate!)}',
+                    style: const TextStyle(
+                        fontSize: 12, color: AppColors.textMuted),
                   ),
                 ],
               ),
               const SizedBox(height: 12),
-              Text(n.title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              Text(n.title,
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold)),
               const SizedBox(height: 4),
-              Text(n.message, style: const TextStyle(color: AppColors.textSecondary)),
+              Text(n.message,
+                  style: const TextStyle(color: AppColors.textSecondary)),
               const SizedBox(height: 8),
-              Text('Audience: ${n.targetAudience}', style: const TextStyle(fontSize: 12, color: AppColors.primary)),
+              Text('Audience: ${n.targetAudience}',
+                  style:
+                      const TextStyle(fontSize: 12, color: AppColors.primary)),
             ],
           ),
         );
@@ -235,34 +269,40 @@ class _SuperAdminNotificationsScreenState extends State<SuperAdminNotificationsS
 
   void _handleSend() {
     if (_titleCtrl.text.isEmpty || _msgCtrl.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Title and message required')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Title and message required')));
       return;
     }
     DateTime? schedDate;
     if (_isScheduled) {
       if (_scheduledDate == null || _scheduledTime == null) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Select date and time for schedule')));
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Select date and time for schedule')));
         return;
       }
-      schedDate = DateTime(_scheduledDate!.year, _scheduledDate!.month, _scheduledDate!.day, _scheduledTime!.hour, _scheduledTime!.minute);
+      schedDate = DateTime(_scheduledDate!.year, _scheduledDate!.month,
+          _scheduledDate!.day, _scheduledTime!.hour, _scheduledTime!.minute);
       if (schedDate.isBefore(DateTime.now())) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Schedule time must be in the future')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Schedule time must be in the future')));
         return;
       }
     }
 
     final authProvider = context.read<AuthProvider>();
     context.read<SuperAdminProvider>().sendNotification(
-      title: _titleCtrl.text,
-      message: _msgCtrl.text,
-      targetAudience: _audience,
-      scheduledDate: schedDate,
-      senderId: authProvider.currentUser!.id,
-      senderName: authProvider.userName,
-    );
+          title: _titleCtrl.text,
+          message: _msgCtrl.text,
+          targetAudience: _audience,
+          scheduledDate: schedDate,
+          senderId: authProvider.currentUser!.id,
+          senderName: authProvider.userName,
+        );
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(_isScheduled ? 'Announcement scheduled' : 'Announcement sent')),
+      SnackBar(
+          content: Text(
+              _isScheduled ? 'Announcement scheduled' : 'Announcement sent')),
     );
     _titleCtrl.clear();
     _msgCtrl.clear();

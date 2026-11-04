@@ -33,17 +33,17 @@ class _SuperAdminUsersScreenState extends State<SuperAdminUsersScreen> {
 
   void _onSearch(String query) {
     context.read<SuperAdminProvider>().loadUsers(
-      searchQuery: query.isNotEmpty ? query : null,
-      roleFilter: _roleFilter,
-    );
+          searchQuery: query.isNotEmpty ? query : null,
+          roleFilter: _roleFilter,
+        );
   }
 
   void _setRoleFilter(String? role) {
     setState(() => _roleFilter = role);
     context.read<SuperAdminProvider>().loadUsers(
-      searchQuery: _searchCtrl.text.isNotEmpty ? _searchCtrl.text : null,
-      roleFilter: role,
-    );
+          searchQuery: _searchCtrl.text.isNotEmpty ? _searchCtrl.text : null,
+          roleFilter: role,
+        );
   }
 
   @override
@@ -129,7 +129,8 @@ class _SuperAdminUsersScreenState extends State<SuperAdminUsersScreen> {
           children: [
             const Icon(Icons.error_outline, size: 48, color: AppColors.error),
             const SizedBox(height: 16),
-            Text(provider.errorMessage!, style: const TextStyle(color: AppColors.textSecondary)),
+            Text(provider.errorMessage!,
+                style: const TextStyle(color: AppColors.textSecondary)),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () => provider.loadUsers(),
@@ -147,7 +148,8 @@ class _SuperAdminUsersScreenState extends State<SuperAdminUsersScreen> {
           children: [
             Icon(Icons.people_outline, size: 48, color: AppColors.textMuted),
             SizedBox(height: 16),
-            Text('No users found', style: TextStyle(color: AppColors.textSecondary)),
+            Text('No users found',
+                style: TextStyle(color: AppColors.textSecondary)),
           ],
         ),
       );
@@ -158,7 +160,8 @@ class _SuperAdminUsersScreenState extends State<SuperAdminUsersScreen> {
       onRefresh: () => provider.loadUsers(roleFilter: _roleFilter),
       child: ListView.separated(
         itemCount: provider.users.length,
-        separatorBuilder: (_, __) => const Divider(height: 1, color: AppColors.border),
+        separatorBuilder: (_, __) =>
+            const Divider(height: 1, color: AppColors.border),
         itemBuilder: (context, index) {
           final user = provider.users[index];
           return _buildUserTile(user);
@@ -189,7 +192,8 @@ class _SuperAdminUsersScreenState extends State<SuperAdminUsersScreen> {
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(user.email, style: const TextStyle(fontSize: 12, color: AppColors.textMuted)),
+          Text(user.email,
+              style: const TextStyle(fontSize: 12, color: AppColors.textMuted)),
           if (user.createdAt != null)
             Text(
               'Joined ${DateFormat('MMM d, yyyy').format(user.createdAt!)}',
@@ -271,7 +275,8 @@ class _SuperAdminUsersScreenState extends State<SuperAdminUsersScreen> {
       ),
       child: Text(
         status[0].toUpperCase() + status.substring(1),
-        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: color),
+        style:
+            TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: color),
       ),
     );
   }
@@ -305,7 +310,8 @@ class _SuperAdminUsersScreenState extends State<SuperAdminUsersScreen> {
       ),
       child: Text(
         label,
-        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: color),
+        style:
+            TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: color),
       ),
     );
   }

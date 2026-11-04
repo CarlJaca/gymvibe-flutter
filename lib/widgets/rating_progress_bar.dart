@@ -24,7 +24,8 @@ class RatingProgressBar extends StatelessWidget {
             width: 100,
             child: Text(
               label,
-              style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+              style:
+                  const TextStyle(color: AppColors.textSecondary, fontSize: 13),
             ),
           ),
           const SizedBox(width: 8),

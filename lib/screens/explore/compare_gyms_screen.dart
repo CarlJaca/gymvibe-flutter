@@ -16,7 +16,8 @@ class CompareGymsScreen extends StatelessWidget {
         backgroundColor: AppColors.background,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
+          icon: const Icon(Icons.arrow_back_rounded,
+              color: AppColors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
@@ -48,12 +49,17 @@ class CompareGymsScreen extends StatelessWidget {
                   _buildComparisonRow(
                     'Rating',
                     Icons.star_rounded,
-                    gyms.map((g) => _RatingCell(g.rating, g.reviewCount)).toList(),
+                    gyms
+                        .map((g) => _RatingCell(g.rating, g.reviewCount))
+                        .toList(),
                   ),
                   _buildComparisonRow(
                     'Distance',
                     Icons.location_on_rounded,
-                    gyms.map((g) => _DistanceCell('${g.distanceKm.toStringAsFixed(1)} km')).toList(),
+                    gyms
+                        .map((g) => _DistanceCell(
+                            '${g.distanceKm.toStringAsFixed(1)} km'))
+                        .toList(),
                   ),
                   _buildComparisonRow(
                     'Status',
@@ -63,7 +69,10 @@ class CompareGymsScreen extends StatelessWidget {
                   _buildComparisonRow(
                     'Hours',
                     Icons.schedule_rounded,
-                    gyms.map((g) => _TextCell(g.hours.isNotEmpty ? g.hours : 'N/A')).toList(),
+                    gyms
+                        .map((g) =>
+                            _TextCell(g.hours.isNotEmpty ? g.hours : 'N/A'))
+                        .toList(),
                   ),
                   _buildComparisonRow(
                     'Facilities',
@@ -93,12 +102,14 @@ class CompareGymsScreen extends StatelessWidget {
         child: SafeArea(
           child: Row(
             children: [
-              const Icon(Icons.lightbulb_outline_rounded, color: AppColors.primary, size: 18),
+              const Icon(Icons.lightbulb_outline_rounded,
+                  color: AppColors.primary, size: 18),
               const SizedBox(width: 6),
               const Expanded(
                 child: Text(
                   'Choose the gym that fits your goals!',
-                  style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                  style:
+                      TextStyle(color: AppColors.textSecondary, fontSize: 12),
                 ),
               ),
               const SizedBox(width: 8),
@@ -110,9 +121,12 @@ class CompareGymsScreen extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppRadius.md),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
                 ),
-                child: const Text('Done', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                child: const Text('Done',
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
               ),
             ],
           ),
@@ -229,7 +243,8 @@ class CompareGymsScreen extends StatelessWidget {
             // Data columns
             ...cells.map((cell) => Expanded(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
                     child: cell,
                   ),
                 )),
@@ -394,7 +409,8 @@ class _ListCell extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 1),
               child: Text(
                 item,
-                style: const TextStyle(color: AppColors.textPrimary, fontSize: 11),
+                style:
+                    const TextStyle(color: AppColors.textPrimary, fontSize: 11),
                 textAlign: TextAlign.left,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -409,7 +425,10 @@ class _ListCell extends StatelessWidget {
                   backgroundColor: AppColors.surfaceElevated,
                   title: const Text(
                     'All Items',
-                    style: TextStyle(color: AppColors.textPrimary, fontSize: 16, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        color: AppColors.textPrimary,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
                   ),
                   content: SingleChildScrollView(
                     child: Column(
@@ -420,12 +439,15 @@ class _ListCell extends StatelessWidget {
                                 padding: const EdgeInsets.only(bottom: 6),
                                 child: Row(
                                   children: [
-                                    const Icon(Icons.check_circle_rounded, size: 14, color: AppColors.primary),
+                                    const Icon(Icons.check_circle_rounded,
+                                        size: 14, color: AppColors.primary),
                                     const SizedBox(width: 8),
                                     Expanded(
                                       child: Text(
                                         item,
-                                        style: const TextStyle(color: AppColors.textPrimary, fontSize: 13),
+                                        style: const TextStyle(
+                                            color: AppColors.textPrimary,
+                                            fontSize: 13),
                                       ),
                                     ),
                                   ],
@@ -437,7 +459,8 @@ class _ListCell extends StatelessWidget {
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.pop(context),
-                      child: const Text('Close', style: TextStyle(color: AppColors.primary)),
+                      child: const Text('Close',
+                          style: TextStyle(color: AppColors.primary)),
                     ),
                   ],
                 ),

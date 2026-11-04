@@ -8,7 +8,8 @@ class SuperAdminBookingsScreen extends StatefulWidget {
   const SuperAdminBookingsScreen({super.key});
 
   @override
-  State<SuperAdminBookingsScreen> createState() => _SuperAdminBookingsScreenState();
+  State<SuperAdminBookingsScreen> createState() =>
+      _SuperAdminBookingsScreenState();
 }
 
 class _SuperAdminBookingsScreenState extends State<SuperAdminBookingsScreen> {
@@ -27,9 +28,9 @@ class _SuperAdminBookingsScreenState extends State<SuperAdminBookingsScreen> {
 
   void _onSearch(String query) {
     context.read<SuperAdminProvider>().loadBookings(
-      searchQuery: query.isNotEmpty ? query : null,
-      statusFilter: _statusFilter,
-    );
+          searchQuery: query.isNotEmpty ? query : null,
+          statusFilter: _statusFilter,
+        );
   }
 
   void _setStatusFilter(String? status) {
@@ -64,9 +65,9 @@ class _SuperAdminBookingsScreenState extends State<SuperAdminBookingsScreen> {
     // In a real app, date and type filters would be passed to the provider
     // For now, we'll pass status and search, and handle extra filtering in memory or backend
     context.read<SuperAdminProvider>().loadBookings(
-      searchQuery: _searchCtrl.text.isNotEmpty ? _searchCtrl.text : null,
-      statusFilter: _statusFilter,
-    );
+          searchQuery: _searchCtrl.text.isNotEmpty ? _searchCtrl.text : null,
+          statusFilter: _statusFilter,
+        );
   }
 
   @override
@@ -80,7 +81,6 @@ class _SuperAdminBookingsScreenState extends State<SuperAdminBookingsScreen> {
         children: [
           Text('Bookings', style: Theme.of(context).textTheme.headlineLarge),
           const SizedBox(height: 16),
-          
           TextField(
             controller: _searchCtrl,
             onChanged: _onSearch,
@@ -90,30 +90,42 @@ class _SuperAdminBookingsScreenState extends State<SuperAdminBookingsScreen> {
             ),
           ),
           const SizedBox(height: 16),
-
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                const Text('Status: ', style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
-                _buildFilterChip('All', _statusFilter == null, () => _setStatusFilter(null)),
+                const Text('Status: ',
+                    style: TextStyle(
+                        color: AppColors.textSecondary, fontSize: 13)),
+                _buildFilterChip(
+                    'All', _statusFilter == null, () => _setStatusFilter(null)),
                 const SizedBox(width: 8),
-                _buildFilterChip('Confirmed', _statusFilter == 'Confirmed', () => _setStatusFilter('Confirmed')),
+                _buildFilterChip('Confirmed', _statusFilter == 'Confirmed',
+                    () => _setStatusFilter('Confirmed')),
                 const SizedBox(width: 8),
-                _buildFilterChip('Completed', _statusFilter == 'Completed', () => _setStatusFilter('Completed')),
+                _buildFilterChip('Completed', _statusFilter == 'Completed',
+                    () => _setStatusFilter('Completed')),
                 const SizedBox(width: 8),
-                _buildFilterChip('Cancelled', _statusFilter == 'Cancelled', () => _setStatusFilter('Cancelled')),
+                _buildFilterChip('Cancelled', _statusFilter == 'Cancelled',
+                    () => _setStatusFilter('Cancelled')),
                 const SizedBox(width: 16),
-                const Text('Type: ', style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
-                _buildFilterChip('All', _typeFilter == null, () => _setTypeFilter(null)),
+                const Text('Type: ',
+                    style: TextStyle(
+                        color: AppColors.textSecondary, fontSize: 13)),
+                _buildFilterChip(
+                    'All', _typeFilter == null, () => _setTypeFilter(null)),
                 const SizedBox(width: 8),
-                _buildFilterChip('Class', _typeFilter == 'Class', () => _setTypeFilter('Class')),
+                _buildFilterChip('Class', _typeFilter == 'Class',
+                    () => _setTypeFilter('Class')),
                 const SizedBox(width: 8),
-                _buildFilterChip('Session', _typeFilter == 'Session', () => _setTypeFilter('Session')),
+                _buildFilterChip('Session', _typeFilter == 'Session',
+                    () => _setTypeFilter('Session')),
                 const SizedBox(width: 16),
                 if (_dateFilter != null) ...[
                   Chip(
-                    label: Text('${_dateFilter!.year}-${_dateFilter!.month}-${_dateFilter!.day}', style: const TextStyle(fontSize: 12)),
+                    label: Text(
+                        '${_dateFilter!.year}-${_dateFilter!.month}-${_dateFilter!.day}',
+                        style: const TextStyle(fontSize: 12)),
                     onDeleted: _clearDateFilter,
                     backgroundColor: AppColors.primary.withValues(alpha: 0.2),
                     deleteIconColor: AppColors.primary,
@@ -134,7 +146,6 @@ class _SuperAdminBookingsScreenState extends State<SuperAdminBookingsScreen> {
             ),
           ),
           const SizedBox(height: 16),
-
           Expanded(
             child: _buildContent(provider),
           ),
@@ -152,18 +163,22 @@ class _SuperAdminBookingsScreenState extends State<SuperAdminBookingsScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.calendar_today_rounded, size: 48, color: AppColors.textMuted),
+            Icon(Icons.calendar_today_rounded,
+                size: 48, color: AppColors.textMuted),
             SizedBox(height: 16),
-            Text('No bookings found', style: TextStyle(color: AppColors.textSecondary, fontSize: 16)),
+            Text('No bookings found',
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 16)),
             SizedBox(height: 8),
-            Text('When users book gym sessions, they will appear here.', style: TextStyle(color: AppColors.textMuted, fontSize: 13)),
+            Text('When users book gym sessions, they will appear here.',
+                style: TextStyle(color: AppColors.textMuted, fontSize: 13)),
           ],
         ),
       );
     }
     return ListView.separated(
       itemCount: provider.bookings.length,
-      separatorBuilder: (_, __) => const Divider(height: 1, color: AppColors.border),
+      separatorBuilder: (_, __) =>
+          const Divider(height: 1, color: AppColors.border),
       itemBuilder: (context, index) {
         final booking = provider.bookings[index];
         return _buildBookingTile(booking);
@@ -179,15 +194,26 @@ class _SuperAdminBookingsScreenState extends State<SuperAdminBookingsScreen> {
       onTap: () => _viewBookingDetails(context, booking, isFlagged),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        title: Text(booking['gymName'] ?? 'Unknown Gym', style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+        title: Text(booking['gymName'] ?? 'Unknown Gym',
+            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('User: ${booking['userName'] ?? 'Unknown'}', style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
-            Text('Date: ${booking['dateStr']} at ${booking['time']}', style: const TextStyle(fontSize: 11, color: AppColors.textMuted)),
-            Text('ID: ${booking['id']}', style: const TextStyle(fontSize: 10, color: AppColors.textMuted)),
+            Text('User: ${booking['userName'] ?? 'Unknown'}',
+                style: const TextStyle(
+                    fontSize: 12, color: AppColors.textSecondary)),
+            Text('Date: ${booking['dateStr']} at ${booking['time']}',
+                style:
+                    const TextStyle(fontSize: 11, color: AppColors.textMuted)),
+            Text('ID: ${booking['id']}',
+                style:
+                    const TextStyle(fontSize: 10, color: AppColors.textMuted)),
             if (isFlagged)
-              const Text('FLAGGED', style: TextStyle(fontSize: 10, color: AppColors.accentOrange, fontWeight: FontWeight.bold)),
+              const Text('FLAGGED',
+                  style: TextStyle(
+                      fontSize: 10,
+                      color: AppColors.accentOrange,
+                      fontWeight: FontWeight.bold)),
           ],
         ),
         trailing: Row(
@@ -196,7 +222,8 @@ class _SuperAdminBookingsScreenState extends State<SuperAdminBookingsScreen> {
             _buildStatusChip(booking['status'] ?? ''),
             if (!isFlagged)
               IconButton(
-                icon: const Icon(Icons.flag_outlined, color: AppColors.textSecondary, size: 20),
+                icon: const Icon(Icons.flag_outlined,
+                    color: AppColors.textSecondary, size: 20),
                 onPressed: () => _flagBooking(booking['id'], authProvider),
               ),
           ],
@@ -205,7 +232,8 @@ class _SuperAdminBookingsScreenState extends State<SuperAdminBookingsScreen> {
     );
   }
 
-  void _viewBookingDetails(BuildContext context, Map<String, dynamic> booking, bool isFlagged) {
+  void _viewBookingDetails(
+      BuildContext context, Map<String, dynamic> booking, bool isFlagged) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -220,16 +248,21 @@ class _SuperAdminBookingsScreenState extends State<SuperAdminBookingsScreen> {
             _detailRow('User', booking['userName'] ?? 'Unknown'),
             _detailRow('Status', booking['status'] ?? 'Unknown'),
             _detailRow('Date', '${booking['dateStr']} at ${booking['time']}'),
-            if (booking['notes'] != null && booking['notes'].toString().isNotEmpty)
+            if (booking['notes'] != null &&
+                booking['notes'].toString().isNotEmpty)
               _detailRow('Notes', booking['notes']),
             if (isFlagged) ...[
               const SizedBox(height: 8),
-              const Text('⚠️ This booking has been flagged.', style: TextStyle(color: AppColors.accentOrange, fontWeight: FontWeight.bold)),
+              const Text('⚠️ This booking has been flagged.',
+                  style: TextStyle(
+                      color: AppColors.accentOrange,
+                      fontWeight: FontWeight.bold)),
             ]
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Close')),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx), child: const Text('Close')),
         ],
       ),
     );
@@ -241,8 +274,15 @@ class _SuperAdminBookingsScreenState extends State<SuperAdminBookingsScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(width: 60, child: Text(label, style: const TextStyle(color: AppColors.textSecondary, fontSize: 13))),
-          Expanded(child: Text(value, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500))),
+          SizedBox(
+              width: 60,
+              child: Text(label,
+                  style: const TextStyle(
+                      color: AppColors.textSecondary, fontSize: 13))),
+          Expanded(
+              child: Text(value,
+                  style: const TextStyle(
+                      fontSize: 13, fontWeight: FontWeight.w500))),
         ],
       ),
     );
@@ -256,7 +296,8 @@ class _SuperAdminBookingsScreenState extends State<SuperAdminBookingsScreen> {
         decoration: BoxDecoration(
           color: isSelected ? AppColors.primary : AppColors.surface,
           borderRadius: BorderRadius.circular(AppRadius.full),
-          border: Border.all(color: isSelected ? AppColors.primary : AppColors.border),
+          border: Border.all(
+              color: isSelected ? AppColors.primary : AppColors.border),
         ),
         child: Text(
           label,
@@ -284,7 +325,8 @@ class _SuperAdminBookingsScreenState extends State<SuperAdminBookingsScreen> {
       ),
       child: Text(
         status,
-        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: color),
+        style:
+            TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: color),
       ),
     );
   }
@@ -301,18 +343,20 @@ class _SuperAdminBookingsScreenState extends State<SuperAdminBookingsScreen> {
           decoration: const InputDecoration(hintText: 'Reason for flagging...'),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
           ElevatedButton(
             onPressed: () {
               context.read<SuperAdminProvider>().flagBooking(
-                bookingId: id,
-                notes: noteCtrl.text,
-                adminId: authProvider.currentUser!.id,
-                adminName: authProvider.userName,
-              );
+                    bookingId: id,
+                    notes: noteCtrl.text,
+                    adminId: authProvider.currentUser!.id,
+                    adminName: authProvider.userName,
+                  );
               Navigator.pop(ctx);
             },
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.accentOrange),
+            style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.accentOrange),
             child: const Text('Flag'),
           ),
         ],

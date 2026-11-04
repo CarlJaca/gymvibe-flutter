@@ -9,7 +9,8 @@ class SuperAdminSettingsScreen extends StatefulWidget {
   const SuperAdminSettingsScreen({super.key});
 
   @override
-  State<SuperAdminSettingsScreen> createState() => _SuperAdminSettingsScreenState();
+  State<SuperAdminSettingsScreen> createState() =>
+      _SuperAdminSettingsScreenState();
 }
 
 class _SuperAdminSettingsScreenState extends State<SuperAdminSettingsScreen> {
@@ -49,7 +50,8 @@ class _SuperAdminSettingsScreenState extends State<SuperAdminSettingsScreen> {
         children: [
           Row(
             children: [
-              Text('Settings', style: Theme.of(context).textTheme.headlineLarge),
+              Text('Settings',
+                  style: Theme.of(context).textTheme.headlineLarge),
               const Spacer(),
               ElevatedButton.icon(
                 onPressed: _saveSettings,
@@ -59,50 +61,58 @@ class _SuperAdminSettingsScreenState extends State<SuperAdminSettingsScreen> {
             ],
           ),
           const SizedBox(height: 24),
-
           _buildSection('General', [
             _buildTextField('Support Email', _emailCtrl, Icons.email_outlined),
             const SizedBox(height: 16),
-            _buildTextField('Default Search Radius (km)', _radiusCtrl, Icons.map_outlined, isNumber: true),
+            _buildTextField(
+                'Default Search Radius (km)', _radiusCtrl, Icons.map_outlined,
+                isNumber: true),
           ]),
           const SizedBox(height: 24),
-
           _buildSection('System Access', [
             SwitchListTile(
-              title: const Text('Registration Enabled', style: TextStyle(color: AppColors.textPrimary)),
-              subtitle: const Text('Allow new users to sign up', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+              title: const Text('Registration Enabled',
+                  style: TextStyle(color: AppColors.textPrimary)),
+              subtitle: const Text('Allow new users to sign up',
+                  style:
+                      TextStyle(color: AppColors.textSecondary, fontSize: 12)),
               value: _settings.registrationEnabled,
               activeThumbColor: AppColors.primary,
-              onChanged: (v) => setState(() => _settings = _settings.copyWith(registrationEnabled: v)),
+              onChanged: (v) => setState(
+                  () => _settings = _settings.copyWith(registrationEnabled: v)),
             ),
             const Divider(color: AppColors.border),
             SwitchListTile(
-              title: const Text('Maintenance Mode', style: TextStyle(color: AppColors.error)),
-              subtitle: const Text('Disable app access for all non-admin users', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+              title: const Text('Maintenance Mode',
+                  style: TextStyle(color: AppColors.error)),
+              subtitle: const Text('Disable app access for all non-admin users',
+                  style:
+                      TextStyle(color: AppColors.textSecondary, fontSize: 12)),
               value: _settings.maintenanceMode,
               activeThumbColor: AppColors.error,
-              onChanged: (v) => setState(() => _settings = _settings.copyWith(maintenanceMode: v)),
+              onChanged: (v) => setState(
+                  () => _settings = _settings.copyWith(maintenanceMode: v)),
             ),
           ]),
           const SizedBox(height: 24),
-
           _buildSection('Leaderboard Categories', [
             _buildListEditor(_settings.leaderboardCategories, (newList) {
-              setState(() => _settings = _settings.copyWith(leaderboardCategories: newList));
+              setState(() => _settings =
+                  _settings.copyWith(leaderboardCategories: newList));
             }),
           ]),
           const SizedBox(height: 24),
-
           _buildSection('Report Reasons', [
             _buildListEditor(_settings.reportReasons, (newList) {
-              setState(() => _settings = _settings.copyWith(reportReasons: newList));
+              setState(
+                  () => _settings = _settings.copyWith(reportReasons: newList));
             }),
           ]),
           const SizedBox(height: 24),
-
           _buildSection('Suspension Reasons', [
             _buildListEditor(_settings.suspensionReasons, (newList) {
-              setState(() => _settings = _settings.copyWith(suspensionReasons: newList));
+              setState(() =>
+                  _settings = _settings.copyWith(suspensionReasons: newList));
             }),
           ]),
         ],
@@ -114,7 +124,11 @@ class _SuperAdminSettingsScreenState extends State<SuperAdminSettingsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.primary)),
+        Text(title,
+            style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppColors.primary)),
         const SizedBox(height: 12),
         Container(
           padding: const EdgeInsets.all(16),
@@ -132,25 +146,32 @@ class _SuperAdminSettingsScreenState extends State<SuperAdminSettingsScreen> {
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController ctrl, IconData icon, {bool isNumber = false}) {
+  Widget _buildTextField(
+      String label, TextEditingController ctrl, IconData icon,
+      {bool isNumber = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+        Text(label,
+            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
         const SizedBox(height: 8),
         TextField(
           controller: ctrl,
-          keyboardType: isNumber ? const TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+          keyboardType: isNumber
+              ? const TextInputType.numberWithOptions(decimal: true)
+              : TextInputType.text,
           decoration: InputDecoration(
             prefixIcon: Icon(icon, size: 20),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildListEditor(List<String> items, Function(List<String>) onChanged) {
+  Widget _buildListEditor(
+      List<String> items, Function(List<String>) onChanged) {
     final newCtrl = TextEditingController();
     return Column(
       children: [
@@ -163,7 +184,8 @@ class _SuperAdminSettingsScreenState extends State<SuperAdminSettingsScreen> {
             return ListTile(
               title: Text(items[index], style: const TextStyle(fontSize: 13)),
               trailing: IconButton(
-                icon: const Icon(Icons.delete_outline, size: 20, color: AppColors.error),
+                icon: const Icon(Icons.delete_outline,
+                    size: 20, color: AppColors.error),
                 onPressed: () {
                   final newList = List<String>.from(items)..removeAt(index);
                   onChanged(newList);
@@ -180,7 +202,8 @@ class _SuperAdminSettingsScreenState extends State<SuperAdminSettingsScreen> {
                 controller: newCtrl,
                 decoration: const InputDecoration(
                   hintText: 'Add new item...',
-                  contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 ),
               ),
             ),
@@ -189,7 +212,8 @@ class _SuperAdminSettingsScreenState extends State<SuperAdminSettingsScreen> {
               icon: const Icon(Icons.add_circle, color: AppColors.primary),
               onPressed: () {
                 if (newCtrl.text.trim().isNotEmpty) {
-                  final newList = List<String>.from(items)..add(newCtrl.text.trim());
+                  final newList = List<String>.from(items)
+                    ..add(newCtrl.text.trim());
                   onChanged(newList);
                   newCtrl.clear();
                 }
@@ -208,10 +232,11 @@ class _SuperAdminSettingsScreenState extends State<SuperAdminSettingsScreen> {
       defaultSearchRadiusKm: double.tryParse(_radiusCtrl.text) ?? 10.0,
     );
     context.read<SuperAdminProvider>().updateSettings(
-      settings: newSettings,
-      adminId: authProvider.currentUser!.id,
-      adminName: authProvider.userName,
-    );
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Settings saved successfully')));
+          settings: newSettings,
+          adminId: authProvider.currentUser!.id,
+          adminName: authProvider.userName,
+        );
+    ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Settings saved successfully')));
   }
 }

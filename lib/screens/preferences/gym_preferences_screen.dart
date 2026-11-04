@@ -43,7 +43,10 @@ class _GymPreferencesScreenState extends State<GymPreferencesScreen> {
     {'label': 'Parking', 'icon': Icons.local_parking_rounded},
     {'label': 'Swimming Pool', 'icon': Icons.pool_rounded},
     {'label': 'Sauna / Steam', 'icon': Icons.hot_tub_rounded},
-    {'label': 'Functional Training Area', 'icon': Icons.sports_gymnastics_rounded},
+    {
+      'label': 'Functional Training Area',
+      'icon': Icons.sports_gymnastics_rounded
+    },
     {'label': 'Boxing Area', 'icon': Icons.sports_mma_rounded},
   ];
 
@@ -111,7 +114,8 @@ class _GymPreferencesScreenState extends State<GymPreferencesScreen> {
         final facility = p.substring(9).trim();
         // Find matching option (case-insensitive)
         for (final opt in _facilityOptions) {
-          if ((opt['label'] as String).toLowerCase() == facility.toLowerCase()) {
+          if ((opt['label'] as String).toLowerCase() ==
+              facility.toLowerCase()) {
             _selectedFacilities.add(opt['label'] as String);
             break;
           }
@@ -225,14 +229,16 @@ class _GymPreferencesScreenState extends State<GymPreferencesScreen> {
             leading: widget.isFirstTime
                 ? null
                 : IconButton(
-                    icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
+                    icon: const Icon(Icons.arrow_back_rounded,
+                        color: AppColors.textPrimary),
                     onPressed: () => Navigator.pop(context),
                   ),
             automaticallyImplyLeading: false,
             title: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.fitness_center_rounded, color: AppColors.primary, size: 22),
+                Icon(Icons.fitness_center_rounded,
+                    color: AppColors.primary, size: 22),
                 const SizedBox(width: 8),
                 Text(
                   'GYM VIBE',
@@ -264,7 +270,8 @@ class _GymPreferencesScreenState extends State<GymPreferencesScreen> {
                   },
                   child: Text(
                     'Skip',
-                    style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                    style:
+                        TextStyle(color: AppColors.textSecondary, fontSize: 14),
                   ),
                 ),
             ],
@@ -307,7 +314,8 @@ class _GymPreferencesScreenState extends State<GymPreferencesScreen> {
                 const SizedBox(height: 4),
                 Text(
                   'How far are you willing to travel?',
-                  style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                  style:
+                      TextStyle(fontSize: 13, color: AppColors.textSecondary),
                 ),
                 const SizedBox(height: 8),
                 Row(
@@ -344,31 +352,41 @@ class _GymPreferencesScreenState extends State<GymPreferencesScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Near me', style: TextStyle(fontSize: 11, color: AppColors.textMuted)),
-                    Text('10 km', style: TextStyle(fontSize: 11, color: AppColors.textMuted)),
-                    Text('20+ km', style: TextStyle(fontSize: 11, color: AppColors.textMuted)),
+                    Text('Near me',
+                        style: TextStyle(
+                            fontSize: 11, color: AppColors.textMuted)),
+                    Text('10 km',
+                        style: TextStyle(
+                            fontSize: 11, color: AppColors.textMuted)),
+                    Text('20+ km',
+                        style: TextStyle(
+                            fontSize: 11, color: AppColors.textMuted)),
                   ],
                 ),
 
                 const SizedBox(height: 28),
 
                 // ── 2. Budget Range ────────────────────────────────
-                _buildSectionHeader('2. Budget Range (Monthly)', Icons.account_balance_wallet_rounded),
+                _buildSectionHeader('2. Budget Range (Monthly)',
+                    Icons.account_balance_wallet_rounded),
                 const SizedBox(height: 12),
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
-                  children: _budgetOptions.map((opt) => _buildChip(
-                    label: opt,
-                    isSelected: _selectedBudget == opt,
-                    onTap: () => setState(() => _selectedBudget = opt),
-                  )).toList(),
+                  children: _budgetOptions
+                      .map((opt) => _buildChip(
+                            label: opt,
+                            isSelected: _selectedBudget == opt,
+                            onTap: () => setState(() => _selectedBudget = opt),
+                          ))
+                      .toList(),
                 ),
 
                 const SizedBox(height: 28),
 
                 // ── 3. Facilities ──────────────────────────────────
-                _buildSectionHeader('3. Facilities You Prefer', Icons.sports_gymnastics_rounded),
+                _buildSectionHeader('3. Facilities You Prefer',
+                    Icons.sports_gymnastics_rounded),
                 const SizedBox(height: 4),
                 Text(
                   'Select all that apply',
@@ -429,31 +447,37 @@ class _GymPreferencesScreenState extends State<GymPreferencesScreen> {
                 const SizedBox(height: 28),
 
                 // ── 5. Preferred Gym Type ──────────────────────────
-                _buildSectionHeader('5. Preferred Gym Type', Icons.store_rounded),
+                _buildSectionHeader(
+                    '5. Preferred Gym Type', Icons.store_rounded),
                 const SizedBox(height: 12),
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
-                  children: _gymTypeOptions.map((opt) => _buildChip(
-                    label: opt,
-                    isSelected: _selectedGymType == opt,
-                    onTap: () => setState(() => _selectedGymType = opt),
-                  )).toList(),
+                  children: _gymTypeOptions
+                      .map((opt) => _buildChip(
+                            label: opt,
+                            isSelected: _selectedGymType == opt,
+                            onTap: () => setState(() => _selectedGymType = opt),
+                          ))
+                      .toList(),
                 ),
 
                 const SizedBox(height: 28),
 
                 // ── 6. Trainer Availability ────────────────────────
-                _buildSectionHeader('6. Trainer Availability', Icons.person_rounded),
+                _buildSectionHeader(
+                    '6. Trainer Availability', Icons.person_rounded),
                 const SizedBox(height: 12),
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
-                  children: _trainerOptions.map((opt) => _buildChip(
-                    label: opt,
-                    isSelected: _trainerPref == opt,
-                    onTap: () => setState(() => _trainerPref = opt),
-                  )).toList(),
+                  children: _trainerOptions
+                      .map((opt) => _buildChip(
+                            label: opt,
+                            isSelected: _trainerPref == opt,
+                            onTap: () => setState(() => _trainerPref = opt),
+                          ))
+                      .toList(),
                 ),
 
                 const SizedBox(height: 32),
@@ -463,11 +487,13 @@ class _GymPreferencesScreenState extends State<GymPreferencesScreen> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.lock_rounded, size: 14, color: AppColors.textMuted),
+                      Icon(Icons.lock_rounded,
+                          size: 14, color: AppColors.textMuted),
                       SizedBox(width: 6),
                       Text(
                         'Your preferences are saved securely',
-                        style: TextStyle(fontSize: 12, color: AppColors.textMuted),
+                        style:
+                            TextStyle(fontSize: 12, color: AppColors.textMuted),
                       ),
                     ],
                   ),
@@ -524,37 +550,37 @@ class _GymPreferencesScreenState extends State<GymPreferencesScreen> {
             child: Container(
               color: AppColors.background.withValues(alpha: 0.92),
               child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.15),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Center(
-                      child: CircularProgressIndicator(
-                        color: AppColors.primary,
-                        strokeWidth: 3,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withValues(alpha: 0.15),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.primary,
+                          strokeWidth: 3,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 24),
-                  const Text(
-                    'Calculating your matches...',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
+                    const SizedBox(height: 24),
+                    const Text(
+                      'Calculating your matches...',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ), // Closes Container
-        ), // Closes Material
+            ), // Closes Container
+          ), // Closes Material
       ], // Closes Stack
     );
   }
@@ -587,7 +613,9 @@ class _GymPreferencesScreenState extends State<GymPreferencesScreen> {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary.withValues(alpha: 0.15) : AppColors.surface,
+          color: isSelected
+              ? AppColors.primary.withValues(alpha: 0.15)
+              : AppColors.surface,
           borderRadius: BorderRadius.circular(AppRadius.full),
           border: Border.all(
             color: isSelected ? AppColors.primary : AppColors.border,
@@ -607,7 +635,8 @@ class _GymPreferencesScreenState extends State<GymPreferencesScreen> {
             ),
             if (isSelected) ...[
               const SizedBox(width: 6),
-              Icon(Icons.check_circle_rounded, size: 16, color: AppColors.primary),
+              Icon(Icons.check_circle_rounded,
+                  size: 16, color: AppColors.primary),
             ],
           ],
         ),
@@ -627,7 +656,9 @@ class _GymPreferencesScreenState extends State<GymPreferencesScreen> {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary.withValues(alpha: 0.15) : AppColors.surface,
+          color: isSelected
+              ? AppColors.primary.withValues(alpha: 0.15)
+              : AppColors.surface,
           borderRadius: BorderRadius.circular(AppRadius.md),
           border: Border.all(
             color: isSelected ? AppColors.primary : AppColors.border,
@@ -637,7 +668,10 @@ class _GymPreferencesScreenState extends State<GymPreferencesScreen> {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 16, color: isSelected ? AppColors.primary : AppColors.textSecondary),
+            Icon(icon,
+                size: 16,
+                color:
+                    isSelected ? AppColors.primary : AppColors.textSecondary),
             const SizedBox(width: 6),
             Text(
               label,
@@ -649,7 +683,8 @@ class _GymPreferencesScreenState extends State<GymPreferencesScreen> {
             ),
             if (isSelected) ...[
               const SizedBox(width: 4),
-              Icon(Icons.check_circle_rounded, size: 14, color: AppColors.primary),
+              Icon(Icons.check_circle_rounded,
+                  size: 14, color: AppColors.primary),
             ],
           ],
         ),

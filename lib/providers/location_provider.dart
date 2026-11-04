@@ -47,7 +47,8 @@ class LocationProvider extends ChangeNotifier {
       }
 
       if (permission == LocationPermission.deniedForever) {
-        _errorMessage = 'Location permissions are permanently denied, we cannot request permissions.';
+        _errorMessage =
+            'Location permissions are permanently denied, we cannot request permissions.';
         _isLoading = false;
         notifyListeners();
         return;
@@ -70,10 +71,11 @@ class LocationProvider extends ChangeNotifier {
   }
 
   /// Calculates the distance in kilometers between the user's current location and a given gym location.
-  /// If the user's location is unknown, returns null.
+  /// If the user's location is unknown or the gym has no coordinates, returns null.
+  /// For nullable coordinates, use [calculateDistanceNullable].
   double? calculateDistance(double gymLatitude, double gymLongitude) {
     if (_currentLocation == null) return null;
-    
+
     // Fallback if gym doesn't have a valid location
     if (gymLatitude == 0.0 && gymLongitude == 0.0) return null;
 
@@ -84,5 +86,20 @@ class LocationProvider extends ChangeNotifier {
     );
 
     return meters / 1000.0; // Return as Kilometers
+  }
+
+  /// Calculates distance for nullable gym coordinates.
+  /// Returns null if user location unknown or gym coordinates are null.
+  double? calculateDistanceNullable(double? gymLatitude, double? gymLongitude) {
+    if (_currentLocation == null) return null;
+    if (gymLatitude == null || gymLongitude == null) return null;
+
+    final double meters = _distanceCalc.as(
+      LengthUnit.Meter,
+      _currentLocation!,
+      LatLng(gymLatitude, gymLongitude),
+    );
+
+    return meters / 1000.0;
   }
 }

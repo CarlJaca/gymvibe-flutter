@@ -188,8 +188,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     icon: Icon(_obscureConfirmText
                         ? Icons.visibility_off
                         : Icons.visibility),
-                    onPressed: () =>
-                        setState(() => _obscureConfirmText = !_obscureConfirmText),
+                    onPressed: () => setState(
+                        () => _obscureConfirmText = !_obscureConfirmText),
                   ),
                 ),
               ),
@@ -237,8 +237,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   const Text('Already have an account?',
                       style: TextStyle(color: AppColors.textSecondary)),
                   TextButton(
-                    onPressed: () =>
-                        Navigator.pushReplacementNamed(context, AppRoutes.login),
+                    onPressed: () => Navigator.pushReplacementNamed(
+                        context, AppRoutes.login),
                     child: const Text('Log in'),
                   ),
                 ],

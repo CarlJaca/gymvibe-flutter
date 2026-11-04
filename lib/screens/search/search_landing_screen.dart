@@ -21,15 +21,18 @@ class _SearchLandingScreenState extends State<SearchLandingScreen> {
   final List<Map<String, String>> _cities = [
     {
       'name': 'Davao City',
-      'image': 'https://images.unsplash.com/photo-1628148002936-39ee648a002b?q=80&w=600&auto=format&fit=crop'
+      'image':
+          'https://images.unsplash.com/photo-1628148002936-39ee648a002b?q=80&w=600&auto=format&fit=crop'
     },
     {
       'name': 'Cebu City',
-      'image': 'https://images.unsplash.com/photo-1518218105741-945763560bf9?q=80&w=600&auto=format&fit=crop'
+      'image':
+          'https://images.unsplash.com/photo-1518218105741-945763560bf9?q=80&w=600&auto=format&fit=crop'
     },
     {
       'name': 'Butuan City',
-      'image': 'https://images.unsplash.com/photo-1542281286-9e0a16bb7366?q=80&w=600&auto=format&fit=crop'
+      'image':
+          'https://images.unsplash.com/photo-1542281286-9e0a16bb7366?q=80&w=600&auto=format&fit=crop'
     },
   ];
 
@@ -76,11 +79,13 @@ class _SearchLandingScreenState extends State<SearchLandingScreen> {
           children: [
             // ── Header ───────────────────────────────────────────────
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppPadding.sm, vertical: AppPadding.sm),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppPadding.sm, vertical: AppPadding.sm),
               child: Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
+                    icon: const Icon(Icons.arrow_back_rounded,
+                        color: AppColors.textPrimary),
                     onPressed: () {
                       if (_isSearching) {
                         setState(() {
@@ -97,7 +102,8 @@ class _SearchLandingScreenState extends State<SearchLandingScreen> {
                     },
                   ),
                   const Spacer(),
-                  const Text('Philippines', style: TextStyle(fontWeight: FontWeight.bold)),
+                  const Text('Philippines',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
                   const Spacer(),
                   const SizedBox(width: 48),
                 ],
@@ -144,7 +150,8 @@ class _SearchLandingScreenState extends State<SearchLandingScreen> {
   /// Live results — shown instantly as the user types
   Widget _buildLiveResults(GymProvider provider) {
     if (provider.isLoading) {
-      return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+      return const Center(
+          child: CircularProgressIndicator(color: AppColors.primary));
     }
 
     if (provider.gyms.isEmpty) {
@@ -152,12 +159,14 @@ class _SearchLandingScreenState extends State<SearchLandingScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.search_off_rounded, size: 64, color: AppColors.textSecondary),
+            const Icon(Icons.search_off_rounded,
+                size: 64, color: AppColors.textSecondary),
             const SizedBox(height: 16),
             Text(
               'No gyms found for\n"${_searchController.text}"',
               textAlign: TextAlign.center,
-              style: const TextStyle(color: AppColors.textSecondary, fontSize: 16),
+              style:
+                  const TextStyle(color: AppColors.textSecondary, fontSize: 16),
             ),
           ],
         ),
@@ -171,7 +180,8 @@ class _SearchLandingScreenState extends State<SearchLandingScreen> {
           padding: const EdgeInsets.symmetric(horizontal: AppPadding.md),
           child: Text(
             '${provider.gyms.length} result${provider.gyms.length == 1 ? '' : 's'} found',
-            style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+            style:
+                const TextStyle(color: AppColors.textSecondary, fontSize: 13),
           ),
         ),
         const SizedBox(height: AppPadding.sm),
@@ -186,7 +196,8 @@ class _SearchLandingScreenState extends State<SearchLandingScreen> {
                 gym: gym,
                 onTap: () {
                   provider.addSearchHistory(_searchController.text.trim());
-                  Navigator.pushNamed(context, AppRoutes.gymDetails, arguments: gym);
+                  Navigator.pushNamed(context, AppRoutes.gymDetails,
+                      arguments: gym);
                 },
               );
             },
@@ -203,24 +214,30 @@ class _SearchLandingScreenState extends State<SearchLandingScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text('Recent Searches', style: TextStyle(color: AppColors.textSecondary)),
+            const Text('Recent Searches',
+                style: TextStyle(color: AppColors.textSecondary)),
             TextButton(
               onPressed: () => provider.clearSearchHistory(),
-              child: const Text('Clear All', style: TextStyle(color: AppColors.primary, fontSize: 12)),
+              child: const Text('Clear All',
+                  style: TextStyle(color: AppColors.primary, fontSize: 12)),
             )
           ],
         ),
         if (provider.searchHistory.isEmpty)
           const Padding(
             padding: EdgeInsets.only(top: 20),
-            child: Text('No recent searches.', style: TextStyle(color: AppColors.textSecondary)),
+            child: Text('No recent searches.',
+                style: TextStyle(color: AppColors.textSecondary)),
           ),
         ...provider.searchHistory.map((term) => ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: const Icon(Icons.history_rounded, color: AppColors.textSecondary),
-              title: Text(term, style: const TextStyle(color: AppColors.textPrimary)),
+              leading: const Icon(Icons.history_rounded,
+                  color: AppColors.textSecondary),
+              title: Text(term,
+                  style: const TextStyle(color: AppColors.textPrimary)),
               trailing: IconButton(
-                icon: const Icon(Icons.close_rounded, color: AppColors.textSecondary, size: 18),
+                icon: const Icon(Icons.close_rounded,
+                    color: AppColors.textSecondary, size: 18),
                 onPressed: () => provider.removeSearchHistory(term),
               ),
               onTap: () {
@@ -257,7 +274,10 @@ class _SearchLandingScreenState extends State<SearchLandingScreen> {
                 cityName: city['name']!,
                 imageUrl: city['image']!,
                 isSelected: provider.selectedCity == city['name'],
-                onTap: () => provider.setCity(provider.selectedCity == city['name'] ? null : city['name']),
+                onTap: () => provider.setCity(
+                    provider.selectedCity == city['name']
+                        ? null
+                        : city['name']),
               );
             },
           ),
@@ -296,15 +316,19 @@ class _SearchLandingScreenState extends State<SearchLandingScreen> {
                   provider.clearFilters();
                   _searchController.clear();
                 },
-                child: const Text('Clear all', style: TextStyle(color: AppColors.textSecondary)),
+                child: const Text('Clear all',
+                    style: TextStyle(color: AppColors.textSecondary)),
               ),
               ElevatedButton.icon(
-                onPressed: () => _submitSearch(context, _searchController.text, provider),
+                onPressed: () =>
+                    _submitSearch(context, _searchController.text, provider),
                 icon: const Icon(Icons.search_rounded, size: 18),
                 label: const Text('Search'),
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.full)),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppRadius.full)),
                 ),
               ),
             ],
@@ -314,7 +338,8 @@ class _SearchLandingScreenState extends State<SearchLandingScreen> {
     );
   }
 
-  Widget _buildActionTile({required String title, required VoidCallback onTap}) {
+  Widget _buildActionTile(
+      {required String title, required VoidCallback onTap}) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -328,7 +353,8 @@ class _SearchLandingScreenState extends State<SearchLandingScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
-            const Icon(Icons.chevron_right_rounded, color: AppColors.textSecondary),
+            const Icon(Icons.chevron_right_rounded,
+                color: AppColors.textSecondary),
           ],
         ),
       ),

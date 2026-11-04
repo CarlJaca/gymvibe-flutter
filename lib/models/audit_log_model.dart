@@ -6,7 +6,8 @@ class AuditLogModel {
   final String actorName;
   final String actorRole;
   final String action;
-  final String targetType; // 'user', 'gym', 'booking', 'content', 'leaderboard', 'settings'
+  final String
+      targetType; // 'user', 'gym', 'booking', 'content', 'leaderboard', 'settings'
   final String targetId;
   final String reason;
   final String description;

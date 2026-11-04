@@ -63,10 +63,13 @@ class RecommendationService {
 
     // Trainer availability — check facilities and description
     final hasTrainer = gym.facilities.any((f) {
-      final fl = f.toLowerCase();
-      return fl.contains('trainer') || fl.contains('coach') || fl.contains('personal training');
-    }) || gym.description.toLowerCase().contains('trainer') ||
-       gym.description.toLowerCase().contains('coach');
+          final fl = f.toLowerCase();
+          return fl.contains('trainer') ||
+              fl.contains('coach') ||
+              fl.contains('personal training');
+        }) ||
+        gym.description.toLowerCase().contains('trainer') ||
+        gym.description.toLowerCase().contains('coach');
     if (hasTrainer) {
       attrs.add('trainer:available');
     }
@@ -84,9 +87,13 @@ class RecommendationService {
     // Gym type from categories
     final descLower = gym.description.toLowerCase();
     final nameLower = gym.name.toLowerCase();
-    if (descLower.contains('boutique') || descLower.contains('specialty') || nameLower.contains('boutique')) {
+    if (descLower.contains('boutique') ||
+        descLower.contains('specialty') ||
+        nameLower.contains('boutique')) {
       attrs.add('gymtype:boutique / specialty');
-    } else if (descLower.contains('private') || descLower.contains('studio') || nameLower.contains('studio')) {
+    } else if (descLower.contains('private') ||
+        descLower.contains('studio') ||
+        nameLower.contains('studio')) {
       attrs.add('gymtype:private / studio');
     } else {
       attrs.add('gymtype:commercial gym');
@@ -97,8 +104,9 @@ class RecommendationService {
 
   /// Derives a budget tag from a gym's monthly price string.
   static String? _deriveBudgetTag(String monthlyPrice) {
-    // Extract numeric value from strings like "₱800/month", "₱1,500", etc.
-    final cleaned = monthlyPrice.replaceAll(RegExp(r'[₱,\s]'), '');
+    // Extract numeric value from strings like "₱800/month", "≈ ₱1,500", etc.
+    final cleaned =
+        monthlyPrice.replaceAll(RegExp(r'[₱,\s≈]'), '').replaceAll('est.', '');
     final match = RegExp(r'(\d+)').firstMatch(cleaned);
     if (match == null) return null;
 
@@ -179,7 +187,9 @@ class RecommendationService {
         // Check for direct match
         if (gymAttributes.contains(pref)) {
           matched.add(pref);
-        } else if (pref == 'distance:any distance' || pref == 'gymtype:any' || pref == 'trainer:no preference') {
+        } else if (pref == 'distance:any distance' ||
+            pref == 'gymtype:any' ||
+            pref == 'trainer:no preference') {
           matched.add(pref); // "Any" options always match
         } else if (pref.startsWith('distance:within')) {
           // Check if gym distance falls within the user's preference
@@ -207,7 +217,8 @@ class RecommendationService {
     }).toList();
 
     // Filter out gyms with 0% match percentage (even if score is technically 0.001)
-    final filteredResults = results.where((r) => r.matchPercentage > 0).toList();
+    final filteredResults =
+        results.where((r) => r.matchPercentage > 0).toList();
 
     // Sort by score descending, then by rating for ties
     filteredResults.sort((a, b) {

@@ -17,7 +17,7 @@ class _OwnerCreatePromotionScreenState
     extends State<OwnerCreatePromotionScreen> {
   final _titleCtrl = TextEditingController();
   final _valueCtrl = TextEditingController();
-  final _descCtrl  = TextEditingController();
+  final _descCtrl = TextEditingController();
   String _discountType = 'Percentage (%)';
   DateTime? _startDate;
   DateTime? _endDate;
@@ -73,8 +73,8 @@ class _OwnerCreatePromotionScreenState
                   const Expanded(
                     child: Text(
                       'Create Promotion',
-                      style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -86,8 +86,7 @@ class _OwnerCreatePromotionScreenState
               padding: EdgeInsets.symmetric(horizontal: AppPadding.md),
               child: Text(
                 'Build a new promotion for your gym',
-                style: TextStyle(
-                    color: AppColors.textSecondary, fontSize: 13),
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -163,8 +162,7 @@ class _OwnerCreatePromotionScreenState
                           value: _discountType,
                           isExpanded: true,
                           dropdownColor: AppColors.surfaceElevated,
-                          icon: const Icon(
-                              Icons.keyboard_arrow_down_rounded,
+                          icon: const Icon(Icons.keyboard_arrow_down_rounded,
                               color: AppColors.textSecondary),
                           items: _discountTypes
                               .map((t) => DropdownMenuItem(
@@ -173,8 +171,7 @@ class _OwnerCreatePromotionScreenState
                                       style: const TextStyle(
                                           color: AppColors.textPrimary))))
                               .toList(),
-                          onChanged: (v) =>
-                              setState(() => _discountType = v!),
+                          onChanged: (v) => setState(() => _discountType = v!),
                         ),
                       ),
                     ),
@@ -190,12 +187,10 @@ class _OwnerCreatePromotionScreenState
                         hintText: _discountType == 'Percentage (%)'
                             ? 'e.g., 20'
                             : 'e.g., 500',
-                        prefixText: _discountType == 'Percentage (%)'
-                            ? null
-                            : '₱ ',
-                        suffixText: _discountType == 'Percentage (%)'
-                            ? '%'
-                            : null,
+                        prefixText:
+                            _discountType == 'Percentage (%)' ? null : '₱ ',
+                        suffixText:
+                            _discountType == 'Percentage (%)' ? '%' : null,
                       ),
                     ),
                     const SizedBox(height: AppPadding.md),
@@ -254,8 +249,11 @@ class _OwnerCreatePromotionScreenState
                     notifProv.addNotification(NotificationItem(
                       id: '',
                       type: 'promo',
-                      title: 'New Promotion: ${_titleCtrl.text.isEmpty ? 'Special Offer' : _titleCtrl.text}',
-                      subtitle: _descCtrl.text.isEmpty ? 'Don\'t miss our latest promotion!' : _descCtrl.text,
+                      title:
+                          'New Promotion: ${_titleCtrl.text.isEmpty ? 'Special Offer' : _titleCtrl.text}',
+                      subtitle: _descCtrl.text.isEmpty
+                          ? 'Don\'t miss our latest promotion!'
+                          : _descCtrl.text,
                       time: 'Just now',
                     ));
 
@@ -263,7 +261,9 @@ class _OwnerCreatePromotionScreenState
                     final gymProv = context.read<GymProvider>();
                     promoProv.addPromotion({
                       'gymId': gymProv.ownerGym.id,
-                      'title': _titleCtrl.text.isEmpty ? 'Special Offer' : _titleCtrl.text,
+                      'title': _titleCtrl.text.isEmpty
+                          ? 'Special Offer'
+                          : _titleCtrl.text,
                       'dates': _startDate != null && _endDate != null
                           ? '${_startDate!.month}/${_startDate!.day} - ${_endDate!.month}/${_endDate!.day}'
                           : 'TBA',
@@ -271,7 +271,8 @@ class _OwnerCreatePromotionScreenState
                       'value': double.tryParse(_valueCtrl.text) ?? 0.0,
                       'reach': 0,
                       'redemptions': 0,
-                      'color': AppColors.primary.toARGB32(), // Fix: Must save as integer to Firebase
+                      'color': AppColors.primary
+                          .toARGB32(), // Fix: Must save as integer to Firebase
                     });
 
                     ScaffoldMessenger.of(context).showSnackBar(

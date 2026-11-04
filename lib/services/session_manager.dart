@@ -57,7 +57,8 @@ class SessionManager {
     // Start inactivity timer
     _startInactivityTimer();
 
-    SecureLogger.log('Session monitoring started (timeout: ${_inactivityTimeout.inMinutes}min)');
+    SecureLogger.log(
+        'Session monitoring started (timeout: ${_inactivityTimeout.inMinutes}min)');
   }
 
   /// Resets the inactivity timer.

@@ -14,7 +14,9 @@ class PromotionDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = promo['color'] is Color
         ? promo['color'] as Color
-        : (promo['color'] is int ? Color(promo['color'] as int) : AppColors.primary);
+        : (promo['color'] is int
+            ? Color(promo['color'] as int)
+            : AppColors.primary);
     final claimed = (promo['claimedCount'] as num?)?.toInt() ?? 0;
     final total = (promo['totalSlots'] as num?)?.toInt() ?? 1;
     final progress = claimed / total;
@@ -89,7 +91,10 @@ class PromotionDetailScreen extends StatelessWidget {
                 fontSize: 60,
                 fontWeight: FontWeight.w900,
                 shadows: [
-                  Shadow(blurRadius: 20, color: Colors.black54, offset: Offset(0, 4)),
+                  Shadow(
+                      blurRadius: 20,
+                      color: Colors.black54,
+                      offset: Offset(0, 4)),
                 ],
               ),
               textAlign: TextAlign.center,
@@ -115,14 +120,17 @@ class PromotionDetailScreen extends StatelessWidget {
               ),
               child: Text(
                 promo['status'],
-                style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    color: color, fontSize: 12, fontWeight: FontWeight.bold),
               ),
             ),
             Consumer<PromotionsProvider>(
               builder: (context, provider, _) => GestureDetector(
                 onTap: () => provider.toggleSave(promo['id']),
                 child: Icon(
-                  (promo['isSaved'] ?? false) ? Icons.bookmark : Icons.bookmark_border,
+                  (promo['isSaved'] ?? false)
+                      ? Icons.bookmark
+                      : Icons.bookmark_border,
                   color: (promo['isSaved'] ?? false) ? color : Colors.white,
                   size: 28,
                 ),
@@ -143,11 +151,13 @@ class PromotionDetailScreen extends StatelessWidget {
         const SizedBox(height: 8),
         Row(
           children: [
-            const Icon(Icons.calendar_today, size: 14, color: AppColors.textSecondary),
+            const Icon(Icons.calendar_today,
+                size: 14, color: AppColors.textSecondary),
             const SizedBox(width: 6),
             Text(
               promo['dates'],
-              style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+              style:
+                  const TextStyle(color: AppColors.textSecondary, fontSize: 14),
             ),
           ],
         ),
@@ -161,18 +171,21 @@ class PromotionDetailScreen extends StatelessWidget {
       children: [
         const Text(
           'About This Promotion',
-          style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(
+              color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
         Text(
           promo['description'] ?? 'No description available.',
-          style: const TextStyle(color: AppColors.textSecondary, fontSize: 15, height: 1.5),
+          style: const TextStyle(
+              color: AppColors.textSecondary, fontSize: 15, height: 1.5),
         ),
       ],
     );
   }
 
-  Widget _buildProgressSection(BuildContext context, double progress, int claimed, Color color) {
+  Widget _buildProgressSection(
+      BuildContext context, double progress, int claimed, Color color) {
     return Container(
       padding: const EdgeInsets.all(AppPadding.md),
       decoration: BoxDecoration(
@@ -189,10 +202,13 @@ class PromotionDetailScreen extends StatelessWidget {
                 children: [
                   Icon(Icons.people_alt_outlined, size: 16, color: color),
                   const SizedBox(width: 6),
-                  const Text('Progress', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+                  const Text('Progress',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w600)),
                 ],
               ),
-              Text('${(progress * 100).toInt()}%', style: TextStyle(color: color, fontWeight: FontWeight.bold)),
+              Text('${(progress * 100).toInt()}%',
+                  style: TextStyle(color: color, fontWeight: FontWeight.bold)),
             ],
           ),
           const SizedBox(height: 12),
@@ -207,8 +223,12 @@ class PromotionDetailScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('$claimed claimed', style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
-              Text('${promo['totalSlots']} total', style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+              Text('$claimed claimed',
+                  style: const TextStyle(
+                      color: AppColors.textSecondary, fontSize: 12)),
+              Text('${promo['totalSlots']} total',
+                  style: const TextStyle(
+                      color: AppColors.textSecondary, fontSize: 12)),
             ],
           ),
           const Divider(color: AppColors.border, height: 32),
@@ -216,13 +236,15 @@ class PromotionDetailScreen extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ClaimedUsersScreen(promo: promo)),
+                MaterialPageRoute(
+                    builder: (context) => ClaimedUsersScreen(promo: promo)),
               );
             },
             child: const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('View Claimed Users', style: TextStyle(color: Colors.white)),
+                Text('View Claimed Users',
+                    style: TextStyle(color: Colors.white)),
                 Icon(Icons.chevron_right, color: Colors.white),
               ],
             ),
@@ -238,26 +260,34 @@ class PromotionDetailScreen extends StatelessWidget {
       children: [
         const Text(
           'Terms & Conditions',
-          style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(
+              color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
         ...List<String>.from(promo['terms'] ?? []).map((term) => Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('• ', style: TextStyle(color: AppColors.textSecondary, fontSize: 16)),
-              Expanded(
-                child: Text(term, style: const TextStyle(color: AppColors.textSecondary, fontSize: 14, height: 1.4)),
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('• ',
+                      style: TextStyle(
+                          color: AppColors.textSecondary, fontSize: 16)),
+                  Expanded(
+                    child: Text(term,
+                        style: const TextStyle(
+                            color: AppColors.textSecondary,
+                            fontSize: 14,
+                            height: 1.4)),
+                  ),
+                ],
               ),
-            ],
-          ),
-        )),
+            )),
       ],
     );
   }
 
-  Widget _buildBottomCTA(BuildContext context, bool isFullyClaimed, Color color) {
+  Widget _buildBottomCTA(
+      BuildContext context, bool isFullyClaimed, Color color) {
     return Positioned(
       bottom: 0,
       left: 0,
@@ -273,53 +303,62 @@ class PromotionDetailScreen extends StatelessWidget {
             ),
             child: SafeArea(
               top: false,
-              child: Consumer<PromotionsProvider>(
-                builder: (context, provider, _) {
-                  final bool isClaimed = promo['isClaimed'] ?? false;
-                  if (isClaimed) {
-                    return SizedBox(
-                      width: double.infinity,
-                      height: 50,
-                      child: ElevatedButton(
-                        onPressed: null,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white.withValues(alpha: 0.1),
-                          disabledBackgroundColor: Colors.white.withValues(alpha: 0.1),
-                          disabledForegroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
-                        ),
-                        child: const Text('Already Claimed', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                      ),
-                    );
-                  }
-
+              child:
+                  Consumer<PromotionsProvider>(builder: (context, provider, _) {
+                final bool isClaimed = promo['isClaimed'] ?? false;
+                if (isClaimed) {
                   return SizedBox(
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: isFullyClaimed ? null : () {
-                        provider.claimOffer(promo['id']);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: const Text('Promotion claimed successfully!'),
-                            backgroundColor: color,
-                          ),
-                        );
-                        Navigator.pop(context);
-                      },
+                      onPressed: null,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: isFullyClaimed ? AppColors.border : color,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
+                        backgroundColor: Colors.white.withValues(alpha: 0.1),
+                        disabledBackgroundColor:
+                            Colors.white.withValues(alpha: 0.1),
+                        disabledForegroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(AppRadius.md)),
                       ),
-                      child: Text(
-                        isFullyClaimed ? 'Fully Claimed' : 'Claim Offer',
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
+                      child: const Text('Already Claimed',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
                     ),
                   );
                 }
-              ),
+
+                return SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: isFullyClaimed
+                        ? null
+                        : () {
+                            provider.claimOffer(promo['id']);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: const Text(
+                                    'Promotion claimed successfully!'),
+                                backgroundColor: color,
+                              ),
+                            );
+                            Navigator.pop(context);
+                          },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          isFullyClaimed ? AppColors.border : color,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(AppRadius.md)),
+                    ),
+                    child: Text(
+                      isFullyClaimed ? 'Fully Claimed' : 'Claim Offer',
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                );
+              }),
             ),
           ),
         ),

@@ -65,7 +65,9 @@ class MyReviewsScreen extends StatelessWidget {
                                 ...List.generate(
                                   5,
                                   (i) => Icon(
-                                    i < review['rating'] ? Icons.star_rounded : Icons.star_outline_rounded,
+                                    i < review['rating']
+                                        ? Icons.star_rounded
+                                        : Icons.star_outline_rounded,
                                     color: AppColors.star,
                                     size: 16,
                                   ),
@@ -73,14 +75,17 @@ class MyReviewsScreen extends StatelessWidget {
                                 const SizedBox(width: 8),
                                 Text(
                                   review['date'],
-                                  style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                                  style: const TextStyle(
+                                      color: AppColors.textSecondary,
+                                      fontSize: 12),
                                 ),
                               ],
                             ),
                             const SizedBox(height: 8),
                             Text(
                               review['text'],
-                              style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
+                              style: const TextStyle(
+                                  color: AppColors.textPrimary, fontSize: 14),
                             ),
                           ],
                         ),

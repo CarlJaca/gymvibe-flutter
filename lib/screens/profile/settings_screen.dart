@@ -11,7 +11,9 @@ class SettingsScreen extends StatelessWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.surfaceElevated,
-        title: const Text('Delete Account', style: TextStyle(color: AppColors.error, fontWeight: FontWeight.bold)),
+        title: const Text('Delete Account',
+            style:
+                TextStyle(color: AppColors.error, fontWeight: FontWeight.bold)),
         content: const Text(
           'Are you sure you want to permanently delete your account? This action cannot be undone and all your data will be lost.',
           style: TextStyle(color: AppColors.textPrimary),
@@ -19,7 +21,8 @@ class SettingsScreen extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel', style: TextStyle(color: AppColors.textSecondary)),
+            child: const Text('Cancel',
+                style: TextStyle(color: AppColors.textSecondary)),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -40,7 +43,9 @@ class SettingsScreen extends StatelessWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.surfaceElevated,
-        title: const Text('Reset Password', style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold)),
+        title: const Text('Reset Password',
+            style: TextStyle(
+                color: AppColors.textPrimary, fontWeight: FontWeight.bold)),
         content: const Text(
           'We will send a password reset link to your registered email address.',
           style: TextStyle(color: AppColors.textSecondary),
@@ -48,27 +53,35 @@ class SettingsScreen extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel', style: TextStyle(color: AppColors.textSecondary)),
+            child: const Text('Cancel',
+                style: TextStyle(color: AppColors.textSecondary)),
           ),
           ElevatedButton(
             onPressed: () async {
               Navigator.pop(ctx);
               final auth = context.read<AuthProvider>();
-              final success = await auth.resetPassword(auth.currentUser?.email ?? '');
+              final success =
+                  await auth.resetPassword(auth.currentUser?.email ?? '');
               if (context.mounted) {
                 if (success) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Password reset email sent!'), backgroundColor: AppColors.success),
+                    const SnackBar(
+                        content: Text('Password reset email sent!'),
+                        backgroundColor: AppColors.success),
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(auth.errorMessage ?? 'Failed to send reset email'), backgroundColor: AppColors.error),
+                    SnackBar(
+                        content: Text(
+                            auth.errorMessage ?? 'Failed to send reset email'),
+                        backgroundColor: AppColors.error),
                   );
                 }
               }
             },
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
-            child: const Text('Send Email', style: TextStyle(color: Colors.white)),
+            child:
+                const Text('Send Email', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -79,7 +92,8 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings', style: TextStyle(color: AppColors.textPrimary)),
+        title: const Text('Settings',
+            style: TextStyle(color: AppColors.textPrimary)),
         backgroundColor: AppColors.surface,
         elevation: 0,
         iconTheme: const IconThemeData(color: AppColors.textPrimary),
@@ -90,45 +104,62 @@ class SettingsScreen extends StatelessWidget {
           children: [
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Text('APP PREFERENCES', style: TextStyle(color: AppColors.textSecondary, fontSize: 12, fontWeight: FontWeight.bold)),
+              child: Text('APP PREFERENCES',
+                  style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold)),
             ),
             ListTile(
-              leading: const Icon(Icons.dark_mode_outlined, color: AppColors.primary),
-              title: const Text('Dark Mode', style: TextStyle(color: AppColors.textPrimary)),
+              leading: const Icon(Icons.dark_mode_outlined,
+                  color: AppColors.primary),
+              title: const Text('Dark Mode',
+                  style: TextStyle(color: AppColors.textPrimary)),
               trailing: Switch(
                 value: true, // Placeholder for theme toggle logic
                 onChanged: (val) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Theme settings coming soon!')),
+                    const SnackBar(
+                        content: Text('Theme settings coming soon!')),
                   );
                 },
                 activeThumbColor: AppColors.primary,
               ),
             ),
             const Divider(color: AppColors.border),
-            
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Text('SECURITY', style: TextStyle(color: AppColors.textSecondary, fontSize: 12, fontWeight: FontWeight.bold)),
+              child: Text('SECURITY',
+                  style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold)),
             ),
             ListTile(
-              leading: const Icon(Icons.lock_outline_rounded, color: AppColors.primary),
-              title: const Text('Change Password', style: TextStyle(color: AppColors.textPrimary)),
-              trailing: const Icon(Icons.chevron_right_rounded, color: AppColors.textSecondary),
+              leading: const Icon(Icons.lock_outline_rounded,
+                  color: AppColors.primary),
+              title: const Text('Change Password',
+                  style: TextStyle(color: AppColors.textPrimary)),
+              trailing: const Icon(Icons.chevron_right_rounded,
+                  color: AppColors.textSecondary),
               onTap: () => _showPasswordResetDialog(context),
             ),
             const Divider(color: AppColors.border),
-            
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Text('DANGER ZONE', style: TextStyle(color: AppColors.error, fontSize: 12, fontWeight: FontWeight.bold)),
+              child: Text('DANGER ZONE',
+                  style: TextStyle(
+                      color: AppColors.error,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold)),
             ),
             ListTile(
-              leading: const Icon(Icons.delete_forever_outlined, color: AppColors.error),
-              title: const Text('Delete Account', style: TextStyle(color: AppColors.error)),
+              leading: const Icon(Icons.delete_forever_outlined,
+                  color: AppColors.error),
+              title: const Text('Delete Account',
+                  style: TextStyle(color: AppColors.error)),
               onTap: () => _showDeleteConfirmation(context),
             ),
-            
             const SizedBox(height: 32),
             const Center(
               child: Text(

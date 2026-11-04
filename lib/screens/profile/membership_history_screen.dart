@@ -27,14 +27,15 @@ class MembershipHistoryScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 final history = dummyHistory[index];
                 final isActive = history['status'] == 'Active';
-                
+
                 return Container(
                   margin: const EdgeInsets.only(bottom: AppPadding.md),
                   padding: const EdgeInsets.all(AppPadding.md),
                   decoration: BoxDecoration(
                     color: AppColors.surface,
                     borderRadius: BorderRadius.circular(AppRadius.lg),
-                    border: Border.all(color: isActive ? AppColors.primary : AppColors.border),
+                    border: Border.all(
+                        color: isActive ? AppColors.primary : AppColors.border),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,15 +54,20 @@ class MembershipHistoryScreen extends StatelessWidget {
                             ),
                           ),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
-                              color: isActive ? AppColors.success.withValues(alpha: 0.2) : AppColors.surfaceElevated,
+                              color: isActive
+                                  ? AppColors.success.withValues(alpha: 0.2)
+                                  : AppColors.surfaceElevated,
                               borderRadius: BorderRadius.circular(AppRadius.sm),
                             ),
                             child: Text(
                               history['status'],
                               style: TextStyle(
-                                color: isActive ? AppColors.success : AppColors.textSecondary,
+                                color: isActive
+                                    ? AppColors.success
+                                    : AppColors.textSecondary,
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -72,7 +78,8 @@ class MembershipHistoryScreen extends StatelessWidget {
                       const SizedBox(height: 8),
                       Text(
                         history['type'],
-                        style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
+                        style: const TextStyle(
+                            color: AppColors.textPrimary, fontSize: 14),
                       ),
                       const SizedBox(height: 4),
                       Row(
@@ -80,7 +87,8 @@ class MembershipHistoryScreen extends StatelessWidget {
                         children: [
                           Text(
                             history['date'],
-                            style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                            style: const TextStyle(
+                                color: AppColors.textSecondary, fontSize: 13),
                           ),
                           Text(
                             history['price'],

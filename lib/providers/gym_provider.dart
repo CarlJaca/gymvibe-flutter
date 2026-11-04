@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/gym_model.dart';
+import '../data/gym_repository.dart';
 import '../services/recommendation_service.dart';
 
 class GymProvider extends ChangeNotifier {
@@ -16,7 +17,11 @@ class GymProvider extends ChangeNotifier {
 
   String? _selectedCity;
   final Set<String> _activeFilters = {};
-  final List<String> _searchHistory = ['Dstar Gym Matina', 'Anytime Fitness', 'Altitude Gym'];
+  final List<String> _searchHistory = [
+    'Dstars Fitness Gym',
+    'Anytime Fitness',
+    'CrossFit Madayaw'
+  ];
 
   // Advanced Filters
   RangeValues? _advancedBudgetRange;
@@ -33,6 +38,8 @@ class GymProvider extends ChangeNotifier {
   // Jaccard match results with scores
   List<GymMatchResult> _matchResults = [];
 
+  bool _datasetLoaded = false;
+
   // ─── Getters ────────────────────────────────────────────────────────────────
   /// Returns the gym belonging to the currently logged-in owner.
   /// Looks up by ownerId from the full gym list.
@@ -46,7 +53,8 @@ class GymProvider extends ChangeNotifier {
       id: _currentOwnerId != null ? 'gym_$_currentOwnerId' : 'placeholder',
       ownerId: _currentOwnerId,
       name: _fallbackGymName ?? 'No Gym Registered',
-      imageUrl: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80',
+      imageUrl:
+          'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80',
       address: 'Please complete your gym profile in settings.',
       city: 'Unknown',
       hours: 'N/A',
@@ -55,14 +63,14 @@ class GymProvider extends ChangeNotifier {
       isOpen: false,
     );
   }
+
   List<GymModel> get gyms => _filteredGyms;
   List<GymModel> get allGyms => _allGyms;
-  List<GymModel> get topRatedGyms =>
-      List<GymModel>.from(_allGyms)..sort((a, b) => b.rating.compareTo(a.rating));
+  List<GymModel> get topRatedGyms => List<GymModel>.from(_allGyms)
+    ..sort((a, b) => b.rating.compareTo(a.rating));
   List<GymModel> get favoriteGyms =>
       _allGyms.where((g) => g.isFavorite).toList();
-  List<GymModel> get savedGyms =>
-      _allGyms.where((g) => g.isSaved).toList();
+  List<GymModel> get savedGyms => _allGyms.where((g) => g.isSaved).toList();
 
   /// Returns gyms ranked by Jaccard similarity to the user's preferences.
   /// Delegates to matchResults for consistency.
@@ -121,86 +129,51 @@ class GymProvider extends ChangeNotifier {
     _matchResults = RecommendationService.getRecommendedGymsWithScores(
       userPreferences: _userPreferences,
       allGyms: _allGyms,
-      limit: 10,
+      limit: 15,
     );
   }
 
-  StreamSubscription<QuerySnapshot>? _gymsSubscription;
-
-  // ─── Init (Firestore) ───────────────────────────────────────────────────────
+  // ─── Init (Dataset + Firestore for owner gyms) ─────────────────────────────
   Future<void> loadGyms() async {
-    if (_gymsSubscription != null) return; // Already listening
+    if (_datasetLoaded) return; // Already loaded
 
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
-      _gymsSubscription = _firestore.collection('gyms').snapshots().listen(
-        (snapshot) {
-          try {
-            final firestoreGyms = snapshot.docs
-                .map((doc) => GymModel.fromJson(Map<String, dynamic>.from(doc.data()), doc.id))
-                .toList();
+      // Primary source: bundled JSON dataset (15 real Davao gyms)
+      final datasetGyms = await GymRepository.instance.loadAll();
+      _allGyms = List<GymModel>.from(datasetGyms);
 
-            // Deduplicate gyms by name
-            final uniqueGyms = <String, GymModel>{};
-            for (var gym in firestoreGyms) {
-              if (!uniqueGyms.containsKey(gym.name)) {
-                uniqueGyms[gym.name] = gym;
-              }
-            }
-
-            _allGyms = uniqueGyms.values.toList();
-            _applyFilter();
-            calculateMatches();
-          } catch (e, stack) {
-            debugPrint('Error processing gym snapshot: $e');
-            debugPrint(stack.toString());
-            _errorMessage = 'Failed to parse gym data.';
-          }
-
-          // ONE-TIME DB CLEANUP removed — was causing PERMISSION_DENIED loop
-
-          _isLoading = false;
-          notifyListeners();
-        },
-        onError: (e) {
-          _errorMessage = 'Failed to load gyms. Please try again.';
-          _isLoading = false;
-          debugPrint('Error loading gyms: $e');
-          notifyListeners();
-        },
-      );
-    } catch (e) {
-      debugPrint('Sync error in loadGyms stream: $e. Attempting fallback one-time fetch.');
-      
-      // Fallback: One-time fetch for emulators where streams crash
+      // Also load any owner-registered gyms from Firestore (supplementary)
       try {
         final snapshot = await _firestore.collection('gyms').get();
-        final firestoreGyms = snapshot.docs
-            .map((doc) => GymModel.fromJson(doc.data(), doc.id))
-            .toList();
-            
-        // Deduplicate gyms by name
-        final uniqueGyms = <String, GymModel>{};
-        for (var gym in firestoreGyms) {
-          if (!uniqueGyms.containsKey(gym.name)) {
-            uniqueGyms[gym.name] = gym;
+        for (final doc in snapshot.docs) {
+          final firestoreGym = GymModel.fromJson(
+            Map<String, dynamic>.from(doc.data()),
+            doc.id,
+          );
+          // Only add if not already in dataset (avoid duplicates)
+          if (!_allGyms.any((g) => g.id == firestoreGym.id)) {
+            _allGyms.add(firestoreGym);
           }
         }
-
-        _allGyms = uniqueGyms.values.toList();
-        _applyFilter();
-        // DB price cleanup removed — was causing PERMISSION_DENIED loop
-      } catch (innerE) {
-        debugPrint('Fallback get() also failed: $innerE');
-        _errorMessage = 'Failed to load gyms.';
+      } catch (e) {
+        debugPrint('Firestore supplementary load skipped: $e');
+        // Non-fatal — dataset gyms are still loaded
       }
 
-      _isLoading = false;
-      notifyListeners();
+      _datasetLoaded = true;
+      _applyFilter();
+      calculateMatches();
+    } catch (e) {
+      debugPrint('Error loading gyms from dataset: $e');
+      _errorMessage = 'Failed to load gym data.';
     }
+
+    _isLoading = false;
+    notifyListeners();
   }
 
   // ─── Select Gym ─────────────────────────────────────────────────────────────
@@ -331,7 +304,7 @@ class GymProvider extends ChangeNotifier {
     _advancedBudgetRange = budgetRange;
     _advancedTrainerAvailability = trainer;
     _advancedFitnessGoal = goal;
-    
+
     // Map advanced filter location to existing city filter if necessary
     if (location != null && location != 'Current Location') {
       _selectedCity = location;
@@ -357,15 +330,18 @@ class GymProvider extends ChangeNotifier {
     var tempList = List<GymModel>.from(_allGyms);
 
     if (_selectedCity != null && _selectedCity!.isNotEmpty) {
-      tempList = tempList.where((g) => g.city.toLowerCase() == _selectedCity!.toLowerCase()).toList();
+      tempList = tempList
+          .where((g) => g.city.toLowerCase() == _selectedCity!.toLowerCase())
+          .toList();
     }
 
     if (_searchQuery.isNotEmpty) {
       final q = _searchQuery.toLowerCase();
-      // Filter: name starts with query, OR address/city contains query
+      // Filter: name/branch starts with query, OR address/city/branch contains query
       tempList = tempList
           .where((g) =>
               g.name.toLowerCase().startsWith(q) ||
+              g.branch.toLowerCase().contains(q) ||
               g.address.toLowerCase().contains(q) ||
               g.city.toLowerCase().contains(q))
           .toList();
@@ -382,11 +358,13 @@ class GymProvider extends ChangeNotifier {
       for (final filter in _activeFilters) {
         final f = filter.toLowerCase();
         tempList = tempList.where((g) {
-          if (f.contains('24 hour') && g.hours.toLowerCase().contains('24 hour')) return true;
+          if (f.contains('24 hour') &&
+              g.hours.toLowerCase().contains('24 hour')) return true;
           if (f.contains('budget') && g.monthlyPrice == '₱') return true;
-          if (f.contains('premium') && (g.monthlyPrice == '₱₱₱' || g.monthlyPrice == '₱₱')) return true;
+          if (f.contains('premium') &&
+              (g.monthlyPrice == '₱₱₱' || g.monthlyPrice == '₱₱')) return true;
           return g.facilities.any((fac) => fac.toLowerCase().contains(f)) ||
-                 g.description.toLowerCase().contains(f);
+              g.description.toLowerCase().contains(f);
         }).toList();
       }
     }
@@ -394,33 +372,47 @@ class GymProvider extends ChangeNotifier {
     // Apply Advanced Filters
     if (_advancedBudgetRange != null) {
       tempList = tempList.where((g) {
-        final match = RegExp(r'[\d,]+').firstMatch(g.sessionPrice);
-        final price = match != null ? (double.tryParse(match.group(0)!.replaceAll(',', '')) ?? 0.0) : 0.0;
-        return price >= _advancedBudgetRange!.start && price <= _advancedBudgetRange!.end;
+        // Use sessionPricePhp if available, else parse from string
+        final price = g.sessionPricePhp > 0
+            ? g.sessionPricePhp.toDouble()
+            : (() {
+                final match = RegExp(r'[\d,]+').firstMatch(g.sessionPrice);
+                return match != null
+                    ? (double.tryParse(match.group(0)!.replaceAll(',', '')) ??
+                        0.0)
+                    : 0.0;
+              })();
+        return price >= _advancedBudgetRange!.start &&
+            price <= _advancedBudgetRange!.end;
       }).toList();
     }
 
     if (_advancedTrainerAvailability != null) {
       if (_advancedTrainerAvailability == 'With Trainer') {
-        tempList = tempList.where((g) => 
-          g.description.toLowerCase().contains('trainer') || 
-          g.description.toLowerCase().contains('coach') ||
-          g.facilities.any((f) => f.toLowerCase().contains('trainer'))
-        ).toList();
+        tempList = tempList
+            .where((g) =>
+                g.trainerAvailability.isNotEmpty ||
+                g.description.toLowerCase().contains('trainer') ||
+                g.description.toLowerCase().contains('coach') ||
+                g.facilities.any((f) => f.toLowerCase().contains('trainer')))
+            .toList();
       } else if (_advancedTrainerAvailability == 'Without Trainer') {
-        tempList = tempList.where((g) => 
-          !g.description.toLowerCase().contains('trainer') && 
-          !g.description.toLowerCase().contains('coach')
-        ).toList();
+        tempList = tempList
+            .where((g) =>
+                g.trainerAvailability.isEmpty &&
+                !g.description.toLowerCase().contains('trainer') &&
+                !g.description.toLowerCase().contains('coach'))
+            .toList();
       }
     }
 
     if (_advancedFitnessGoal != null && _advancedFitnessGoal!.isNotEmpty) {
       final goal = _advancedFitnessGoal!.toLowerCase();
-      tempList = tempList.where((g) => 
-        g.description.toLowerCase().contains(goal) || 
-        g.categories.any((c) => c.toLowerCase().contains(goal))
-      ).toList();
+      tempList = tempList
+          .where((g) =>
+              g.description.toLowerCase().contains(goal) ||
+              g.categories.any((c) => c.toLowerCase().contains(goal)))
+          .toList();
     }
 
     _filteredGyms = tempList;
@@ -433,8 +425,6 @@ class GymProvider extends ChangeNotifier {
     } catch (e) {
       debugPrint('Error adding gym: $e');
     }
-    // (No need to manually add to _allGyms since the stream will pick it up, 
-    // but we can add it optimistically)
     _allGyms.add(newGym);
     _applyFilter();
     notifyListeners();
@@ -443,7 +433,10 @@ class GymProvider extends ChangeNotifier {
   Future<void> updateOwnerGym(GymModel updatedGym) async {
     // Save to Firestore (use set with merge to create if it doesn't exist)
     try {
-      await _firestore.collection('gyms').doc(updatedGym.id).set(updatedGym.toJson(), SetOptions(merge: true));
+      await _firestore
+          .collection('gyms')
+          .doc(updatedGym.id)
+          .set(updatedGym.toJson(), SetOptions(merge: true));
     } catch (e) {
       debugPrint('Error updating gym: $e');
     }
@@ -454,7 +447,7 @@ class GymProvider extends ChangeNotifier {
     } else {
       _allGyms.add(updatedGym);
     }
-    
+
     _applyFilter();
     notifyListeners();
   }
@@ -463,9 +456,7 @@ class GymProvider extends ChangeNotifier {
   Future<void> joinGym(String gymId) async {
     try {
       final gymRef = _firestore.collection('gyms').doc(gymId);
-      await gymRef.update({
-        'memberCount': FieldValue.increment(1)
-      });
+      await gymRef.update({'memberCount': FieldValue.increment(1)});
     } catch (e) {
       debugPrint('Error joining gym: $e');
     }
@@ -474,9 +465,7 @@ class GymProvider extends ChangeNotifier {
   Future<void> addBooking(String gymId) async {
     try {
       final gymRef = _firestore.collection('gyms').doc(gymId);
-      await gymRef.update({
-        'bookingsCount': FieldValue.increment(1)
-      });
+      await gymRef.update({'bookingsCount': FieldValue.increment(1)});
     } catch (e) {
       debugPrint('Error adding booking: $e');
     }
@@ -488,13 +477,14 @@ class GymProvider extends ChangeNotifier {
 
     final gym = _allGyms[index];
     final newReviews = List<ReviewModel>.from(gym.reviews)..insert(0, review);
-    
+
     // Recalculate rating
     double totalRating = 0.0;
     for (var r in newReviews) {
       totalRating += r.rating;
     }
-    final newRating = newReviews.isEmpty ? 0.0 : totalRating / newReviews.length;
+    final newRating =
+        newReviews.isEmpty ? 0.0 : totalRating / newReviews.length;
     final newReviewCount = newReviews.length;
 
     final updatedGym = gym.copyWith(

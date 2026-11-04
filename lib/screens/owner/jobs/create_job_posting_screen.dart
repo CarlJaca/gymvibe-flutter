@@ -123,7 +123,9 @@ class _CreateJobPostingScreenState extends State<CreateJobPostingScreen> {
     final id = await prov.createJobPosting(job);
     if (id != null && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Saved as draft'), backgroundColor: AppColors.success),
+        const SnackBar(
+            content: Text('Saved as draft'),
+            backgroundColor: AppColors.success),
       );
       Navigator.pop(context);
     }
@@ -133,13 +135,17 @@ class _CreateJobPostingScreenState extends State<CreateJobPostingScreen> {
     if (!_formKey.currentState!.validate()) return;
     if (_qualifications.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Add at least one qualification.'), backgroundColor: AppColors.error),
+        const SnackBar(
+            content: Text('Add at least one qualification.'),
+            backgroundColor: AppColors.error),
       );
       return;
     }
     if (_deadline != null && _deadline!.isBefore(DateTime.now())) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Deadline must be in the future.'), backgroundColor: AppColors.error),
+        const SnackBar(
+            content: Text('Deadline must be in the future.'),
+            backgroundColor: AppColors.error),
       );
       return;
     }
@@ -148,7 +154,9 @@ class _CreateJobPostingScreenState extends State<CreateJobPostingScreen> {
       final max = double.tryParse(_maxSalaryController.text.trim()) ?? 0;
       if (min > max) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Minimum salary cannot exceed maximum.'), backgroundColor: AppColors.error),
+          const SnackBar(
+              content: Text('Minimum salary cannot exceed maximum.'),
+              backgroundColor: AppColors.error),
         );
         return;
       }
@@ -159,12 +167,16 @@ class _CreateJobPostingScreenState extends State<CreateJobPostingScreen> {
     final id = await prov.createJobPosting(job);
     if (id != null && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Job published successfully!'), backgroundColor: AppColors.success),
+        const SnackBar(
+            content: Text('Job published successfully!'),
+            backgroundColor: AppColors.success),
       );
       Navigator.pop(context);
     } else if (mounted && prov.errorMessage != null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(prov.errorMessage!), backgroundColor: AppColors.error),
+        SnackBar(
+            content: Text(prov.errorMessage!),
+            backgroundColor: AppColors.error),
       );
     }
   }
@@ -192,8 +204,11 @@ class _CreateJobPostingScreenState extends State<CreateJobPostingScreen> {
             _label('Job Title *'),
             TextFormField(
               controller: _titleController,
-              decoration: const InputDecoration(hintText: 'e.g. Fitness Trainer'),
-              validator: (v) => v == null || v.trim().isEmpty ? 'Job title is required' : null,
+              decoration:
+                  const InputDecoration(hintText: 'e.g. Fitness Trainer'),
+              validator: (v) => v == null || v.trim().isEmpty
+                  ? 'Job title is required'
+                  : null,
             ),
             const SizedBox(height: 14),
 
@@ -201,7 +216,9 @@ class _CreateJobPostingScreenState extends State<CreateJobPostingScreen> {
             _label('Job Category'),
             _buildDropdown<String>(
               value: _selectedCategory,
-              items: jobCategories.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
+              items: jobCategories
+                  .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                  .toList(),
               onChanged: (v) => setState(() => _selectedCategory = v!),
             ),
             const SizedBox(height: 14),
@@ -211,7 +228,8 @@ class _CreateJobPostingScreenState extends State<CreateJobPostingScreen> {
             _buildDropdown<EmploymentType>(
               value: _employmentType,
               items: EmploymentType.values
-                  .map((e) => DropdownMenuItem(value: e, child: Text(employmentTypeLabel(e))))
+                  .map((e) => DropdownMenuItem(
+                      value: e, child: Text(employmentTypeLabel(e))))
                   .toList(),
               onChanged: (v) => setState(() => _employmentType = v!),
             ),
@@ -222,7 +240,8 @@ class _CreateJobPostingScreenState extends State<CreateJobPostingScreen> {
             _buildDropdown<WorkSetup>(
               value: _workSetup,
               items: WorkSetup.values
-                  .map((e) => DropdownMenuItem(value: e, child: Text(workSetupLabel(e))))
+                  .map((e) => DropdownMenuItem(
+                      value: e, child: Text(workSetupLabel(e))))
                   .toList(),
               onChanged: (v) => setState(() => _workSetup = v!),
             ),
@@ -241,17 +260,22 @@ class _CreateJobPostingScreenState extends State<CreateJobPostingScreen> {
             TextFormField(
               controller: _descriptionController,
               maxLines: 5,
-              decoration: const InputDecoration(hintText: 'Describe the role...'),
-              validator: (v) => v == null || v.trim().isEmpty ? 'Description is required' : null,
+              decoration:
+                  const InputDecoration(hintText: 'Describe the role...'),
+              validator: (v) => v == null || v.trim().isEmpty
+                  ? 'Description is required'
+                  : null,
             ),
             const SizedBox(height: 14),
 
             // Responsibilities
-            _listSection('Responsibilities', _responsibilities, _responsibilityController),
+            _listSection('Responsibilities', _responsibilities,
+                _responsibilityController),
             const SizedBox(height: 14),
 
             // Qualifications
-            _listSection('Qualifications *', _qualifications, _qualificationController),
+            _listSection(
+                'Qualifications *', _qualifications, _qualificationController),
             const SizedBox(height: 14),
 
             // Skills
@@ -265,12 +289,16 @@ class _CreateJobPostingScreenState extends State<CreateJobPostingScreen> {
               items: const [
                 DropdownMenuItem(value: SalaryType.fixed, child: Text('Fixed')),
                 DropdownMenuItem(value: SalaryType.range, child: Text('Range')),
-                DropdownMenuItem(value: SalaryType.negotiable, child: Text('Negotiable')),
-                DropdownMenuItem(value: SalaryType.notDisclosed, child: Text('Not Disclosed')),
+                DropdownMenuItem(
+                    value: SalaryType.negotiable, child: Text('Negotiable')),
+                DropdownMenuItem(
+                    value: SalaryType.notDisclosed,
+                    child: Text('Not Disclosed')),
               ],
               onChanged: (v) => setState(() => _salaryType = v!),
             ),
-            if (_salaryType == SalaryType.fixed || _salaryType == SalaryType.range) ...[
+            if (_salaryType == SalaryType.fixed ||
+                _salaryType == SalaryType.range) ...[
               const SizedBox(height: 10),
               Row(
                 children: [
@@ -279,7 +307,8 @@ class _CreateJobPostingScreenState extends State<CreateJobPostingScreen> {
                       controller: _minSalaryController,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        hintText: _salaryType == SalaryType.fixed ? 'Amount' : 'Min',
+                        hintText:
+                            _salaryType == SalaryType.fixed ? 'Amount' : 'Min',
                         prefixText: '₱ ',
                       ),
                     ),
@@ -290,7 +319,8 @@ class _CreateJobPostingScreenState extends State<CreateJobPostingScreen> {
                       child: TextFormField(
                         controller: _maxSalaryController,
                         keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(hintText: 'Max', prefixText: '₱ '),
+                        decoration: const InputDecoration(
+                            hintText: 'Max', prefixText: '₱ '),
                       ),
                     ),
                   ],
@@ -303,7 +333,8 @@ class _CreateJobPostingScreenState extends State<CreateJobPostingScreen> {
                 items: SalaryPeriod.values
                     .map((e) => DropdownMenuItem(
                         value: e,
-                        child: Text(e.name[0].toUpperCase() + e.name.substring(1))))
+                        child: Text(
+                            e.name[0].toUpperCase() + e.name.substring(1))))
                     .toList(),
                 onChanged: (v) => setState(() => _salaryPeriod = v!),
               ),
@@ -332,7 +363,8 @@ class _CreateJobPostingScreenState extends State<CreateJobPostingScreen> {
             GestureDetector(
               onTap: _pickDeadline,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 decoration: BoxDecoration(
                   color: AppColors.surface,
                   borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -340,13 +372,18 @@ class _CreateJobPostingScreenState extends State<CreateJobPostingScreen> {
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.calendar_today_rounded, size: 18, color: AppColors.textSecondary),
+                    const Icon(Icons.calendar_today_rounded,
+                        size: 18, color: AppColors.textSecondary),
                     const SizedBox(width: 10),
                     Text(
-                      _deadline != null ? _formatDate(_deadline!) : 'Select deadline',
+                      _deadline != null
+                          ? _formatDate(_deadline!)
+                          : 'Select deadline',
                       style: TextStyle(
                         fontSize: 14,
-                        color: _deadline != null ? AppColors.textPrimary : AppColors.textMuted,
+                        color: _deadline != null
+                            ? AppColors.textPrimary
+                            : AppColors.textMuted,
                       ),
                     ),
                   ],
@@ -365,9 +402,12 @@ class _CreateJobPostingScreenState extends State<CreateJobPostingScreen> {
                     ? const SizedBox(
                         width: 20,
                         height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                        child: CircularProgressIndicator(
+                            strokeWidth: 2, color: Colors.white),
                       )
-                    : const Text('Publish Job', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                    : const Text('Publish Job',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w600)),
               ),
             ),
             const SizedBox(height: AppPadding.xl),
@@ -377,7 +417,8 @@ class _CreateJobPostingScreenState extends State<CreateJobPostingScreen> {
     );
   }
 
-  Widget _listSection(String title, List<String> items, TextEditingController controller) {
+  Widget _listSection(
+      String title, List<String> items, TextEditingController controller) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -387,12 +428,15 @@ class _CreateJobPostingScreenState extends State<CreateJobPostingScreen> {
             Expanded(
               child: TextFormField(
                 controller: controller,
-                decoration: InputDecoration(hintText: 'Add ${title.replaceAll(' *', '').toLowerCase()}...'),
+                decoration: InputDecoration(
+                    hintText:
+                        'Add ${title.replaceAll(' *', '').toLowerCase()}...'),
               ),
             ),
             const SizedBox(width: 8),
             IconButton(
-              icon: const Icon(Icons.add_circle_rounded, color: AppColors.primary),
+              icon: const Icon(Icons.add_circle_rounded,
+                  color: AppColors.primary),
               onPressed: () {
                 final text = controller.text.trim();
                 if (text.isNotEmpty) {
@@ -410,7 +454,8 @@ class _CreateJobPostingScreenState extends State<CreateJobPostingScreen> {
             runSpacing: 6,
             children: items.asMap().entries.map((e) {
               return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
                   color: AppColors.surfaceElevated,
                   borderRadius: BorderRadius.circular(AppRadius.full),
@@ -420,11 +465,13 @@ class _CreateJobPostingScreenState extends State<CreateJobPostingScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(e.value,
-                        style: const TextStyle(fontSize: 12, color: AppColors.textPrimary)),
+                        style: const TextStyle(
+                            fontSize: 12, color: AppColors.textPrimary)),
                     const SizedBox(width: 4),
                     GestureDetector(
                       onTap: () => setState(() => items.removeAt(e.key)),
-                      child: const Icon(Icons.close_rounded, size: 14, color: AppColors.textMuted),
+                      child: const Icon(Icons.close_rounded,
+                          size: 14, color: AppColors.textMuted),
                     ),
                   ],
                 ),
@@ -466,12 +513,28 @@ class _CreateJobPostingScreenState extends State<CreateJobPostingScreen> {
       padding: const EdgeInsets.only(bottom: 6),
       child: Text(text,
           style: const TextStyle(
-              fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textSecondary)),
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textSecondary)),
     );
   }
 
   String _formatDate(DateTime date) {
-    final months = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    final months = [
+      '',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ];
     return '${months[date.month]} ${date.day}, ${date.year}';
   }
 }

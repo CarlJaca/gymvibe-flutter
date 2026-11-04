@@ -11,10 +11,13 @@ class SuperAdminOwnerApprovalsScreen extends StatefulWidget {
   const SuperAdminOwnerApprovalsScreen({super.key});
 
   @override
-  State<SuperAdminOwnerApprovalsScreen> createState() => _SuperAdminOwnerApprovalsScreenState();
+  State<SuperAdminOwnerApprovalsScreen> createState() =>
+      _SuperAdminOwnerApprovalsScreenState();
 }
 
-class _SuperAdminOwnerApprovalsScreenState extends State<SuperAdminOwnerApprovalsScreen> with SingleTickerProviderStateMixin {
+class _SuperAdminOwnerApprovalsScreenState
+    extends State<SuperAdminOwnerApprovalsScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -41,7 +44,8 @@ class _SuperAdminOwnerApprovalsScreenState extends State<SuperAdminOwnerApproval
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Owner Approvals', style: Theme.of(context).textTheme.headlineLarge),
+          Text('Owner Approvals',
+              style: Theme.of(context).textTheme.headlineLarge),
           const SizedBox(height: 16),
           TabBar(
             controller: _tabController,
@@ -67,20 +71,26 @@ class _SuperAdminOwnerApprovalsScreenState extends State<SuperAdminOwnerApproval
     );
   }
 
-  Widget _buildList(List<UserModel> owners, String tab, SuperAdminProvider provider) {
+  Widget _buildList(
+      List<UserModel> owners, String tab, SuperAdminProvider provider) {
     if (provider.isLoading && owners.isEmpty) {
-      return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+      return const Center(
+          child: CircularProgressIndicator(color: AppColors.primary));
     }
     if (owners.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.verified_user_rounded, size: 48, color: AppColors.textMuted),
+            const Icon(Icons.verified_user_rounded,
+                size: 48, color: AppColors.textMuted),
             const SizedBox(height: 16),
-            Text('No $tab applications', style: const TextStyle(color: AppColors.textSecondary, fontSize: 16)),
+            Text('No $tab applications',
+                style: const TextStyle(
+                    color: AppColors.textSecondary, fontSize: 16)),
             const SizedBox(height: 8),
-            const Text('Owner applications will appear here.', style: TextStyle(color: AppColors.textMuted, fontSize: 13)),
+            const Text('Owner applications will appear here.',
+                style: TextStyle(color: AppColors.textMuted, fontSize: 13)),
           ],
         ),
       );
@@ -123,10 +133,18 @@ class _SuperAdminOwnerApprovalsScreenState extends State<SuperAdminOwnerApproval
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(owner.gymName ?? 'Gym', style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
-                    Text('Owner: ${owner.name}', style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
-                    Text(owner.email, style: const TextStyle(fontSize: 11, color: AppColors.textMuted)),
-                    Text(owner.location, style: const TextStyle(fontSize: 11, color: AppColors.textMuted)),
+                    Text(owner.gymName ?? 'Gym',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w700, fontSize: 15)),
+                    Text('Owner: ${owner.name}',
+                        style: const TextStyle(
+                            fontSize: 12, color: AppColors.textSecondary)),
+                    Text(owner.email,
+                        style: const TextStyle(
+                            fontSize: 11, color: AppColors.textMuted)),
+                    Text(owner.location,
+                        style: const TextStyle(
+                            fontSize: 11, color: AppColors.textMuted)),
                   ],
                 ),
               ),
@@ -135,8 +153,10 @@ class _SuperAdminOwnerApprovalsScreenState extends State<SuperAdminOwnerApproval
           ),
           if (owner.createdAt != null) ...[
             const SizedBox(height: 8),
-            Text('Submitted: ${DateFormat('MMM d, yyyy').format(owner.createdAt!)}',
-                style: const TextStyle(fontSize: 11, color: AppColors.textMuted)),
+            Text(
+                'Submitted: ${DateFormat('MMM d, yyyy').format(owner.createdAt!)}',
+                style:
+                    const TextStyle(fontSize: 11, color: AppColors.textMuted)),
           ],
           const SizedBox(height: 16),
           Row(
@@ -147,7 +167,8 @@ class _SuperAdminOwnerApprovalsScreenState extends State<SuperAdminOwnerApproval
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => SuperAdminOwnerApprovalDetailScreen(owner: owner),
+                        builder: (_) =>
+                            SuperAdminOwnerApprovalDetailScreen(owner: owner),
                       ),
                     );
                   },
@@ -162,15 +183,18 @@ class _SuperAdminOwnerApprovalsScreenState extends State<SuperAdminOwnerApproval
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () => _approveOwner(owner, authProvider),
-                    style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
-                    child: const Text('Approve', style: TextStyle(fontSize: 13)),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary),
+                    child:
+                        const Text('Approve', style: TextStyle(fontSize: 13)),
                   ),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () => _rejectOwner(owner, authProvider),
-                    style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.error),
                     child: const Text('Reject', style: TextStyle(fontSize: 13)),
                   ),
                 ),
@@ -185,10 +209,17 @@ class _SuperAdminOwnerApprovalsScreenState extends State<SuperAdminOwnerApproval
   Widget _buildStatusBadge(String status) {
     Color color;
     switch (status) {
-      case 'pending': color = AppColors.accentOrange; break;
-      case 'active': color = AppColors.success; break;
-      case 'rejected': color = AppColors.error; break;
-      default: color = AppColors.textMuted;
+      case 'pending':
+        color = AppColors.accentOrange;
+        break;
+      case 'active':
+        color = AppColors.success;
+        break;
+      case 'rejected':
+        color = AppColors.error;
+        break;
+      default:
+        color = AppColors.textMuted;
     }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -198,7 +229,8 @@ class _SuperAdminOwnerApprovalsScreenState extends State<SuperAdminOwnerApproval
       ),
       child: Text(
         status[0].toUpperCase() + status.substring(1),
-        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: color),
+        style:
+            TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: color),
       ),
     );
   }
@@ -211,17 +243,20 @@ class _SuperAdminOwnerApprovalsScreenState extends State<SuperAdminOwnerApproval
         title: const Text('Approve Owner'),
         content: Text('Approve ${owner.name} as a Gym Owner?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
           ElevatedButton(
             onPressed: () {
               context.read<SuperAdminProvider>().approveOwner(
-                userId: owner.id,
-                adminId: authProvider.currentUser!.id,
-                adminName: authProvider.userName,
-              );
+                    userId: owner.id,
+                    adminId: authProvider.currentUser!.id,
+                    adminName: authProvider.userName,
+                  );
               Navigator.pop(ctx);
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Owner approved'), backgroundColor: AppColors.success),
+                const SnackBar(
+                    content: Text('Owner approved'),
+                    backgroundColor: AppColors.success),
               );
             },
             child: const Text('Approve'),
@@ -246,24 +281,28 @@ class _SuperAdminOwnerApprovalsScreenState extends State<SuperAdminOwnerApproval
             TextField(
               controller: reasonCtrl,
               maxLines: 3,
-              decoration: const InputDecoration(hintText: 'Reason for rejection (required)'),
+              decoration: const InputDecoration(
+                  hintText: 'Reason for rejection (required)'),
             ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
           ElevatedButton(
             onPressed: () {
               if (reasonCtrl.text.trim().isEmpty) return;
               context.read<SuperAdminProvider>().rejectOwner(
-                userId: owner.id,
-                reason: reasonCtrl.text.trim(),
-                adminId: authProvider.currentUser!.id,
-                adminName: authProvider.userName,
-              );
+                    userId: owner.id,
+                    reason: reasonCtrl.text.trim(),
+                    adminId: authProvider.currentUser!.id,
+                    adminName: authProvider.userName,
+                  );
               Navigator.pop(ctx);
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Owner rejected'), backgroundColor: AppColors.error),
+                const SnackBar(
+                    content: Text('Owner rejected'),
+                    backgroundColor: AppColors.error),
               );
             },
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),

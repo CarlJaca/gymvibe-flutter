@@ -45,11 +45,13 @@ class _OwnerNavigationState extends State<OwnerNavigation> {
         context.read<EventsProvider>().loadEvents();
         debugPrint('OwnerNavigation: calling loadPromotions');
         context.read<PromotionsProvider>().loadPromotions();
-        
+
         final authProvider = context.read<AuthProvider>();
         if (authProvider.currentUser != null) {
           debugPrint('OwnerNavigation: calling loadNotifications');
-          context.read<NotificationProvider>().loadNotifications(authProvider.currentUser!.id);
+          context
+              .read<NotificationProvider>()
+              .loadNotifications(authProvider.currentUser!.id);
         }
       } catch (e, stack) {
         debugPrint('Error loading owner data: $e');

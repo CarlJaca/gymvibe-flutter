@@ -31,7 +31,12 @@ class CityCardWidget extends StatelessWidget {
             width: isSelected ? 2 : 1,
           ),
           boxShadow: isSelected
-              ? [BoxShadow(color: AppColors.primary.withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0, 4))]
+              ? [
+                  BoxShadow(
+                      color: AppColors.primary.withValues(alpha: 0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4))
+                ]
               : null,
         ),
         child: Column(
@@ -39,14 +44,17 @@ class CityCardWidget extends StatelessWidget {
           children: [
             Expanded(
               child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.lg - 2)),
+                borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(AppRadius.lg - 2)),
                 child: CachedNetworkImage(
                   imageUrl: imageUrl,
                   fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(color: AppColors.surfaceElevated),
+                  placeholder: (context, url) =>
+                      Container(color: AppColors.surfaceElevated),
                   errorWidget: (context, url, error) => Container(
                     color: AppColors.surfaceElevated,
-                    child: const Icon(Icons.map_rounded, color: AppColors.textSecondary),
+                    child: const Icon(Icons.map_rounded,
+                        color: AppColors.textSecondary),
                   ),
                 ),
               ),

@@ -105,7 +105,8 @@ class InputValidators {
   // ─── Free Text (Reviews, Descriptions) ──────────────────────────────────────
 
   /// Validates free-form text fields like reviews or descriptions.
-  static String? validateFreeText(String? value, {int maxLength = 500, String fieldName = 'Text'}) {
+  static String? validateFreeText(String? value,
+      {int maxLength = 500, String fieldName = 'Text'}) {
     if (value == null || value.trim().isEmpty) {
       return '$fieldName is required.';
     }
@@ -118,7 +119,8 @@ class InputValidators {
   // ─── Confirm Password ──────────────────────────────────────────────────────
 
   /// Validates that the confirmation matches the original password.
-  static String? validateConfirmPassword(String? value, String originalPassword) {
+  static String? validateConfirmPassword(
+      String? value, String originalPassword) {
     if (value == null || value.isEmpty) {
       return 'Please confirm your password.';
     }
@@ -147,7 +149,8 @@ class InputValidators {
   // ─── Non-empty (Generic) ───────────────────────────────────────────────────
 
   /// Simple non-empty check for required fields.
-  static String? validateRequired(String? value, {String fieldName = 'This field'}) {
+  static String? validateRequired(String? value,
+      {String fieldName = 'This field'}) {
     if (value == null || value.trim().isEmpty) {
       return '$fieldName is required.';
     }

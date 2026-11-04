@@ -11,7 +11,8 @@ class MyBookingsScreen extends StatefulWidget {
   State<MyBookingsScreen> createState() => _MyBookingsScreenState();
 }
 
-class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerProviderStateMixin {
+class _MyBookingsScreenState extends State<MyBookingsScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -32,7 +33,8 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.surface,
         title: const Text('Cancel Booking'),
-        content: const Text('Are you sure you want to cancel this booking? This action cannot be undone.'),
+        content: const Text(
+            'Are you sure you want to cancel this booking? This action cannot be undone.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
@@ -43,7 +45,9 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
               context.read<BookingsProvider>().cancelBooking(bookingId);
               Navigator.pop(ctx);
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Booking cancelled successfully'), backgroundColor: AppColors.error),
+                const SnackBar(
+                    content: Text('Booking cancelled successfully'),
+                    backgroundColor: AppColors.error),
               );
             },
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
@@ -63,17 +67,22 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
           children: [
             // ─── Header ──────────────────────────────────────────
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppPadding.md, vertical: AppPadding.sm),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppPadding.md, vertical: AppPadding.sm),
               child: Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
+                    icon: const Icon(Icons.arrow_back_rounded,
+                        color: AppColors.textPrimary),
                     onPressed: () => Navigator.pop(context),
                   ),
                   const Expanded(
                     child: Text(
                       'My Bookings',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -102,9 +111,12 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
                   return TabBarView(
                     controller: _tabController,
                     children: [
-                      _buildBookingsList(provider.upcomingBookings, BookingTab.upcoming),
-                      _buildBookingsList(provider.completedBookings, BookingTab.completed),
-                      _buildBookingsList(provider.cancelledBookings, BookingTab.cancelled),
+                      _buildBookingsList(
+                          provider.upcomingBookings, BookingTab.upcoming),
+                      _buildBookingsList(
+                          provider.completedBookings, BookingTab.completed),
+                      _buildBookingsList(
+                          provider.cancelledBookings, BookingTab.cancelled),
                     ],
                   );
                 },
@@ -155,7 +167,8 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.info_outline_rounded, size: 14, color: AppColors.textMuted),
+                Icon(Icons.info_outline_rounded,
+                    size: 14, color: AppColors.textMuted),
                 SizedBox(width: 6),
                 Text(
                   'All bookings are for one day only.',
@@ -233,14 +246,16 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
                     const SizedBox(height: 4),
                     Text(
                       _formatBookingDate(booking.bookingDate),
-                      style: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                      style: const TextStyle(
+                          fontSize: 13, color: AppColors.textSecondary),
                     ),
                   ],
                 ),
               ),
               // Status badge
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: statusColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppRadius.full),
@@ -263,11 +278,13 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
           // ─── Details ───────────────────────────────────────
           Row(
             children: [
-              const Icon(Icons.access_time_rounded, size: 15, color: AppColors.textSecondary),
+              const Icon(Icons.access_time_rounded,
+                  size: 15, color: AppColors.textSecondary),
               const SizedBox(width: 8),
               Text(
                 booking.timeSlotDisplay,
-                style: const TextStyle(fontSize: 13, color: AppColors.textPrimary),
+                style:
+                    const TextStyle(fontSize: 13, color: AppColors.textPrimary),
               ),
               const Spacer(),
               Text(
@@ -285,11 +302,13 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
             const SizedBox(height: 8),
             Row(
               children: [
-                const Icon(Icons.tag_rounded, size: 15, color: AppColors.textMuted),
+                const Icon(Icons.tag_rounded,
+                    size: 15, color: AppColors.textMuted),
                 const SizedBox(width: 8),
                 Text(
                   'Ref. No.  ${booking.refNo}',
-                  style: const TextStyle(fontSize: 11, color: AppColors.textMuted),
+                  style:
+                      const TextStyle(fontSize: 11, color: AppColors.textMuted),
                 ),
               ],
             ),
@@ -343,7 +362,8 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
 
     return Row(
       children: [
-        const Icon(Icons.payments_outlined, size: 15, color: AppColors.textSecondary),
+        const Icon(Icons.payments_outlined,
+            size: 15, color: AppColors.textSecondary),
         const SizedBox(width: 8),
         const Text(
           'Payment',
@@ -380,8 +400,20 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
     try {
       final date = DateTime.parse(dateStr);
       const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const months = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec'
+      ];
       return '${weekdays[date.weekday - 1]}, ${months[date.month - 1]} ${date.day}, ${date.year}';
     } catch (_) {
       return dateStr;

@@ -25,14 +25,22 @@ class NotificationItem {
 
   IconData get icon {
     switch (type) {
-      case 'promo': return Icons.local_offer_rounded;
-      case 'event': return Icons.event_rounded;
-      case 'review': return Icons.star_rounded;
-      case 'membership': return Icons.card_membership_rounded;
-      case 'gym': return Icons.fitness_center_rounded;
-      case 'follower': return Icons.person_add_rounded;
-      case 'registration': return Icons.event_available_rounded;
-      default: return Icons.notifications_rounded;
+      case 'promo':
+        return Icons.local_offer_rounded;
+      case 'event':
+        return Icons.event_rounded;
+      case 'review':
+        return Icons.star_rounded;
+      case 'membership':
+        return Icons.card_membership_rounded;
+      case 'gym':
+        return Icons.fitness_center_rounded;
+      case 'follower':
+        return Icons.person_add_rounded;
+      case 'registration':
+        return Icons.event_available_rounded;
+      default:
+        return Icons.notifications_rounded;
     }
   }
 
@@ -43,12 +51,14 @@ class NotificationItem {
       'subtitle': subtitle,
       'time': time,
       'isRead': isRead,
-      'createdAt': createdAt?.toIso8601String() ?? DateTime.now().toIso8601String(),
+      'createdAt':
+          createdAt?.toIso8601String() ?? DateTime.now().toIso8601String(),
       'isForOwner': isForOwner,
     };
   }
 
-  factory NotificationItem.fromJson(Map<String, dynamic> json, String documentId) {
+  factory NotificationItem.fromJson(
+      Map<String, dynamic> json, String documentId) {
     return NotificationItem(
       id: documentId,
       type: json['type'] ?? 'info',
@@ -56,7 +66,9 @@ class NotificationItem {
       subtitle: json['subtitle'] ?? '',
       time: json['time'] ?? 'Just now',
       isRead: json['isRead'] ?? false,
-      createdAt: json['createdAt'] != null ? DateTime.tryParse(json['createdAt']) : null,
+      createdAt: json['createdAt'] != null
+          ? DateTime.tryParse(json['createdAt'])
+          : null,
       isForOwner: json['isForOwner'] ?? false,
     );
   }
@@ -65,10 +77,10 @@ class NotificationItem {
 class NotificationProvider extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   StreamSubscription<QuerySnapshot>? _subscription;
-  
+
   List<NotificationItem> _customerNotifications = [];
   List<NotificationItem> _ownerNotifications = [];
-  
+
   bool _isLoading = false;
   String? _userId;
 
@@ -78,13 +90,13 @@ class NotificationProvider extends ChangeNotifier {
 
   Future<void> loadNotifications(String userId) async {
     if (_userId == userId && _subscription != null) return; // Already loaded
-    
+
     _userId = userId;
     _isLoading = true;
     notifyListeners();
-    
+
     _subscription?.cancel();
-    
+
     try {
       _subscription = _firestore
           .collection('users')
@@ -93,7 +105,6 @@ class NotificationProvider extends ChangeNotifier {
           .orderBy('createdAt', descending: true)
           .snapshots()
           .listen((snapshot) async {
-            
         if (snapshot.docs.isEmpty) {
           await _seedInitialNotifications(userId);
           return; // Let the next snapshot trigger the UI update
@@ -102,10 +113,10 @@ class NotificationProvider extends ChangeNotifier {
         final allNotifs = snapshot.docs
             .map((doc) => NotificationItem.fromJson(doc.data(), doc.id))
             .toList();
-            
+
         _customerNotifications = allNotifs.where((n) => !n.isForOwner).toList();
         _ownerNotifications = allNotifs.where((n) => n.isForOwner).toList();
-        
+
         _isLoading = false;
         notifyListeners();
       }, onError: (e) {
@@ -122,12 +133,16 @@ class NotificationProvider extends ChangeNotifier {
 
   Future<void> markAllCustomerRead() async {
     if (_userId == null) return;
-    
+
     try {
       final batch = _firestore.batch();
       for (var n in _customerNotifications) {
         if (!n.isRead) {
-          final docRef = _firestore.collection('users').doc(_userId).collection('notifications').doc(n.id);
+          final docRef = _firestore
+              .collection('users')
+              .doc(_userId)
+              .collection('notifications')
+              .doc(n.id);
           batch.update(docRef, {'isRead': true});
         }
       }
@@ -139,12 +154,16 @@ class NotificationProvider extends ChangeNotifier {
 
   Future<void> markAllOwnerRead() async {
     if (_userId == null) return;
-    
+
     try {
       final batch = _firestore.batch();
       for (var n in _ownerNotifications) {
         if (!n.isRead) {
-          final docRef = _firestore.collection('users').doc(_userId).collection('notifications').doc(n.id);
+          final docRef = _firestore
+              .collection('users')
+              .doc(_userId)
+              .collection('notifications')
+              .doc(n.id);
           batch.update(docRef, {'isRead': true});
         }
       }
@@ -155,22 +174,34 @@ class NotificationProvider extends ChangeNotifier {
   }
 
   Future<void> markCustomerAsRead(int index) async {
-    if (_userId == null || index < 0 || index >= _customerNotifications.length) return;
-    
+    if (_userId == null || index < 0 || index >= _customerNotifications.length)
+      return;
+
     final id = _customerNotifications[index].id;
     try {
-      await _firestore.collection('users').doc(_userId).collection('notifications').doc(id).update({'isRead': true});
+      await _firestore
+          .collection('users')
+          .doc(_userId)
+          .collection('notifications')
+          .doc(id)
+          .update({'isRead': true});
     } catch (e) {
       debugPrint('Error marking notification as read: $e');
     }
   }
 
   Future<void> markOwnerAsRead(int index) async {
-    if (_userId == null || index < 0 || index >= _ownerNotifications.length) return;
-    
+    if (_userId == null || index < 0 || index >= _ownerNotifications.length)
+      return;
+
     final id = _ownerNotifications[index].id;
     try {
-      await _firestore.collection('users').doc(_userId).collection('notifications').doc(id).update({'isRead': true});
+      await _firestore
+          .collection('users')
+          .doc(_userId)
+          .collection('notifications')
+          .doc(id)
+          .update({'isRead': true});
     } catch (e) {
       debugPrint('Error marking owner notification as read: $e');
     }
@@ -178,10 +209,14 @@ class NotificationProvider extends ChangeNotifier {
 
   Future<void> addNotification(NotificationItem item) async {
     if (_userId == null) return;
-    
+
     try {
-      await _firestore.collection('users').doc(_userId).collection('notifications').add(item.toJson());
-      
+      await _firestore
+          .collection('users')
+          .doc(_userId)
+          .collection('notifications')
+          .add(item.toJson());
+
       // Also add owner equivalent
       final ownerItem = NotificationItem(
         id: '', // Firestore generates
@@ -191,16 +226,20 @@ class NotificationProvider extends ChangeNotifier {
         time: item.time,
         isForOwner: true,
       );
-      await _firestore.collection('users').doc(_userId).collection('notifications').add(ownerItem.toJson());
+      await _firestore
+          .collection('users')
+          .doc(_userId)
+          .collection('notifications')
+          .add(ownerItem.toJson());
     } catch (e) {
       debugPrint('Error adding notification: $e');
     }
   }
-  
+
   Future<void> _seedInitialNotifications(String userId) async {
     final batch = _firestore.batch();
     final now = DateTime.now();
-    
+
     final mockNotifs = [
       {
         'type': 'promo',
@@ -241,10 +280,14 @@ class NotificationProvider extends ChangeNotifier {
     ];
 
     for (var notif in mockNotifs) {
-      final docRef = _firestore.collection('users').doc(userId).collection('notifications').doc();
+      final docRef = _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('notifications')
+          .doc();
       batch.set(docRef, notif);
     }
-    
+
     try {
       await batch.commit();
       debugPrint('Seeded initial notifications for user: $userId');

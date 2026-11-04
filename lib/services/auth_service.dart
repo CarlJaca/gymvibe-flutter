@@ -47,8 +47,10 @@ class AuthService {
     bool isOwnerLogin = false,
   }) async {
     try {
-      debugPrint('[AUTH] Attempting sign-in for: $email (isOwnerLogin: $isOwnerLogin)');
-      final UserCredential userCredential = await _firebaseAuth.signInWithEmailAndPassword(
+      debugPrint(
+          '[AUTH] Attempting sign-in for: $email (isOwnerLogin: $isOwnerLogin)');
+      final UserCredential userCredential =
+          await _firebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -61,8 +63,9 @@ class AuthService {
       debugPrint('[AUTH] Firebase Auth SUCCESS — uid: ${user.uid}');
 
       UserModel? userProfile = await _fetchUserProfile(user.uid);
-      debugPrint('[AUTH] Firestore profile fetch: ${userProfile != null ? 'FOUND (role: ${userProfile.role})' : 'NOT FOUND'}');
-      
+      debugPrint(
+          '[AUTH] Firestore profile fetch: ${userProfile != null ? 'FOUND (role: ${userProfile.role})' : 'NOT FOUND'}');
+
       // If this is the super admin email, ensure the role is correct
       // (handles Firestore doc ID mismatch or seeder overwrite issues)
       if (email.toLowerCase() == 'superadmin@gymvibe.com') {
@@ -79,7 +82,10 @@ class AuthService {
           );
           // Also fix the Firestore document for future logins
           try {
-            await _firestore.collection('users').doc(user.uid).update({'role': 'super_admin'});
+            await _firestore
+                .collection('users')
+                .doc(user.uid)
+                .update({'role': 'super_admin'});
             debugPrint('[AUTH] Firestore role updated to super_admin');
           } catch (_) {}
         } else {
@@ -93,7 +99,7 @@ class AuthService {
           );
         }
       }
-      
+
       if (userProfile == null) {
         debugPrint('[AUTH] No profile found — returning error');
         return 'User profile not found in database.';
@@ -112,7 +118,8 @@ class AuthService {
       // Super admin can log in from any login screen
       if (userProfile.isSuperAdmin) {
         _currentUser = userProfile;
-        debugPrint('[AUTH] Super admin login SUCCESS — routing to admin portal');
+        debugPrint(
+            '[AUTH] Super admin login SUCCESS — routing to admin portal');
         // Update last login (catch error if document doesn't exist due to security rules)
         try {
           await _firestore.collection('users').doc(user.uid).update({
@@ -138,8 +145,11 @@ class AuthService {
       debugPrint('[AUTH] Login SUCCESS — role: ${userProfile.role}');
       return _currentUser;
     } on FirebaseAuthException catch (e) {
-      debugPrint('[AUTH] FirebaseAuthException: code=${e.code}, message=${e.message}');
-      if (e.code == 'user-not-found' || e.code == 'wrong-password' || e.code == 'invalid-credential') {
+      debugPrint(
+          '[AUTH] FirebaseAuthException: code=${e.code}, message=${e.message}');
+      if (e.code == 'user-not-found' ||
+          e.code == 'wrong-password' ||
+          e.code == 'invalid-credential') {
         return 'Invalid email or password.';
       }
       return e.message ?? 'An error occurred during sign in.';
@@ -164,7 +174,8 @@ class AuthService {
         idToken: googleAuth.idToken,
       );
 
-      final UserCredential userCredential = await _firebaseAuth.signInWithCredential(credential);
+      final UserCredential userCredential =
+          await _firebaseAuth.signInWithCredential(credential);
       final user = userCredential.user;
       if (user == null) throw Exception('Authentication failed.');
 
@@ -181,7 +192,10 @@ class AuthService {
           membershipType: 'Free',
           role: 'gym_seeker',
         );
-        await _firestore.collection('users').doc(user.uid).set(userProfile.toJson());
+        await _firestore
+            .collection('users')
+            .doc(user.uid)
+            .set(userProfile.toJson());
       }
 
       if (isOwnerLogin && !userProfile.isOwner) {
@@ -212,12 +226,14 @@ class AuthService {
 
       if (result.status == LoginStatus.success) {
         // Create a credential from the access token
-        final OAuthCredential credential = FacebookAuthProvider.credential(result.accessToken!.tokenString);
+        final OAuthCredential credential =
+            FacebookAuthProvider.credential(result.accessToken!.tokenString);
 
         // Sign in to Firebase with the Facebook credential
-        final UserCredential userCredential = await _firebaseAuth.signInWithCredential(credential);
+        final UserCredential userCredential =
+            await _firebaseAuth.signInWithCredential(credential);
         final user = userCredential.user;
-        
+
         if (user == null) throw Exception('Authentication failed.');
 
         UserModel? userProfile = await _fetchUserProfile(user.uid);
@@ -234,7 +250,10 @@ class AuthService {
             membershipType: 'Free',
             role: 'gym_seeker',
           );
-          await _firestore.collection('users').doc(user.uid).set(userProfile.toJson());
+          await _firestore
+              .collection('users')
+              .doc(user.uid)
+              .set(userProfile.toJson());
         }
 
         if (isOwnerLogin && !userProfile.isOwner) {
@@ -247,7 +266,8 @@ class AuthService {
       } else if (result.status == LoginStatus.cancelled) {
         throw Exception('Facebook sign in was cancelled.');
       } else {
-        throw Exception(result.message ?? 'An error occurred during Facebook sign in.');
+        throw Exception(
+            result.message ?? 'An error occurred during Facebook sign in.');
       }
     } catch (e) {
       SecureLogger.logError('Facebook Sign In Error', e);
@@ -264,7 +284,8 @@ class AuthService {
     String? gymName,
   }) async {
     try {
-      final UserCredential userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
+      final UserCredential userCredential =
+          await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -294,7 +315,8 @@ class AuthService {
           id: gymRef.id,
           ownerId: user.uid,
           name: gymName,
-          imageUrl: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1470&auto=format&fit=crop',
+          imageUrl:
+              'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1470&auto=format&fit=crop',
           address: 'Update Address',
           city: 'Davao City',
           hours: '6:00 AM - 10:00 PM',
@@ -324,15 +346,15 @@ class AuthService {
     try {
       await _firebaseAuth.signOut();
     } catch (_) {}
-    
+
     try {
       await _googleSignIn.signOut().timeout(const Duration(seconds: 2));
     } catch (_) {}
-    
+
     try {
       await FacebookAuth.instance.logOut().timeout(const Duration(seconds: 2));
     } catch (_) {}
-    
+
     _currentUser = null;
   }
 

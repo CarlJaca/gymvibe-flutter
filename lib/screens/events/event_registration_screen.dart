@@ -7,7 +7,8 @@ class EventRegistrationScreen extends StatefulWidget {
   const EventRegistrationScreen({super.key});
 
   @override
-  State<EventRegistrationScreen> createState() => _EventRegistrationScreenState();
+  State<EventRegistrationScreen> createState() =>
+      _EventRegistrationScreenState();
 }
 
 class _EventRegistrationScreenState extends State<EventRegistrationScreen> {
@@ -34,15 +35,17 @@ class _EventRegistrationScreenState extends State<EventRegistrationScreen> {
           'phone': _phoneCtrl.text,
         },
       );
-      
+
       // Navigate to success screen
-      Navigator.pushReplacementNamed(context, '/event-registration-success', arguments: event);
+      Navigator.pushReplacementNamed(context, '/event-registration-success',
+          arguments: event);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final event = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final event =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
 
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
@@ -51,17 +54,22 @@ class _EventRegistrationScreenState extends State<EventRegistrationScreen> {
           children: [
             // ── Header ─────────────────────────────────────────────
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppPadding.md, vertical: AppPadding.sm),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppPadding.md, vertical: AppPadding.sm),
               child: Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
+                    icon: const Icon(Icons.arrow_back_rounded,
+                        color: AppColors.textPrimary),
                     onPressed: () => Navigator.pop(context),
                   ),
                   const Expanded(
                     child: Text(
                       'Register for Event',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -103,24 +111,40 @@ class _EventRegistrationScreenState extends State<EventRegistrationScreen> {
                               children: [
                                 Text(
                                   event['title'],
-                                  style: const TextStyle(color: AppColors.textPrimary, fontSize: 18, fontWeight: FontWeight.bold),
+                                  style: const TextStyle(
+                                      color: AppColors.textPrimary,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 const SizedBox(height: 8),
                                 Row(
                                   children: [
-                                    const Icon(Icons.calendar_today_rounded, size: 14, color: AppColors.textSecondary),
+                                    const Icon(Icons.calendar_today_rounded,
+                                        size: 14,
+                                        color: AppColors.textSecondary),
                                     const SizedBox(width: 4),
-                                    Text('${event['date']} • ${event['time']}', style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                                    Text('${event['date']} • ${event['time']}',
+                                        style: const TextStyle(
+                                            color: AppColors.textSecondary,
+                                            fontSize: 12)),
                                   ],
                                 ),
                                 const SizedBox(height: 4),
                                 Row(
                                   children: [
-                                    const Icon(Icons.location_on_outlined, size: 14, color: AppColors.textSecondary),
+                                    const Icon(Icons.location_on_outlined,
+                                        size: 14,
+                                        color: AppColors.textSecondary),
                                     const SizedBox(width: 4),
-                                    Expanded(child: Text(event['location'], style: const TextStyle(color: AppColors.textSecondary, fontSize: 12), maxLines: 1, overflow: TextOverflow.ellipsis)),
+                                    Expanded(
+                                        child: Text(event['location'],
+                                            style: const TextStyle(
+                                                color: AppColors.textSecondary,
+                                                fontSize: 12),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis)),
                                   ],
                                 ),
                               ],
@@ -132,7 +156,11 @@ class _EventRegistrationScreenState extends State<EventRegistrationScreen> {
                     const SizedBox(height: AppPadding.xl),
 
                     // Registration Form
-                    const Text('Your Information', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                    const Text('Your Information',
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary)),
                     const SizedBox(height: 16),
                     Form(
                       key: _formKey,
@@ -142,13 +170,13 @@ class _EventRegistrationScreenState extends State<EventRegistrationScreen> {
                           _buildLabel('Full Name'),
                           _buildTextField(_nameCtrl, 'e.g. Juan Dela Cruz'),
                           const SizedBox(height: 16),
-                          
                           _buildLabel('Email'),
-                          _buildTextField(_emailCtrl, 'e.g. juan@email.com', TextInputType.emailAddress),
+                          _buildTextField(_emailCtrl, 'e.g. juan@email.com',
+                              TextInputType.emailAddress),
                           const SizedBox(height: 16),
-                          
                           _buildLabel('Phone Number'),
-                          _buildTextField(_phoneCtrl, 'e.g. 0912 345 6789', TextInputType.phone),
+                          _buildTextField(_phoneCtrl, 'e.g. 0912 345 6789',
+                              TextInputType.phone),
                         ],
                       ),
                     ),
@@ -173,9 +201,12 @@ class _EventRegistrationScreenState extends State<EventRegistrationScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       foregroundColor: AppColors.backgroundDark,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.full)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(AppRadius.full)),
                     ),
-                    child: const Text('Confirm Registration', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    child: const Text('Confirm Registration',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold)),
                   ),
                 ),
               ),
@@ -189,16 +220,22 @@ class _EventRegistrationScreenState extends State<EventRegistrationScreen> {
   Widget _buildLabel(String text) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
-      child: Text(text, style: const TextStyle(color: AppColors.textSecondary, fontSize: 13, fontWeight: FontWeight.w600)),
+      child: Text(text,
+          style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 13,
+              fontWeight: FontWeight.w600)),
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String hint, [TextInputType keyboardType = TextInputType.text]) {
+  Widget _buildTextField(TextEditingController controller, String hint,
+      [TextInputType keyboardType = TextInputType.text]) {
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
       style: const TextStyle(color: AppColors.textPrimary),
-      validator: (value) => value == null || value.isEmpty ? 'This field is required' : null,
+      validator: (value) =>
+          value == null || value.isEmpty ? 'This field is required' : null,
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: const TextStyle(color: AppColors.textMuted),

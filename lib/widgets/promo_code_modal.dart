@@ -31,7 +31,7 @@ class _PromoCodeModalState extends State<PromoCodeModal> {
 
     // Simulate network delay
     await Future.delayed(const Duration(seconds: 2));
-    
+
     if (!mounted) return;
     context.read<PromotionsProvider>().redeemPromoCode(code);
     setState(() => _isLoading = false);
@@ -74,11 +74,13 @@ class _PromoCodeModalState extends State<PromoCodeModal> {
               ),
             ],
           ),
-          const Icon(Icons.card_giftcard, size: 80, color: AppColors.accentPurple),
+          const Icon(Icons.card_giftcard,
+              size: 80, color: AppColors.accentPurple),
           const SizedBox(height: 24),
           const Text(
             'Redeem Promo Code',
-            style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           const Text(
@@ -97,14 +99,16 @@ class _PromoCodeModalState extends State<PromoCodeModal> {
               fillColor: AppColors.backgroundDark,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppRadius.md),
-                borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
+                borderSide:
+                    BorderSide(color: Colors.white.withValues(alpha: 0.1)),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppRadius.md),
                 borderSide: const BorderSide(color: AppColors.accentPurple),
               ),
               suffixIcon: IconButton(
-                icon: const Icon(Icons.qr_code_scanner, color: AppColors.textSecondary),
+                icon: const Icon(Icons.qr_code_scanner,
+                    color: AppColors.textSecondary),
                 onPressed: () {}, // Optional QR scanner
               ),
             ),
@@ -118,20 +122,26 @@ class _PromoCodeModalState extends State<PromoCodeModal> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.accentPurple,
                 foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppRadius.md)),
               ),
               child: _isLoading
                   ? const SizedBox(
-                      width: 20, height: 20,
-                      child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                          color: Colors.white, strokeWidth: 2),
                     )
-                  : const Text('Redeem Code', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  : const Text('Redeem Code',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             ),
           ),
           const SizedBox(height: 16),
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel', style: TextStyle(color: AppColors.textSecondary)),
+            child: const Text('Cancel',
+                style: TextStyle(color: AppColors.textSecondary)),
           ),
           const SizedBox(height: 16),
         ],

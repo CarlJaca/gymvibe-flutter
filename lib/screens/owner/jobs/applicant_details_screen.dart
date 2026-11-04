@@ -38,7 +38,8 @@ class _ApplicantDetailsScreenState extends State<ApplicantDetailsScreen> {
     setState(() => _isSavingNote = false);
     if (success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Note saved'), backgroundColor: AppColors.success),
+        const SnackBar(
+            content: Text('Note saved'), backgroundColor: AppColors.success),
       );
     }
   }
@@ -69,7 +70,8 @@ class _ApplicantDetailsScreenState extends State<ApplicantDetailsScreen> {
     final actionLabel = applicationStatusLabel(newStatus);
     final confirmed = await _confirmAction('Mark as $actionLabel?');
     if (confirmed) {
-      await _doUpdateStatus(newStatus, message: 'Status updated to $actionLabel');
+      await _doUpdateStatus(newStatus,
+          message: 'Status updated to $actionLabel');
     }
   }
 
@@ -96,7 +98,9 @@ class _ApplicantDetailsScreenState extends State<ApplicantDetailsScreen> {
 
     if (success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Status updated'), backgroundColor: AppColors.success),
+        const SnackBar(
+            content: Text('Status updated'),
+            backgroundColor: AppColors.success),
       );
       Navigator.pop(context); // Go back to applicants list
     }
@@ -107,11 +111,17 @@ class _ApplicantDetailsScreenState extends State<ApplicantDetailsScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.surfaceElevated,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.lg)),
-        title: Text(title, style: const TextStyle(color: AppColors.textPrimary)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.lg)),
+        title:
+            Text(title, style: const TextStyle(color: AppColors.textPrimary)),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
-          ElevatedButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Confirm')),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Cancel')),
+          ElevatedButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Confirm')),
         ],
       ),
     );
@@ -131,8 +141,10 @@ class _ApplicantDetailsScreenState extends State<ApplicantDetailsScreen> {
           builder: (context, setState) {
             return AlertDialog(
               backgroundColor: AppColors.surfaceElevated,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.lg)),
-              title: const Text('Schedule Interview', style: TextStyle(color: AppColors.textPrimary)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.lg)),
+              title: const Text('Schedule Interview',
+                  style: TextStyle(color: AppColors.textPrimary)),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -144,9 +156,11 @@ class _ApplicantDetailsScreenState extends State<ApplicantDetailsScreen> {
                             onPressed: () async {
                               final d = await showDatePicker(
                                 context: context,
-                                initialDate: DateTime.now().add(const Duration(days: 1)),
+                                initialDate:
+                                    DateTime.now().add(const Duration(days: 1)),
                                 firstDate: DateTime.now(),
-                                lastDate: DateTime.now().add(const Duration(days: 90)),
+                                lastDate: DateTime.now()
+                                    .add(const Duration(days: 90)),
                               );
                               if (d != null) setState(() => selectedDate = d);
                             },
@@ -161,7 +175,8 @@ class _ApplicantDetailsScreenState extends State<ApplicantDetailsScreen> {
                             onPressed: () async {
                               final t = await showTimePicker(
                                 context: context,
-                                initialTime: const TimeOfDay(hour: 10, minute: 0),
+                                initialTime:
+                                    const TimeOfDay(hour: 10, minute: 0),
                               );
                               if (t != null) setState(() => selectedTime = t);
                             },
@@ -193,17 +208,25 @@ class _ApplicantDetailsScreenState extends State<ApplicantDetailsScreen> {
                 ),
               ),
               actions: [
-                TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+                TextButton(
+                    onPressed: () => Navigator.pop(ctx),
+                    child: const Text('Cancel')),
                 ElevatedButton(
                   onPressed: () {
-                    if (selectedDate == null || selectedTime == null || locController.text.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Please fill date, time, and location')));
+                    if (selectedDate == null ||
+                        selectedTime == null ||
+                        locController.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content:
+                              Text('Please fill date, time, and location')));
                       return;
                     }
                     final combinedDate = DateTime(
-                      selectedDate!.year, selectedDate!.month, selectedDate!.day,
-                      selectedTime!.hour, selectedTime!.minute,
+                      selectedDate!.year,
+                      selectedDate!.month,
+                      selectedDate!.day,
+                      selectedTime!.hour,
+                      selectedTime!.minute,
                     );
                     Navigator.pop(ctx, {
                       'date': combinedDate,
@@ -228,8 +251,10 @@ class _ApplicantDetailsScreenState extends State<ApplicantDetailsScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.surfaceElevated,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.lg)),
-        title: const Text('Reject Application', style: TextStyle(color: AppColors.textPrimary)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.lg)),
+        title: const Text('Reject Application',
+            style: TextStyle(color: AppColors.textPrimary)),
         content: TextField(
           controller: controller,
           maxLines: 3,
@@ -238,7 +263,8 @@ class _ApplicantDetailsScreenState extends State<ApplicantDetailsScreen> {
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
             onPressed: () => Navigator.pop(ctx, controller.text.trim()),
@@ -256,7 +282,9 @@ class _ApplicantDetailsScreenState extends State<ApplicantDetailsScreen> {
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not open file'), backgroundColor: AppColors.error),
+          const SnackBar(
+              content: Text('Could not open file'),
+              backgroundColor: AppColors.error),
         );
       }
     }
@@ -285,7 +313,8 @@ class _ApplicantDetailsScreenState extends State<ApplicantDetailsScreen> {
                         ? NetworkImage(app.applicantProfileImageUrl)
                         : null,
                     child: app.applicantProfileImageUrl.isEmpty
-                        ? const Icon(Icons.person, color: AppColors.textMuted, size: 32)
+                        ? const Icon(Icons.person,
+                            color: AppColors.textMuted, size: 32)
                         : null,
                   ),
                   const SizedBox(width: 16),
@@ -301,20 +330,26 @@ class _ApplicantDetailsScreenState extends State<ApplicantDetailsScreen> {
                         const SizedBox(height: 4),
                         Row(
                           children: [
-                            const Icon(Icons.email_outlined, size: 14, color: AppColors.textSecondary),
+                            const Icon(Icons.email_outlined,
+                                size: 14, color: AppColors.textSecondary),
                             const SizedBox(width: 4),
                             Text(app.applicantEmail,
-                                style: const TextStyle(fontSize: 13, color: AppColors.textSecondary)),
+                                style: const TextStyle(
+                                    fontSize: 13,
+                                    color: AppColors.textSecondary)),
                           ],
                         ),
                         if (app.applicantPhone.isNotEmpty) ...[
                           const SizedBox(height: 2),
                           Row(
                             children: [
-                              const Icon(Icons.phone_outlined, size: 14, color: AppColors.textSecondary),
+                              const Icon(Icons.phone_outlined,
+                                  size: 14, color: AppColors.textSecondary),
                               const SizedBox(width: 4),
                               Text(app.applicantPhone,
-                                  style: const TextStyle(fontSize: 13, color: AppColors.textSecondary)),
+                                  style: const TextStyle(
+                                      fontSize: 13,
+                                      color: AppColors.textSecondary)),
                             ],
                           ),
                         ],
@@ -344,7 +379,8 @@ class _ApplicantDetailsScreenState extends State<ApplicantDetailsScreen> {
                         const Spacer(),
                         if (app.submittedAt != null)
                           Text('Applied ${_formatDate(app.submittedAt!)}',
-                              style: const TextStyle(fontSize: 11, color: AppColors.textMuted)),
+                              style: const TextStyle(
+                                  fontSize: 11, color: AppColors.textMuted)),
                       ],
                     ),
                     const SizedBox(height: 16),
@@ -378,12 +414,16 @@ class _ApplicantDetailsScreenState extends State<ApplicantDetailsScreen> {
                     focusedBorder: InputBorder.none,
                     errorBorder: InputBorder.none,
                     disabledBorder: InputBorder.none,
-                    contentPadding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
                     suffixIcon: IconButton(
                       icon: _isSavingNote
-                          ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
-                          : const Icon(Icons.save_rounded, color: AppColors.primary),
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2))
+                          : const Icon(Icons.save_rounded,
+                              color: AppColors.primary),
                       onPressed: _isSavingNote ? null : _saveNote,
                     ),
                   ),
@@ -430,8 +470,12 @@ class _ApplicantDetailsScreenState extends State<ApplicantDetailsScreen> {
                       children: [
                         _sectionTitle('Availability'),
                         const SizedBox(height: 4),
-                        Text(app.availability.isNotEmpty ? app.availability : 'Not specified',
-                            style: const TextStyle(fontSize: 14, color: AppColors.textSecondary)),
+                        Text(
+                            app.availability.isNotEmpty
+                                ? app.availability
+                                : 'Not specified',
+                            style: const TextStyle(
+                                fontSize: 14, color: AppColors.textSecondary)),
                       ],
                     ),
                   ),
@@ -441,8 +485,12 @@ class _ApplicantDetailsScreenState extends State<ApplicantDetailsScreen> {
                       children: [
                         _sectionTitle('Expected Salary'),
                         const SizedBox(height: 4),
-                        Text(app.expectedSalary != null ? '₱${app.expectedSalary!.toStringAsFixed(0)}' : 'Not specified',
-                            style: const TextStyle(fontSize: 14, color: AppColors.textSecondary)),
+                        Text(
+                            app.expectedSalary != null
+                                ? '₱${app.expectedSalary!.toStringAsFixed(0)}'
+                                : 'Not specified',
+                            style: const TextStyle(
+                                fontSize: 14, color: AppColors.textSecondary)),
                       ],
                     ),
                   ),
@@ -455,8 +503,10 @@ class _ApplicantDetailsScreenState extends State<ApplicantDetailsScreen> {
               const SizedBox(height: 8),
               if (app.resumeUrl != null && app.resumeUrl!.isNotEmpty)
                 _documentTile(app.resumeFileName ?? 'Resume', app.resumeUrl!),
-              if (app.supportingDocumentUrl != null && app.supportingDocumentUrl!.isNotEmpty)
-                _documentTile('Supporting Document', app.supportingDocumentUrl!),
+              if (app.supportingDocumentUrl != null &&
+                  app.supportingDocumentUrl!.isNotEmpty)
+                _documentTile(
+                    'Supporting Document', app.supportingDocumentUrl!),
 
               const SizedBox(height: AppPadding.xl),
             ],
@@ -464,7 +514,8 @@ class _ApplicantDetailsScreenState extends State<ApplicantDetailsScreen> {
           if (prov.isSubmitting)
             Container(
               color: Colors.black54,
-              child: const Center(child: CircularProgressIndicator(color: AppColors.primary)),
+              child: const Center(
+                  child: CircularProgressIndicator(color: AppColors.primary)),
             ),
         ],
       ),
@@ -473,31 +524,47 @@ class _ApplicantDetailsScreenState extends State<ApplicantDetailsScreen> {
 
   List<Widget> _buildActionButtons(ApplicationStatus currentStatus) {
     if (currentStatus == ApplicationStatus.withdrawn) {
-      return [const Text('Applicant withdrew this application.', style: TextStyle(color: AppColors.textMuted))];
+      return [
+        const Text('Applicant withdrew this application.',
+            style: TextStyle(color: AppColors.textMuted))
+      ];
     }
     if (currentStatus == ApplicationStatus.accepted) {
-      return [const Text('Applicant accepted!', style: TextStyle(color: AppColors.success, fontWeight: FontWeight.bold))];
+      return [
+        const Text('Applicant accepted!',
+            style: TextStyle(
+                color: AppColors.success, fontWeight: FontWeight.bold))
+      ];
     }
     if (currentStatus == ApplicationStatus.rejected) {
-      return [const Text('Application rejected.', style: TextStyle(color: AppColors.error, fontWeight: FontWeight.bold))];
+      return [
+        const Text('Application rejected.',
+            style:
+                TextStyle(color: AppColors.error, fontWeight: FontWeight.bold))
+      ];
     }
 
     final buttons = <Widget>[];
 
     if (isValidStatusTransition(currentStatus, ApplicationStatus.underReview)) {
-      buttons.add(_actionBtn('Mark Under Review', Colors.orange, () => _updateStatus(ApplicationStatus.underReview)));
+      buttons.add(_actionBtn('Mark Under Review', Colors.orange,
+          () => _updateStatus(ApplicationStatus.underReview)));
     }
     if (isValidStatusTransition(currentStatus, ApplicationStatus.shortlisted)) {
-      buttons.add(_actionBtn('Shortlist', AppColors.primary, () => _updateStatus(ApplicationStatus.shortlisted)));
+      buttons.add(_actionBtn('Shortlist', AppColors.primary,
+          () => _updateStatus(ApplicationStatus.shortlisted)));
     }
     if (isValidStatusTransition(currentStatus, ApplicationStatus.interview)) {
-      buttons.add(_actionBtn('Schedule Interview', Colors.purple, () => _updateStatus(ApplicationStatus.interview)));
+      buttons.add(_actionBtn('Schedule Interview', Colors.purple,
+          () => _updateStatus(ApplicationStatus.interview)));
     }
     if (isValidStatusTransition(currentStatus, ApplicationStatus.accepted)) {
-      buttons.add(_actionBtn('Accept Applicant', AppColors.success, () => _updateStatus(ApplicationStatus.accepted)));
+      buttons.add(_actionBtn('Accept Applicant', AppColors.success,
+          () => _updateStatus(ApplicationStatus.accepted)));
     }
     if (isValidStatusTransition(currentStatus, ApplicationStatus.rejected)) {
-      buttons.add(_actionBtn('Reject', AppColors.error, () => _updateStatus(ApplicationStatus.rejected)));
+      buttons.add(_actionBtn('Reject', AppColors.error,
+          () => _updateStatus(ApplicationStatus.rejected)));
     }
 
     return buttons;
@@ -509,7 +576,8 @@ class _ApplicantDetailsScreenState extends State<ApplicantDetailsScreen> {
         backgroundColor: color.withValues(alpha: 0.15),
         foregroundColor: color,
         elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.sm)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.sm)),
       ),
       onPressed: onTap,
       child: Text(label),
@@ -517,7 +585,10 @@ class _ApplicantDetailsScreenState extends State<ApplicantDetailsScreen> {
   }
 
   Widget _sectionTitle(String title) => Text(title,
-      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textMuted));
+      style: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textMuted));
 
   Widget _contentBox(String text) => Container(
         width: double.infinity,
@@ -527,7 +598,9 @@ class _ApplicantDetailsScreenState extends State<ApplicantDetailsScreen> {
           borderRadius: BorderRadius.circular(AppRadius.sm),
           border: Border.all(color: AppColors.border),
         ),
-        child: Text(text, style: const TextStyle(fontSize: 14, color: AppColors.textPrimary, height: 1.4)),
+        child: Text(text,
+            style: const TextStyle(
+                fontSize: 14, color: AppColors.textPrimary, height: 1.4)),
       );
 
   Widget _chip(String label) => Container(
@@ -537,7 +610,8 @@ class _ApplicantDetailsScreenState extends State<ApplicantDetailsScreen> {
           borderRadius: BorderRadius.circular(AppRadius.full),
           border: Border.all(color: AppColors.border),
         ),
-        child: Text(label, style: const TextStyle(fontSize: 12, color: AppColors.textPrimary)),
+        child: Text(label,
+            style: const TextStyle(fontSize: 12, color: AppColors.textPrimary)),
       );
 
   Widget _documentTile(String name, String url) {
@@ -548,9 +622,14 @@ class _ApplicantDetailsScreenState extends State<ApplicantDetailsScreen> {
             borderRadius: BorderRadius.circular(AppRadius.md),
             side: const BorderSide(color: AppColors.border)),
         tileColor: AppColors.surface,
-        leading: const Icon(Icons.file_present_rounded, color: AppColors.primary),
-        title: Text(name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 14)),
-        trailing: const Icon(Icons.open_in_new_rounded, size: 18, color: AppColors.textSecondary),
+        leading:
+            const Icon(Icons.file_present_rounded, color: AppColors.primary),
+        title: Text(name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 14)),
+        trailing: const Icon(Icons.open_in_new_rounded,
+            size: 18, color: AppColors.textSecondary),
         onTap: () => _launchUrl(url),
       ),
     );
@@ -591,14 +670,30 @@ class _ApplicantDetailsScreenState extends State<ApplicantDetailsScreen> {
     }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(color: bgColor, borderRadius: BorderRadius.circular(AppRadius.full)),
+      decoration: BoxDecoration(
+          color: bgColor, borderRadius: BorderRadius.circular(AppRadius.full)),
       child: Text(applicationStatusLabel(status),
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: textColor)),
+          style: TextStyle(
+              fontSize: 12, fontWeight: FontWeight.w600, color: textColor)),
     );
   }
 
   String _formatDate(DateTime date) {
-    final months = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    final months = [
+      '',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ];
     return '${months[date.month]} ${date.day}, ${date.year}';
   }
 }

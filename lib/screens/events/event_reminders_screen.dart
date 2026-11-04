@@ -15,17 +15,22 @@ class EventRemindersScreen extends StatelessWidget {
           children: [
             // ── Header ─────────────────────────────────────────────
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppPadding.md, vertical: AppPadding.sm),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppPadding.md, vertical: AppPadding.sm),
               child: Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
+                    icon: const Icon(Icons.arrow_back_rounded,
+                        color: AppColors.textPrimary),
                     onPressed: () => Navigator.pop(context),
                   ),
                   const Expanded(
                     child: Text(
                       'Event Reminders',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -38,7 +43,8 @@ class EventRemindersScreen extends StatelessWidget {
             Expanded(
               child: Consumer<EventsProvider>(
                 builder: (context, provider, _) {
-                  final events = provider.upcomingEvents; // Typically we'd only show those we've registered/saved for reminders
+                  final events = provider
+                      .upcomingEvents; // Typically we'd only show those we've registered/saved for reminders
 
                   if (events.isEmpty) {
                     return _buildEmptyState();
@@ -56,31 +62,40 @@ class EventRemindersScreen extends StatelessWidget {
                               padding: const EdgeInsets.all(24),
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                border: Border.all(color: AppColors.primary, width: 2),
+                                border: Border.all(
+                                    color: AppColors.primary, width: 2),
                               ),
-                              child: const Icon(Icons.notifications_active_outlined, color: AppColors.primary, size: 48),
+                              child: const Icon(
+                                  Icons.notifications_active_outlined,
+                                  color: AppColors.primary,
+                                  size: 48),
                             ),
                             const SizedBox(height: 16),
                             const Text(
                               'Never Miss an Event',
-                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.textPrimary),
                             ),
                             const SizedBox(height: 8),
                             const Text(
                               'Enable reminders and get notified\nbefore your events start.',
                               textAlign: TextAlign.center,
-                              style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                              style: TextStyle(
+                                  color: AppColors.textSecondary, fontSize: 14),
                             ),
                             const SizedBox(height: AppPadding.xl),
                           ],
                         ),
                       ),
-                      
+
                       const Divider(color: AppColors.divider),
                       const SizedBox(height: AppPadding.md),
-                      
+
                       // List of reminder cards
-                      ...events.map((e) => _buildReminderCard(context, e, provider)),
+                      ...events
+                          .map((e) => _buildReminderCard(context, e, provider)),
                     ],
                   );
                 },
@@ -92,9 +107,10 @@ class EventRemindersScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildReminderCard(BuildContext context, Map<String, dynamic> event, EventsProvider provider) {
+  Widget _buildReminderCard(BuildContext context, Map<String, dynamic> event,
+      EventsProvider provider) {
     final bool hasReminder = event['hasReminder'] ?? false;
-    
+
     return Container(
       margin: const EdgeInsets.only(bottom: AppPadding.md),
       decoration: BoxDecoration(
@@ -125,24 +141,38 @@ class EventRemindersScreen extends StatelessWidget {
                     children: [
                       Text(
                         event['title'],
-                        style: const TextStyle(color: AppColors.textPrimary, fontSize: 16, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                            color: AppColors.textPrimary,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 4),
                       Row(
                         children: [
-                          const Icon(Icons.calendar_today_rounded, size: 12, color: AppColors.textSecondary),
+                          const Icon(Icons.calendar_today_rounded,
+                              size: 12, color: AppColors.textSecondary),
                           const SizedBox(width: 4),
-                          Text('${event['date']} • ${event['time']}', style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                          Text('${event['date']} • ${event['time']}',
+                              style: const TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 12)),
                         ],
                       ),
                       const SizedBox(height: 2),
                       Row(
                         children: [
-                          const Icon(Icons.location_on_outlined, size: 12, color: AppColors.textSecondary),
+                          const Icon(Icons.location_on_outlined,
+                              size: 12, color: AppColors.textSecondary),
                           const SizedBox(width: 4),
-                          Expanded(child: Text(event['location'], style: const TextStyle(color: AppColors.textSecondary, fontSize: 12), maxLines: 1, overflow: TextOverflow.ellipsis)),
+                          Expanded(
+                              child: Text(event['location'],
+                                  style: const TextStyle(
+                                      color: AppColors.textSecondary,
+                                      fontSize: 12),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis)),
                         ],
                       ),
                     ],
@@ -151,16 +181,19 @@ class EventRemindersScreen extends StatelessWidget {
               ],
             ),
           ),
-          
+
           const Divider(color: AppColors.border, height: 1),
-          
+
           // Reminder Toggle
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppPadding.md, vertical: 8),
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppPadding.md, vertical: 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Reminder', style: TextStyle(color: AppColors.textPrimary, fontSize: 14)),
+                const Text('Reminder',
+                    style:
+                        TextStyle(color: AppColors.textPrimary, fontSize: 14)),
                 Switch(
                   value: hasReminder,
                   onChanged: (val) {
@@ -184,9 +217,11 @@ class EventRemindersScreen extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.notifications_off_rounded, size: 64, color: AppColors.textMuted),
+          Icon(Icons.notifications_off_rounded,
+              size: 64, color: AppColors.textMuted),
           SizedBox(height: 16),
-          Text('No upcoming events to remind you of.', style: TextStyle(color: AppColors.textSecondary, fontSize: 16)),
+          Text('No upcoming events to remind you of.',
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 16)),
         ],
       ),
     );

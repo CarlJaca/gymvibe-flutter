@@ -163,10 +163,10 @@ class CalendarProvider extends ChangeNotifier {
     try {
       // Generate all date keys for the month
       final daysInMonth = DateTime(year, month + 1, 0).day;
-      
+
       for (int day = 1; day <= daysInMonth; day++) {
         final key = _dateKey(DateTime(year, month, day));
-        
+
         final doc = await _firestore
             .collection('users')
             .doc(_userId)
@@ -177,8 +177,10 @@ class CalendarProvider extends ChangeNotifier {
         if (doc.exists && doc.data() != null) {
           final data = doc.data()!;
           final activitiesList = (data['activities'] as List<dynamic>?)
-              ?.map((a) => WorkoutActivity.fromJson(a as Map<String, dynamic>))
-              .toList() ?? [];
+                  ?.map((a) =>
+                      WorkoutActivity.fromJson(a as Map<String, dynamic>))
+                  .toList() ??
+              [];
           _activities[key] = activitiesList;
         } else {
           _activities.remove(key);
@@ -217,7 +219,8 @@ class CalendarProvider extends ChangeNotifier {
   }
 
   // ─── Update Activity ────────────────────────────────────────────────────────
-  Future<void> updateActivity(DateTime date, String activityId, WorkoutActivity updated) async {
+  Future<void> updateActivity(
+      DateTime date, String activityId, WorkoutActivity updated) async {
     if (_userId == null) return;
 
     final key = _dateKey(date);

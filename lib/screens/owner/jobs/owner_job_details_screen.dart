@@ -49,8 +49,7 @@ class OwnerJobDetailsScreen extends StatelessWidget {
               _statCard('Openings', '${job.numberOfOpenings}',
                   Icons.person_add_rounded),
               const SizedBox(width: 10),
-              _statCard('Salary', job.salaryDisplay,
-                  Icons.payments_rounded),
+              _statCard('Salary', job.salaryDisplay, Icons.payments_rounded),
             ],
           ),
 
@@ -70,7 +69,8 @@ class OwnerJobDetailsScreen extends StatelessWidget {
                     : 'Deadline: ${_formatDate(job.applicationDeadline!)}',
                 style: TextStyle(
                   fontSize: 13,
-                  color: job.isExpired ? AppColors.error : AppColors.textSecondary,
+                  color:
+                      job.isExpired ? AppColors.error : AppColors.textSecondary,
                 ),
               ),
             ),
@@ -84,9 +84,7 @@ class OwnerJobDetailsScreen extends StatelessWidget {
           const SizedBox(height: 6),
           Text(job.description,
               style: const TextStyle(
-                  fontSize: 14,
-                  color: AppColors.textSecondary,
-                  height: 1.5)),
+                  fontSize: 14, color: AppColors.textSecondary, height: 1.5)),
 
           if (job.responsibilities.isNotEmpty) ...[
             const SizedBox(height: 16),
@@ -114,13 +112,10 @@ class OwnerJobDetailsScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
-                          color:
-                              AppColors.primary.withValues(alpha: 0.08),
-                          borderRadius:
-                              BorderRadius.circular(AppRadius.full),
+                          color: AppColors.primary.withValues(alpha: 0.08),
+                          borderRadius: BorderRadius.circular(AppRadius.full),
                           border: Border.all(
-                              color: AppColors.primary
-                                  .withValues(alpha: 0.3)),
+                              color: AppColors.primary.withValues(alpha: 0.3)),
                         ),
                         child: Text(s,
                             style: const TextStyle(
@@ -142,8 +137,8 @@ class OwnerJobDetailsScreen extends StatelessWidget {
           if (job.createdAt != null) ...[
             const SizedBox(height: 20),
             Text('Created: ${_formatDate(job.createdAt!)}',
-                style: const TextStyle(
-                    fontSize: 12, color: AppColors.textMuted)),
+                style:
+                    const TextStyle(fontSize: 12, color: AppColors.textMuted)),
           ],
           const SizedBox(height: AppPadding.xl),
         ],
@@ -188,8 +183,7 @@ class OwnerJobDetailsScreen extends StatelessWidget {
           border: Border.all(color: AppColors.border),
         ),
         child: Text(label,
-            style:
-                const TextStyle(fontSize: 12, color: AppColors.textPrimary)),
+            style: const TextStyle(fontSize: 12, color: AppColors.textPrimary)),
       );
 
   Widget _statCard(String label, String value, IconData icon) => Expanded(
@@ -221,8 +215,19 @@ class OwnerJobDetailsScreen extends StatelessWidget {
 
   String _formatDate(DateTime date) {
     final months = [
-      '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      '',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return '${months[date.month]} ${date.day}, ${date.year}';
   }

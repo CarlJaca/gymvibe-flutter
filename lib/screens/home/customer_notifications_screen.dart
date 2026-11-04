@@ -7,13 +7,16 @@ class CustomerNotificationsScreen extends StatefulWidget {
   const CustomerNotificationsScreen({super.key});
 
   @override
-  State<CustomerNotificationsScreen> createState() => _CustomerNotificationsScreenState();
+  State<CustomerNotificationsScreen> createState() =>
+      _CustomerNotificationsScreenState();
 }
 
-class _CustomerNotificationsScreenState extends State<CustomerNotificationsScreen> {
-  void _showNotification(NotificationItem n, int index, NotificationProvider prov) {
+class _CustomerNotificationsScreenState
+    extends State<CustomerNotificationsScreen> {
+  void _showNotification(
+      NotificationItem n, int index, NotificationProvider prov) {
     prov.markCustomerAsRead(index);
-    
+
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -22,10 +25,13 @@ class _CustomerNotificationsScreenState extends State<CustomerNotificationsScree
           children: [
             Icon(n.icon, color: AppColors.primary),
             const SizedBox(width: 8),
-            Expanded(child: Text(n.title, style: const TextStyle(fontSize: 18))),
+            Expanded(
+                child: Text(n.title, style: const TextStyle(fontSize: 18))),
           ],
         ),
-        content: Text(n.subtitle, style: const TextStyle(color: AppColors.textSecondary, fontSize: 14)),
+        content: Text(n.subtitle,
+            style:
+                const TextStyle(color: AppColors.textSecondary, fontSize: 14)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
@@ -85,8 +91,7 @@ class _CustomerNotificationsScreenState extends State<CustomerNotificationsScree
                       color: AppColors.primary.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(AppRadius.sm),
                     ),
-                    child: Icon(n.icon,
-                        color: AppColors.primary, size: 20),
+                    child: Icon(n.icon, color: AppColors.primary, size: 20),
                   ),
                   const SizedBox(width: 12),
                   Expanded(

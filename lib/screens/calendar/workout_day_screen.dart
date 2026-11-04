@@ -28,10 +28,28 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
 
   String get _dateTitle {
     final monthNames = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December',
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
     ];
-    final dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    final dayNames = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday'
+    ];
     final dayName = dayNames[widget.date.weekday - 1];
     return '$dayName, ${monthNames[widget.date.month - 1]} ${widget.date.day}, ${widget.date.year}';
   }
@@ -66,7 +84,8 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
                       ],
                     ),
                     borderRadius: BorderRadius.circular(AppRadius.lg),
-                    border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+                    border: Border.all(
+                        color: AppColors.primary.withValues(alpha: 0.3)),
                   ),
                   child: Row(
                     children: [
@@ -122,7 +141,8 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
                 child: activities.isEmpty
                     ? _buildEmptyState()
                     : ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: AppPadding.md),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: AppPadding.md),
                         itemCount: activities.length,
                         itemBuilder: (context, index) {
                           final activity = activities[index];
@@ -135,15 +155,20 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
                               margin: const EdgeInsets.only(bottom: 12),
                               decoration: BoxDecoration(
                                 color: AppColors.error.withValues(alpha: 0.2),
-                                borderRadius: BorderRadius.circular(AppRadius.md),
+                                borderRadius:
+                                    BorderRadius.circular(AppRadius.md),
                               ),
-                              child: const Icon(Icons.delete_outline, color: AppColors.error),
+                              child: const Icon(Icons.delete_outline,
+                                  color: AppColors.error),
                             ),
                             onDismissed: (_) {
-                              context.read<CalendarProvider>().removeActivity(widget.date, activity.id);
+                              context
+                                  .read<CalendarProvider>()
+                                  .removeActivity(widget.date, activity.id);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text('${activity.type.displayName} removed'),
+                                  content: Text(
+                                      '${activity.type.displayName} removed'),
                                   backgroundColor: AppColors.surfaceElevated,
                                 ),
                               );
@@ -155,8 +180,11 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
                                 padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
                                   color: AppColors.surfaceElevated,
-                                  borderRadius: BorderRadius.circular(AppRadius.lg),
-                                  border: Border.all(color: activity.type.color.withValues(alpha: 0.3)),
+                                  borderRadius:
+                                      BorderRadius.circular(AppRadius.lg),
+                                  border: Border.all(
+                                      color: activity.type.color
+                                          .withValues(alpha: 0.3)),
                                 ),
                                 child: Row(
                                   children: [
@@ -164,8 +192,10 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
                                       width: 48,
                                       height: 48,
                                       decoration: BoxDecoration(
-                                        color: activity.type.color.withValues(alpha: 0.15),
-                                        borderRadius: BorderRadius.circular(AppRadius.md),
+                                        color: activity.type.color
+                                            .withValues(alpha: 0.15),
+                                        borderRadius:
+                                            BorderRadius.circular(AppRadius.md),
                                       ),
                                       child: Icon(activity.type.icon,
                                           color: activity.type.color, size: 24),
@@ -173,7 +203,8 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
                                     const SizedBox(width: 16),
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             activity.type.displayName,
@@ -269,7 +300,8 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
             ),
             decoration: const BoxDecoration(
               color: AppColors.background,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
+              borderRadius:
+                  BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -287,16 +319,17 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close, color: AppColors.textSecondary),
+                      icon: const Icon(Icons.close,
+                          color: AppColors.textSecondary),
                       onPressed: () => Navigator.pop(ctx),
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
-
                 const Text(
                   'Workout Type',
-                  style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                  style:
+                      TextStyle(color: AppColors.textSecondary, fontSize: 13),
                 ),
                 const SizedBox(height: 8),
                 Wrap(
@@ -308,7 +341,8 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
                       onTap: () => setSheetState(() => selectedType = type),
                       child: AnimatedContainer(
                         duration: AppDurations.fast,
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 10),
                         decoration: BoxDecoration(
                           color: isSelected
                               ? type.color.withValues(alpha: 0.15)
@@ -323,14 +357,20 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
                           children: [
                             Icon(type.icon,
                                 size: 16,
-                                color: isSelected ? type.color : AppColors.textSecondary),
+                                color: isSelected
+                                    ? type.color
+                                    : AppColors.textSecondary),
                             const SizedBox(width: 6),
                             Text(
                               type.displayName,
                               style: TextStyle(
-                                color: isSelected ? type.color : AppColors.textSecondary,
+                                color: isSelected
+                                    ? type.color
+                                    : AppColors.textSecondary,
                                 fontSize: 13,
-                                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                                fontWeight: isSelected
+                                    ? FontWeight.bold
+                                    : FontWeight.w500,
                               ),
                             ),
                           ],
@@ -340,10 +380,10 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
                   }).toList(),
                 ),
                 const SizedBox(height: 20),
-
                 const Text(
                   'Notes (optional)',
-                  style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                  style:
+                      TextStyle(color: AppColors.textSecondary, fontSize: 13),
                 ),
                 const SizedBox(height: 8),
                 TextField(
@@ -362,7 +402,6 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
-
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -372,7 +411,9 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
                         type: selectedType,
                         notes: notesController.text.trim(),
                       );
-                      context.read<CalendarProvider>().addActivity(widget.date, activity);
+                      context
+                          .read<CalendarProvider>()
+                          .addActivity(widget.date, activity);
                       Navigator.pop(ctx);
                     },
                     style: ElevatedButton.styleFrom(
@@ -385,7 +426,8 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
                     ),
                     child: const Text(
                       'Add Activity',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
@@ -417,7 +459,8 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
             ),
             decoration: const BoxDecoration(
               color: AppColors.background,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
+              borderRadius:
+                  BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -437,14 +480,18 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
                     Row(
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.delete_outline, color: AppColors.error),
+                          icon: const Icon(Icons.delete_outline,
+                              color: AppColors.error),
                           onPressed: () {
-                            context.read<CalendarProvider>().removeActivity(widget.date, activity.id);
+                            context
+                                .read<CalendarProvider>()
+                                .removeActivity(widget.date, activity.id);
                             Navigator.pop(ctx);
                           },
                         ),
                         IconButton(
-                          icon: const Icon(Icons.close, color: AppColors.textSecondary),
+                          icon: const Icon(Icons.close,
+                              color: AppColors.textSecondary),
                           onPressed: () => Navigator.pop(ctx),
                         ),
                       ],
@@ -452,10 +499,10 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
                   ],
                 ),
                 const SizedBox(height: 16),
-
                 const Text(
                   'Workout Type',
-                  style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                  style:
+                      TextStyle(color: AppColors.textSecondary, fontSize: 13),
                 ),
                 const SizedBox(height: 8),
                 Wrap(
@@ -467,7 +514,8 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
                       onTap: () => setSheetState(() => selectedType = type),
                       child: AnimatedContainer(
                         duration: AppDurations.fast,
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 10),
                         decoration: BoxDecoration(
                           color: isSelected
                               ? type.color.withValues(alpha: 0.15)
@@ -482,14 +530,20 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
                           children: [
                             Icon(type.icon,
                                 size: 16,
-                                color: isSelected ? type.color : AppColors.textSecondary),
+                                color: isSelected
+                                    ? type.color
+                                    : AppColors.textSecondary),
                             const SizedBox(width: 6),
                             Text(
                               type.displayName,
                               style: TextStyle(
-                                color: isSelected ? type.color : AppColors.textSecondary,
+                                color: isSelected
+                                    ? type.color
+                                    : AppColors.textSecondary,
                                 fontSize: 13,
-                                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                                fontWeight: isSelected
+                                    ? FontWeight.bold
+                                    : FontWeight.w500,
                               ),
                             ),
                           ],
@@ -499,10 +553,10 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
                   }).toList(),
                 ),
                 const SizedBox(height: 20),
-
                 const Text(
                   'Notes (optional)',
-                  style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                  style:
+                      TextStyle(color: AppColors.textSecondary, fontSize: 13),
                 ),
                 const SizedBox(height: 8),
                 TextField(
@@ -521,7 +575,6 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
-
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -530,8 +583,9 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
                         type: selectedType,
                         notes: notesController.text.trim(),
                       );
-                      context.read<CalendarProvider>().updateActivity(
-                            widget.date, activity.id, updated);
+                      context
+                          .read<CalendarProvider>()
+                          .updateActivity(widget.date, activity.id, updated);
                       Navigator.pop(ctx);
                     },
                     style: ElevatedButton.styleFrom(
@@ -544,7 +598,8 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
                     ),
                     child: const Text(
                       'Save Changes',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),

@@ -74,7 +74,10 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                                   ),
                                 ),
                                 const SizedBox(height: 12),
-                                ...provider.remainingEntries.asMap().entries.map(
+                                ...provider.remainingEntries
+                                    .asMap()
+                                    .entries
+                                    .map(
                                       (entry) => _buildRankingTile(
                                           entry.value, entry.key + 4),
                                     ),
@@ -95,7 +98,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
         onPressed: () => _showSubmitPRSheet(context),
         backgroundColor: AppColors.primary,
         icon: const Icon(Icons.add, color: Colors.white),
-        label: const Text('Submit PR', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        label: const Text('Submit PR',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
     );
   }
@@ -109,8 +113,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
         padding: const EdgeInsets.symmetric(horizontal: AppPadding.md),
         children: [
           _buildTabItem(provider, null, 'Overview', Icons.list_alt_rounded),
-          ...LeaderboardCategory.values.map((cat) =>
-              _buildTabItem(provider, cat, cat.displayName, cat.icon)),
+          ...LeaderboardCategory.values.map(
+              (cat) => _buildTabItem(provider, cat, cat.displayName, cat.icon)),
         ],
       ),
     );
@@ -209,7 +213,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.emoji_events_outlined, size: 64, color: AppColors.textMuted),
+          Icon(Icons.emoji_events_outlined,
+              size: 64, color: AppColors.textMuted),
           SizedBox(height: 16),
           Text(
             'No records yet',
@@ -283,7 +288,9 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
               backgroundColor: AppColors.surfaceElevated,
               child: record.userAvatarUrl.isEmpty
                   ? Text(
-                      record.userName.isNotEmpty ? record.userName[0].toUpperCase() : '?',
+                      record.userName.isNotEmpty
+                          ? record.userName[0].toUpperCase()
+                          : '?',
                       style: TextStyle(
                         color: AppColors.textPrimary,
                         fontSize: rank == 1 ? 20 : 16,
@@ -328,8 +335,10 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                   colors[rank - 1].withValues(alpha: 0.1),
                 ],
               ),
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-              border: Border.all(color: colors[rank - 1].withValues(alpha: 0.3)),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(12)),
+              border:
+                  Border.all(color: colors[rank - 1].withValues(alpha: 0.3)),
             ),
             child: Center(
               child: Text(
@@ -382,8 +391,11 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
             backgroundColor: AppColors.surface,
             child: record.userAvatarUrl.isEmpty
                 ? Text(
-                    record.userName.isNotEmpty ? record.userName[0].toUpperCase() : '?',
-                    style: const TextStyle(color: AppColors.textPrimary, fontSize: 12),
+                    record.userName.isNotEmpty
+                        ? record.userName[0].toUpperCase()
+                        : '?',
+                    style: const TextStyle(
+                        color: AppColors.textPrimary, fontSize: 12),
                   )
                 : null,
           ),
@@ -431,10 +443,12 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   // ─── User Pending Section ───────────────────────────────────────────────────
   Widget _buildUserPendingSection(LeaderboardProvider provider) {
     final auth = context.read<AuthProvider>();
-    if (!auth.isAuthenticated || auth.currentUser == null) return const SizedBox.shrink();
+    if (!auth.isAuthenticated || auth.currentUser == null)
+      return const SizedBox.shrink();
 
     final userRecords = provider.getUserRecords(auth.currentUser!.id);
-    final pending = userRecords.where((r) => r.status == RecordStatus.pending).toList();
+    final pending =
+        userRecords.where((r) => r.status == RecordStatus.pending).toList();
 
     if (pending.isEmpty) return const SizedBox.shrink();
 
@@ -485,7 +499,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: Colors.orange.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(AppRadius.full),
@@ -517,7 +532,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
     final auth = context.read<AuthProvider>();
     if (!auth.isAuthenticated || auth.currentUser == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please login to submit a personal record.')),
+        const SnackBar(
+            content: Text('Please login to submit a personal record.')),
       );
       return;
     }
@@ -540,7 +556,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
             ),
             decoration: const BoxDecoration(
               color: AppColors.background,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
+              borderRadius:
+                  BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -559,7 +576,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close, color: AppColors.textSecondary),
+                      icon: const Icon(Icons.close,
+                          color: AppColors.textSecondary),
                       onPressed: () => Navigator.pop(ctx),
                     ),
                   ],
@@ -569,7 +587,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                 // Category selector
                 const Text(
                   'Exercise Category',
-                  style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                  style:
+                      TextStyle(color: AppColors.textSecondary, fontSize: 13),
                 ),
                 const SizedBox(height: 8),
                 Wrap(
@@ -581,14 +600,17 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                       onTap: () => setSheetState(() => selectedCategory = cat),
                       child: AnimatedContainer(
                         duration: AppDurations.fast,
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 8),
                         decoration: BoxDecoration(
                           color: isSelected
                               ? AppColors.primary.withValues(alpha: 0.15)
                               : AppColors.surfaceElevated,
                           borderRadius: BorderRadius.circular(AppRadius.full),
                           border: Border.all(
-                            color: isSelected ? AppColors.primary : AppColors.border,
+                            color: isSelected
+                                ? AppColors.primary
+                                : AppColors.border,
                           ),
                         ),
                         child: Row(
@@ -596,14 +618,20 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                           children: [
                             Icon(cat.icon,
                                 size: 16,
-                                color: isSelected ? AppColors.primary : AppColors.textSecondary),
+                                color: isSelected
+                                    ? AppColors.primary
+                                    : AppColors.textSecondary),
                             const SizedBox(width: 6),
                             Text(
                               cat.displayName,
                               style: TextStyle(
-                                color: isSelected ? AppColors.primary : AppColors.textSecondary,
+                                color: isSelected
+                                    ? AppColors.primary
+                                    : AppColors.textSecondary,
                                 fontSize: 13,
-                                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                                fontWeight: isSelected
+                                    ? FontWeight.bold
+                                    : FontWeight.w500,
                               ),
                             ),
                           ],
@@ -617,13 +645,16 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                 // Weight input
                 const Text(
                   'Weight (kg)',
-                  style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                  style:
+                      TextStyle(color: AppColors.textSecondary, fontSize: 13),
                 ),
                 const SizedBox(height: 8),
                 TextField(
                   controller: weightController,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  style: const TextStyle(color: AppColors.textPrimary, fontSize: 18),
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
+                  style: const TextStyle(
+                      color: AppColors.textPrimary, fontSize: 18),
                   decoration: InputDecoration(
                     hintText: 'e.g. 100.0',
                     hintStyle: const TextStyle(color: AppColors.textMuted),
@@ -634,7 +665,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                       borderSide: BorderSide.none,
                     ),
                     suffixText: 'kg',
-                    suffixStyle: const TextStyle(color: AppColors.textSecondary),
+                    suffixStyle:
+                        const TextStyle(color: AppColors.textSecondary),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -652,7 +684,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                       final weight = double.tryParse(weightController.text);
                       if (weight == null || weight <= 0) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Please enter a valid weight.')),
+                          const SnackBar(
+                              content: Text('Please enter a valid weight.')),
                         );
                         return;
                       }
@@ -672,7 +705,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('PR submitted! Awaiting verification.'),
+                              content:
+                                  Text('PR submitted! Awaiting verification.'),
                               backgroundColor: AppColors.success,
                             ),
                           );
@@ -681,7 +715,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Failed to submit record. Try again.'),
+                              content:
+                                  Text('Failed to submit record. Try again.'),
                               backgroundColor: AppColors.error,
                             ),
                           );
@@ -698,7 +733,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                     ),
                     child: const Text(
                       'Submit for Verification',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),

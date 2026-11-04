@@ -37,7 +37,9 @@ class CommentModel {
       userName: json['userName'] ?? '',
       userAvatarUrl: json['userAvatarUrl'] ?? '',
       text: json['text'] ?? '',
-      createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : DateTime.now(),
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'])
+          : DateTime.now(),
     );
   }
 }

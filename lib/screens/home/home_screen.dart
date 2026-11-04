@@ -35,7 +35,9 @@ class _HomeScreenState extends State<HomeScreen> {
       final authProvider = context.read<AuthProvider>();
       if (authProvider.currentUser != null) {
         // Load notifications from Firestore
-        context.read<NotificationProvider>().loadNotifications(authProvider.currentUser!.id);
+        context
+            .read<NotificationProvider>()
+            .loadNotifications(authProvider.currentUser!.id);
 
         final rawPrefs = authProvider.currentUser!.fitnessPreferences;
         final jaccardPrefs = <String>[];
@@ -58,7 +60,9 @@ class _HomeScreenState extends State<HomeScreen> {
         child: RefreshIndicator(
           color: AppColors.primary,
           backgroundColor: AppColors.surfaceElevated,
-          onRefresh: () async { context.read<GymProvider>().loadGyms(); },
+          onRefresh: () async {
+            context.read<GymProvider>().loadGyms();
+          },
           child: CustomScrollView(
             slivers: [
               // ── Header ────────────────────────────────────────────
@@ -97,7 +101,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             IconButton(
                               onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (_) => const WorkoutCalendarScreen()));
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) =>
+                                            const WorkoutCalendarScreen()));
                               },
                               icon: const Icon(Icons.calendar_month_rounded,
                                   color: AppColors.textPrimary, size: 26),
@@ -105,14 +113,22 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             IconButton(
                               onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (_) => const CommunityScreen()));
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) =>
+                                            const CommunityScreen()));
                               },
                               icon: const Icon(Icons.people_outline_rounded,
                                   color: AppColors.textPrimary, size: 26),
                             ),
                             IconButton(
                               onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (_) => const CustomerNotificationsScreen()));
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) =>
+                                            const CustomerNotificationsScreen()));
                               },
                               icon: const Icon(Icons.notifications_none_rounded,
                                   color: AppColors.textPrimary, size: 26),
@@ -194,8 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 onPressed: () => Navigator.pushNamed(
                                     context, AppRoutes.searchResults),
                                 child: const Text(AppStrings.seeAll,
-                                    style:
-                                        TextStyle(color: AppColors.primary)),
+                                    style: TextStyle(color: AppColors.primary)),
                               ),
                             ],
                           ),
@@ -297,8 +312,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
 
-              const SliverToBoxAdapter(
-                  child: SizedBox(height: AppPadding.xl)),
+              const SliverToBoxAdapter(child: SizedBox(height: AppPadding.xl)),
             ],
           ),
         ),

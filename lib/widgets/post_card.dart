@@ -34,8 +34,8 @@ class PostCard extends StatelessWidget {
               children: [
                 const Text(
                   'Posted in ',
-                  style: TextStyle(
-                      color: AppColors.textSecondary, fontSize: 12),
+                  style:
+                      TextStyle(color: AppColors.textSecondary, fontSize: 12),
                 ),
                 Text(
                   post.communityName,
@@ -69,8 +69,7 @@ class PostCard extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: AppSizes.avatarSm / 2,
-                  backgroundImage:
-                      NetworkImage(post.userAvatarUrl),
+                  backgroundImage: NetworkImage(post.userAvatarUrl),
                   backgroundColor: AppColors.surfaceElevated,
                 ),
                 const SizedBox(width: 10),
@@ -98,8 +97,8 @@ class PostCard extends StatelessWidget {
                 ),
                 Text(
                   _formatTime(post.createdAt),
-                  style: const TextStyle(
-                      color: AppColors.textMuted, fontSize: 11),
+                  style:
+                      const TextStyle(color: AppColors.textMuted, fontSize: 11),
                 ),
               ],
             ),
@@ -148,9 +147,7 @@ class PostCard extends StatelessWidget {
                         ? Icons.favorite_rounded
                         : Icons.favorite_border_rounded,
                     label: post.likeCount.toString(),
-                    color: isLiked
-                        ? AppColors.heart
-                        : AppColors.textSecondary,
+                    color: isLiked ? AppColors.heart : AppColors.textSecondary,
                     onTap: () => provider.toggleLike(post.id, currentUserId),
                   ),
                 ),
@@ -178,7 +175,8 @@ class PostCard extends StatelessWidget {
     );
   }
 
-  void _showCommentsSheet(BuildContext context, AuthProvider auth, String currentUserId) {
+  void _showCommentsSheet(
+      BuildContext context, AuthProvider auth, String currentUserId) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -225,8 +223,8 @@ class _ActionButton extends StatelessWidget {
       icon: Icon(icon, size: 18, color: color),
       label: Text(
         label,
-        style: TextStyle(
-            color: color, fontSize: 13, fontWeight: FontWeight.w500),
+        style:
+            TextStyle(color: color, fontSize: 13, fontWeight: FontWeight.w500),
       ),
     );
   }
@@ -293,7 +291,8 @@ class _CommentsSheetState extends State<_CommentsSheet> {
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(
-                      child: CircularProgressIndicator(color: AppColors.primary));
+                      child:
+                          CircularProgressIndicator(color: AppColors.primary));
                 }
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(
@@ -392,8 +391,8 @@ class _CommentsSheetState extends State<_CommentsSheet> {
                         ),
                         filled: true,
                         fillColor: AppColors.surface,
-                        contentPadding:
-                            const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
                       ),
                     ),
                   ),
@@ -411,7 +410,8 @@ class _CommentsSheetState extends State<_CommentsSheet> {
                         _commentController.clear();
                       }
                     },
-                    icon: const Icon(Icons.send_rounded, color: AppColors.primary),
+                    icon: const Icon(Icons.send_rounded,
+                        color: AppColors.primary),
                   ),
                 ],
               ),
@@ -429,4 +429,3 @@ class _CommentsSheetState extends State<_CommentsSheet> {
     return '${diff.inDays}d ago';
   }
 }
-

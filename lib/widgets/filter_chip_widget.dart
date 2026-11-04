@@ -28,7 +28,12 @@ class FilterChipWidget extends StatelessWidget {
             width: 1.5,
           ),
           boxShadow: isSelected
-              ? [BoxShadow(color: AppColors.primary.withValues(alpha: 0.2), blurRadius: 4, offset: const Offset(0, 2))]
+              ? [
+                  BoxShadow(
+                      color: AppColors.primary.withValues(alpha: 0.2),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2))
+                ]
               : null,
         ),
         child: Text(

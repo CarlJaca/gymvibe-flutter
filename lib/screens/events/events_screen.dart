@@ -11,7 +11,13 @@ class EventsScreen extends StatefulWidget {
 }
 
 class _EventsScreenState extends State<EventsScreen> {
-  final List<String> _categories = ['All', 'Workout', 'Dance', 'Strength', 'Wellness'];
+  final List<String> _categories = [
+    'All',
+    'Workout',
+    'Dance',
+    'Strength',
+    'Wellness'
+  ];
   String _selectedCategory = 'All';
 
   @override
@@ -44,7 +50,8 @@ class _EventsScreenState extends State<EventsScreen> {
                 // ── Header ────────────────────────────────────────────
                 const SliverToBoxAdapter(
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(AppPadding.md, AppPadding.md, AppPadding.md, AppPadding.sm),
+                    padding: EdgeInsets.fromLTRB(AppPadding.md, AppPadding.md,
+                        AppPadding.md, AppPadding.sm),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -77,7 +84,8 @@ class _EventsScreenState extends State<EventsScreen> {
                 // ── Search Bar ─────────────────────────────────────────
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppPadding.md, vertical: AppPadding.sm),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppPadding.md, vertical: AppPadding.sm),
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       decoration: BoxDecoration(
@@ -88,15 +96,18 @@ class _EventsScreenState extends State<EventsScreen> {
                       child: const TextField(
                         decoration: InputDecoration(
                           hintText: 'Search events...',
-                          hintStyle: TextStyle(color: AppColors.textMuted, fontSize: 14),
+                          hintStyle: TextStyle(
+                              color: AppColors.textMuted, fontSize: 14),
                           border: InputBorder.none,
                           enabledBorder: InputBorder.none,
                           focusedBorder: InputBorder.none,
                           errorBorder: InputBorder.none,
                           disabledBorder: InputBorder.none,
-                          icon: Icon(Icons.search_rounded, color: AppColors.textMuted, size: 20),
+                          icon: Icon(Icons.search_rounded,
+                              color: AppColors.textMuted, size: 20),
                         ),
-                        style: TextStyle(color: AppColors.textPrimary, fontSize: 14),
+                        style: TextStyle(
+                            color: AppColors.textPrimary, fontSize: 14),
                       ),
                     ),
                   ),
@@ -108,27 +119,40 @@ class _EventsScreenState extends State<EventsScreen> {
                     height: 48,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.symmetric(horizontal: AppPadding.md),
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: AppPadding.md),
                       itemCount: _categories.length,
                       itemBuilder: (context, index) {
                         final category = _categories[index];
                         final isSelected = _selectedCategory == category;
                         return GestureDetector(
-                          onTap: () => setState(() => _selectedCategory = category),
+                          onTap: () =>
+                              setState(() => _selectedCategory = category),
                           child: Container(
-                            margin: const EdgeInsets.only(right: 8, top: 8, bottom: 8),
+                            margin: const EdgeInsets.only(
+                                right: 8, top: 8, bottom: 8),
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             decoration: BoxDecoration(
-                              color: isSelected ? AppColors.primary : AppColors.surfaceElevated,
-                              borderRadius: BorderRadius.circular(AppRadius.full),
-                              border: Border.all(color: isSelected ? AppColors.primary : AppColors.border),
+                              color: isSelected
+                                  ? AppColors.primary
+                                  : AppColors.surfaceElevated,
+                              borderRadius:
+                                  BorderRadius.circular(AppRadius.full),
+                              border: Border.all(
+                                  color: isSelected
+                                      ? AppColors.primary
+                                      : AppColors.border),
                             ),
                             alignment: Alignment.center,
                             child: Text(
                               category,
                               style: TextStyle(
-                                color: isSelected ? AppColors.backgroundDark : AppColors.textPrimary,
-                                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                                color: isSelected
+                                    ? AppColors.backgroundDark
+                                    : AppColors.textPrimary,
+                                fontWeight: isSelected
+                                    ? FontWeight.bold
+                                    : FontWeight.w500,
                                 fontSize: 13,
                               ),
                             ),
@@ -139,31 +163,37 @@ class _EventsScreenState extends State<EventsScreen> {
                   ),
                 ),
 
-                const SliverToBoxAdapter(child: SizedBox(height: AppPadding.md)),
+                const SliverToBoxAdapter(
+                    child: SizedBox(height: AppPadding.md)),
 
                 // ── Featured Events ────────────────────────────────────
-                if (featuredEvents.isNotEmpty && _selectedCategory == 'All') ...[
+                if (featuredEvents.isNotEmpty &&
+                    _selectedCategory == 'All') ...[
                   SliverToBoxAdapter(
                     child: SizedBox(
                       height: 220,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.symmetric(horizontal: AppPadding.md),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: AppPadding.md),
                         itemCount: featuredEvents.length,
                         itemBuilder: (context, index) {
                           final event = featuredEvents[index];
-                          return _buildFeaturedEventCard(context, event, provider);
+                          return _buildFeaturedEventCard(
+                              context, event, provider);
                         },
                       ),
                     ),
                   ),
-                  const SliverToBoxAdapter(child: SizedBox(height: AppPadding.lg)),
+                  const SliverToBoxAdapter(
+                      child: SizedBox(height: AppPadding.lg)),
                 ],
 
                 // ── Upcoming Events List ────────────────────────────────
                 const SliverToBoxAdapter(
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: AppPadding.md, vertical: 8),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: AppPadding.md, vertical: 8),
                     child: Text(
                       'Upcoming Events',
                       style: TextStyle(
@@ -189,18 +219,22 @@ class _EventsScreenState extends State<EventsScreen> {
                   )
                 else
                   SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppPadding.md, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppPadding.md, vertical: 8),
                     sliver: SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
-                          return _buildEventCard(context, displayEvents[index], provider);
+                          return _buildEventCard(
+                              context, displayEvents[index], provider);
                         },
                         childCount: displayEvents.length,
                       ),
                     ),
                   ),
-                  
-                const SliverToBoxAdapter(child: SizedBox(height: AppSizes.bottomNavHeight + AppPadding.xl)),
+
+                const SliverToBoxAdapter(
+                    child: SizedBox(
+                        height: AppSizes.bottomNavHeight + AppPadding.xl)),
               ],
             );
           },
@@ -208,16 +242,20 @@ class _EventsScreenState extends State<EventsScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         heroTag: null,
-        onPressed: () => Navigator.pushNamed(context, '/my-events'), // Added quick access to My Events as requested
+        onPressed: () => Navigator.pushNamed(context,
+            '/my-events'), // Added quick access to My Events as requested
         backgroundColor: AppColors.surfaceElevated,
-        child: const Icon(Icons.event_available_rounded, color: AppColors.primary),
+        child:
+            const Icon(Icons.event_available_rounded, color: AppColors.primary),
       ),
     );
   }
 
-  Widget _buildFeaturedEventCard(BuildContext context, Map<String, dynamic> event, EventsProvider provider) {
+  Widget _buildFeaturedEventCard(BuildContext context,
+      Map<String, dynamic> event, EventsProvider provider) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, '/event-details', arguments: event),
+      onTap: () =>
+          Navigator.pushNamed(context, '/event-details', arguments: event),
       child: Container(
         width: 320,
         margin: const EdgeInsets.only(right: 16),
@@ -254,28 +292,38 @@ class _EventsScreenState extends State<EventsScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
                             color: AppColors.primary,
                             borderRadius: BorderRadius.circular(AppRadius.sm),
                           ),
-                          child: const Text('FEATURED', style: TextStyle(color: Colors.black, fontSize: 9, fontWeight: FontWeight.bold)),
+                          child: const Text('FEATURED',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.bold)),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           event['title'],
-                          style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 4),
                         Row(
                           children: [
-                            const Icon(Icons.calendar_month_rounded, color: Colors.white70, size: 14),
+                            const Icon(Icons.calendar_month_rounded,
+                                color: Colors.white70, size: 14),
                             const SizedBox(width: 4),
                             Text(
                               '${event['date']} • ${event['time']}',
-                              style: const TextStyle(color: Colors.white70, fontSize: 12),
+                              style: const TextStyle(
+                                  color: Colors.white70, fontSize: 12),
                             ),
                           ],
                         ),
@@ -285,8 +333,11 @@ class _EventsScreenState extends State<EventsScreen> {
                   IconButton(
                     onPressed: () => provider.toggleEventSave(event['id']),
                     icon: Icon(
-                      event['isSaved'] ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
-                      color: event['isSaved'] ? AppColors.primary : Colors.white,
+                      event['isSaved']
+                          ? Icons.bookmark_rounded
+                          : Icons.bookmark_border_rounded,
+                      color:
+                          event['isSaved'] ? AppColors.primary : Colors.white,
                     ),
                   ),
                 ],
@@ -298,14 +349,17 @@ class _EventsScreenState extends State<EventsScreen> {
     );
   }
 
-  Widget _buildEventCard(BuildContext context, Map<String, dynamic> event, EventsProvider provider) {
+  Widget _buildEventCard(BuildContext context, Map<String, dynamic> event,
+      EventsProvider provider) {
     final int slots = (event['maxSlots'] as num?)?.toInt() ?? 50;
     final int registered = (event['registeredCount'] as num?)?.toInt() ?? 0;
     final bool isFull = registered >= slots;
-    final bool isRegistered = provider.myRegisteredEvents.any((e) => e['id'] == event['id']);
+    final bool isRegistered =
+        provider.myRegisteredEvents.any((e) => e['id'] == event['id']);
 
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, '/event-details', arguments: event),
+      onTap: () =>
+          Navigator.pushNamed(context, '/event-details', arguments: event),
       child: Container(
         margin: const EdgeInsets.only(bottom: AppPadding.md),
         decoration: BoxDecoration(
@@ -320,7 +374,8 @@ class _EventsScreenState extends State<EventsScreen> {
             Stack(
               children: [
                 ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
+                  borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(AppRadius.lg)),
                   child: Image.network(
                     event['image'],
                     height: 140,
@@ -332,14 +387,18 @@ class _EventsScreenState extends State<EventsScreen> {
                   top: 12,
                   left: 12,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
                       color: AppColors.backgroundDark.withValues(alpha: 0.8),
                       borderRadius: BorderRadius.circular(AppRadius.full),
                     ),
                     child: Text(
                       event['category'],
-                      style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w600),
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600),
                     ),
                   ),
                 ),
@@ -349,14 +408,17 @@ class _EventsScreenState extends State<EventsScreen> {
                   child: IconButton(
                     onPressed: () => provider.toggleEventSave(event['id']),
                     icon: Icon(
-                      event['isSaved'] ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
-                      color: event['isSaved'] ? AppColors.primary : Colors.white,
+                      event['isSaved']
+                          ? Icons.bookmark_rounded
+                          : Icons.bookmark_border_rounded,
+                      color:
+                          event['isSaved'] ? AppColors.primary : Colors.white,
                     ),
                   ),
                 ),
               ],
             ),
-            
+
             // Details
             Padding(
               padding: const EdgeInsets.all(AppPadding.md),
@@ -369,36 +431,46 @@ class _EventsScreenState extends State<EventsScreen> {
                       Expanded(
                         child: Text(
                           event['title'],
-                          style: const TextStyle(color: AppColors.textPrimary, fontSize: 18, fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                              color: AppColors.textPrimary,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       Text(
                         event['distance'],
-                        style: const TextStyle(color: AppColors.primary, fontSize: 12, fontWeight: FontWeight.w600),
+                        style: const TextStyle(
+                            color: AppColors.primary,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600),
                       ),
                     ],
                   ),
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Icon(Icons.access_time_rounded, color: AppColors.textSecondary, size: 14),
+                      const Icon(Icons.access_time_rounded,
+                          color: AppColors.textSecondary, size: 14),
                       const SizedBox(width: 4),
                       Text(
                         '${event['date']} at ${event['time']}',
-                        style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                        style: const TextStyle(
+                            color: AppColors.textSecondary, fontSize: 12),
                       ),
                     ],
                   ),
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      const Icon(Icons.location_on_outlined, color: AppColors.textSecondary, size: 14),
+                      const Icon(Icons.location_on_outlined,
+                          color: AppColors.textSecondary, size: 14),
                       const SizedBox(width: 4),
                       Text(
                         event['location'],
-                        style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                        style: const TextStyle(
+                            color: AppColors.textSecondary, fontSize: 12),
                       ),
                     ],
                   ),
@@ -411,39 +483,55 @@ class _EventsScreenState extends State<EventsScreen> {
                         children: [
                           Row(
                             children: [
-                              const Icon(Icons.people_alt_outlined, size: 14, color: AppColors.textSecondary),
+                              const Icon(Icons.people_alt_outlined,
+                                  size: 14, color: AppColors.textSecondary),
                               const SizedBox(width: 4),
                               Text(
                                 '$registered / $slots Joined',
                                 style: TextStyle(
-                                  color: isFull ? AppColors.error : AppColors.textPrimary, 
-                                  fontSize: 12, 
-                                  fontWeight: FontWeight.bold
-                                ),
+                                    color: isFull
+                                        ? AppColors.error
+                                        : AppColors.textPrimary,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            isFull ? 'Sold Out' : '${slots - registered} slots remaining',
+                            isFull
+                                ? 'Sold Out'
+                                : '${slots - registered} slots remaining',
                             style: TextStyle(
-                              color: isFull ? AppColors.error : AppColors.primary, 
-                              fontSize: 11
-                            ),
+                                color: isFull
+                                    ? AppColors.error
+                                    : AppColors.primary,
+                                fontSize: 11),
                           ),
                         ],
                       ),
                       ElevatedButton(
-                        onPressed: (isFull || isRegistered) ? null : () {
-                          Navigator.pushNamed(context, '/event-details', arguments: event);
-                        },
+                        onPressed: (isFull || isRegistered)
+                            ? null
+                            : () {
+                                Navigator.pushNamed(context, '/event-details',
+                                    arguments: event);
+                              },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: (isFull || isRegistered) ? AppColors.surfaceElevated : AppColors.primary,
-                          foregroundColor: (isFull || isRegistered) ? AppColors.textMuted : AppColors.backgroundDark,
+                          backgroundColor: (isFull || isRegistered)
+                              ? AppColors.surfaceElevated
+                              : AppColors.primary,
+                          foregroundColor: (isFull || isRegistered)
+                              ? AppColors.textMuted
+                              : AppColors.backgroundDark,
                           padding: const EdgeInsets.symmetric(horizontal: 24),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.full)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(AppRadius.full)),
                         ),
-                        child: Text(isRegistered ? 'Registered' : (isFull ? 'Full' : 'Register')),
+                        child: Text(isRegistered
+                            ? 'Registered'
+                            : (isFull ? 'Full' : 'Register')),
                       ),
                     ],
                   ),

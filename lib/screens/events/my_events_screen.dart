@@ -10,7 +10,8 @@ class MyEventsScreen extends StatefulWidget {
   State<MyEventsScreen> createState() => _MyEventsScreenState();
 }
 
-class _MyEventsScreenState extends State<MyEventsScreen> with SingleTickerProviderStateMixin {
+class _MyEventsScreenState extends State<MyEventsScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -34,17 +35,22 @@ class _MyEventsScreenState extends State<MyEventsScreen> with SingleTickerProvid
           children: [
             // ── Header ─────────────────────────────────────────────
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppPadding.md, vertical: AppPadding.sm),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppPadding.md, vertical: AppPadding.sm),
               child: Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
+                    icon: const Icon(Icons.arrow_back_rounded,
+                        color: AppColors.textPrimary),
                     onPressed: () => Navigator.pop(context),
                   ),
                   const Expanded(
                     child: Text(
                       'My Events',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -95,9 +101,11 @@ class _MyEventsScreenState extends State<MyEventsScreen> with SingleTickerProvid
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.event_busy_rounded, size: 64, color: AppColors.textMuted),
+            Icon(Icons.event_busy_rounded,
+                size: 64, color: AppColors.textMuted),
             SizedBox(height: 16),
-            Text('No upcoming events yet', style: TextStyle(color: AppColors.textMuted, fontSize: 16)),
+            Text('No upcoming events yet',
+                style: TextStyle(color: AppColors.textMuted, fontSize: 16)),
           ],
         ),
       );
@@ -124,32 +132,44 @@ class _MyEventsScreenState extends State<MyEventsScreen> with SingleTickerProvid
                   color: AppColors.primary.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.notifications_active_rounded, color: AppColors.primary),
+                child: const Icon(Icons.notifications_active_rounded,
+                    color: AppColors.primary),
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Upcoming Reminder', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                    const Text('Upcoming Reminder',
+                        style: TextStyle(
+                            color: AppColors.textSecondary, fontSize: 12)),
                     const SizedBox(height: 4),
-                    Text('${events[0]['title']} is in 2 days!', style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold)),
+                    Text('${events[0]['title']} is in 2 days!',
+                        style: const TextStyle(
+                            color: AppColors.textPrimary,
+                            fontWeight: FontWeight.bold)),
                   ],
                 ),
               ),
               TextButton(
-                onPressed: () => Navigator.pushNamed(context, '/event-details', arguments: events[0]),
+                onPressed: () => Navigator.pushNamed(context, '/event-details',
+                    arguments: events[0]),
                 style: TextButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   backgroundColor: AppColors.surfaceElevated,
                 ),
-                child: const Text('Details', style: TextStyle(color: AppColors.primary, fontSize: 12)),
+                child: const Text('Details',
+                    style: TextStyle(color: AppColors.primary, fontSize: 12)),
               ),
             ],
           ),
         ),
-        
-        const Text('Explore More', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+
+        const Text('Explore More',
+            style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary)),
         const SizedBox(height: 12),
         ...events.map((e) => _buildEventCard(e, status: 'Upcoming')),
       ],
@@ -162,9 +182,11 @@ class _MyEventsScreenState extends State<MyEventsScreen> with SingleTickerProvid
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.event_busy_rounded, size: 64, color: AppColors.textMuted),
+            Icon(Icons.event_busy_rounded,
+                size: 64, color: AppColors.textMuted),
             SizedBox(height: 16),
-            Text('No registered events yet', style: TextStyle(color: AppColors.textSecondary, fontSize: 16)),
+            Text('No registered events yet',
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 16)),
           ],
         ),
       );
@@ -173,7 +195,8 @@ class _MyEventsScreenState extends State<MyEventsScreen> with SingleTickerProvid
       padding: const EdgeInsets.all(AppPadding.md),
       itemCount: events.length,
       itemBuilder: (context, index) {
-        return _buildEventCard(events[index], status: 'Registered', isRegistered: true);
+        return _buildEventCard(events[index],
+            status: 'Registered', isRegistered: true);
       },
     );
   }
@@ -186,7 +209,8 @@ class _MyEventsScreenState extends State<MyEventsScreen> with SingleTickerProvid
           children: [
             Icon(Icons.history_rounded, size: 64, color: AppColors.textMuted),
             SizedBox(height: 16),
-            Text('No past events', style: TextStyle(color: AppColors.textSecondary, fontSize: 16)),
+            Text('No past events',
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 16)),
           ],
         ),
       );
@@ -195,14 +219,19 @@ class _MyEventsScreenState extends State<MyEventsScreen> with SingleTickerProvid
       padding: const EdgeInsets.all(AppPadding.md),
       itemCount: events.length,
       itemBuilder: (context, index) {
-        return _buildEventCard(events[index], status: 'Completed', isPast: true);
+        return _buildEventCard(events[index],
+            status: 'Completed', isPast: true);
       },
     );
   }
 
-  Widget _buildEventCard(Map<String, dynamic> event, {required String status, bool isRegistered = false, bool isPast = false}) {
+  Widget _buildEventCard(Map<String, dynamic> event,
+      {required String status,
+      bool isRegistered = false,
+      bool isPast = false}) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, '/event-details', arguments: event),
+      onTap: () =>
+          Navigator.pushNamed(context, '/event-details', arguments: event),
       child: Container(
         margin: const EdgeInsets.only(bottom: AppPadding.md),
         padding: const EdgeInsets.all(12),
@@ -215,62 +244,76 @@ class _MyEventsScreenState extends State<MyEventsScreen> with SingleTickerProvid
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Calendar Date Box
-            Builder(
-              builder: (context) {
-                final dateStr = event['date'] ?? 'TBA';
-                final dateParts = dateStr.split(' ');
-                String dayStr = '-';
-                String monthStr = 'TBA';
-                
-                if (dateParts.length >= 2) {
-                  // Format: 'May 25, 2025'
-                  monthStr = dateParts[0];
-                  dayStr = dateParts[1].replaceAll(',', '');
-                } else if (dateParts.length == 1 && dateParts[0].contains('/')) {
-                  // Format: '5/25/2025'
-                  final parts = dateParts[0].split('/');
-                  if (parts.length >= 2) {
-                    final month = int.tryParse(parts[0]) ?? 1;
-                    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                    monthStr = (month >= 1 && month <= 12) ? months[month - 1] : '';
-                    dayStr = parts[1];
-                  }
-                }
+            Builder(builder: (context) {
+              final dateStr = event['date'] ?? 'TBA';
+              final dateParts = dateStr.split(' ');
+              String dayStr = '-';
+              String monthStr = 'TBA';
 
-                return Container(
-                  width: 50,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: isPast ? AppColors.surfaceElevated : AppColors.primary.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(AppRadius.sm),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        dayStr,
-                        style: TextStyle(
-                          color: isPast ? AppColors.textMuted : AppColors.primary,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          height: 1.0,
-                        ),
-                      ),
-                      Text(
-                        monthStr,
-                        style: TextStyle(
-                          color: isPast ? AppColors.textMuted : AppColors.primary,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
+              if (dateParts.length >= 2) {
+                // Format: 'May 25, 2025'
+                monthStr = dateParts[0];
+                dayStr = dateParts[1].replaceAll(',', '');
+              } else if (dateParts.length == 1 && dateParts[0].contains('/')) {
+                // Format: '5/25/2025'
+                final parts = dateParts[0].split('/');
+                if (parts.length >= 2) {
+                  final month = int.tryParse(parts[0]) ?? 1;
+                  const months = [
+                    'Jan',
+                    'Feb',
+                    'Mar',
+                    'Apr',
+                    'May',
+                    'Jun',
+                    'Jul',
+                    'Aug',
+                    'Sep',
+                    'Oct',
+                    'Nov',
+                    'Dec'
+                  ];
+                  monthStr =
+                      (month >= 1 && month <= 12) ? months[month - 1] : '';
+                  dayStr = parts[1];
+                }
               }
-            ),
+
+              return Container(
+                width: 50,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: isPast
+                      ? AppColors.surfaceElevated
+                      : AppColors.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      dayStr,
+                      style: TextStyle(
+                        color: isPast ? AppColors.textMuted : AppColors.primary,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        height: 1.0,
+                      ),
+                    ),
+                    Text(
+                      monthStr,
+                      style: TextStyle(
+                        color: isPast ? AppColors.textMuted : AppColors.primary,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
             const SizedBox(width: 12),
-            
+
             // Details
             Expanded(
               child: Column(
@@ -283,7 +326,9 @@ class _MyEventsScreenState extends State<MyEventsScreen> with SingleTickerProvid
                         child: Text(
                           event['title'],
                           style: TextStyle(
-                            color: isPast ? AppColors.textSecondary : AppColors.textPrimary,
+                            color: isPast
+                                ? AppColors.textSecondary
+                                : AppColors.textPrimary,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
@@ -292,15 +337,20 @@ class _MyEventsScreenState extends State<MyEventsScreen> with SingleTickerProvid
                         ),
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: isRegistered ? AppColors.success.withValues(alpha: 0.15) : AppColors.surfaceElevated,
+                          color: isRegistered
+                              ? AppColors.success.withValues(alpha: 0.15)
+                              : AppColors.surfaceElevated,
                           borderRadius: BorderRadius.circular(AppRadius.full),
                         ),
                         child: Text(
                           status,
                           style: TextStyle(
-                            color: isRegistered ? AppColors.success : AppColors.textSecondary,
+                            color: isRegistered
+                                ? AppColors.success
+                                : AppColors.textSecondary,
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
                           ),
@@ -311,23 +361,27 @@ class _MyEventsScreenState extends State<MyEventsScreen> with SingleTickerProvid
                   const SizedBox(height: 6),
                   Row(
                     children: [
-                      const Icon(Icons.access_time_rounded, color: AppColors.textMuted, size: 14),
+                      const Icon(Icons.access_time_rounded,
+                          color: AppColors.textMuted, size: 14),
                       const SizedBox(width: 4),
                       Text(
                         event['time'],
-                        style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                        style: const TextStyle(
+                            color: AppColors.textSecondary, fontSize: 12),
                       ),
                     ],
                   ),
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      const Icon(Icons.location_on_outlined, color: AppColors.textMuted, size: 14),
+                      const Icon(Icons.location_on_outlined,
+                          color: AppColors.textMuted, size: 14),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
                           event['location'],
-                          style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                          style: const TextStyle(
+                              color: AppColors.textSecondary, fontSize: 12),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),

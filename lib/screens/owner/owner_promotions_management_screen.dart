@@ -45,7 +45,8 @@ class _OwnerPromotionsManagementScreenState
           children: [
             // ── Header ──────────────────────────────────────────────
             const Padding(
-              padding: EdgeInsets.fromLTRB(AppPadding.md, AppPadding.md, AppPadding.md, AppPadding.sm),
+              padding: EdgeInsets.fromLTRB(
+                  AppPadding.md, AppPadding.md, AppPadding.md, AppPadding.sm),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,7 +95,7 @@ class _OwnerPromotionsManagementScreenState
                 Tab(text: 'Paused'),
               ],
             ),
-            
+
             // ── Search & Filter ─────────────────────────────────────
             Padding(
               padding: const EdgeInsets.all(AppPadding.md),
@@ -111,15 +112,18 @@ class _OwnerPromotionsManagementScreenState
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.search_rounded, color: AppColors.textSecondary, size: 20),
+                          const Icon(Icons.search_rounded,
+                              color: AppColors.textSecondary, size: 20),
                           const SizedBox(width: 8),
                           Expanded(
                             child: TextField(
                               controller: _searchController,
-                              onChanged: (value) => setState(() => _searchQuery = value.toLowerCase()),
+                              onChanged: (value) => setState(
+                                  () => _searchQuery = value.toLowerCase()),
                               decoration: const InputDecoration(
                                 hintText: 'Search promotions...',
-                                hintStyle: TextStyle(color: AppColors.textMuted, fontSize: 14),
+                                hintStyle: TextStyle(
+                                    color: AppColors.textMuted, fontSize: 14),
                                 border: InputBorder.none,
                                 enabledBorder: InputBorder.none,
                                 focusedBorder: InputBorder.none,
@@ -128,7 +132,8 @@ class _OwnerPromotionsManagementScreenState
                                 isDense: true,
                                 contentPadding: EdgeInsets.zero,
                               ),
-                              style: const TextStyle(color: Colors.white, fontSize: 14),
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
                             ),
                           ),
                         ],
@@ -140,12 +145,21 @@ class _OwnerPromotionsManagementScreenState
                     height: 44,
                     width: 44,
                     decoration: BoxDecoration(
-                      color: _selectedType != 'All' ? AppColors.primary.withValues(alpha: 0.2) : AppColors.surface,
+                      color: _selectedType != 'All'
+                          ? AppColors.primary.withValues(alpha: 0.2)
+                          : AppColors.surface,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: _selectedType != 'All' ? AppColors.primary : AppColors.border),
+                      border: Border.all(
+                          color: _selectedType != 'All'
+                              ? AppColors.primary
+                              : AppColors.border),
                     ),
                     child: IconButton(
-                      icon: Icon(Icons.filter_list_rounded, color: _selectedType != 'All' ? AppColors.primary : AppColors.textPrimary, size: 20),
+                      icon: Icon(Icons.filter_list_rounded,
+                          color: _selectedType != 'All'
+                              ? AppColors.primary
+                              : AppColors.textPrimary,
+                          size: 20),
                       onPressed: _showFilterModal,
                     ),
                   ),
@@ -159,21 +173,29 @@ class _OwnerPromotionsManagementScreenState
                 builder: (context, promoProv, gymProv, _) {
                   if (promoProv.isLoading) {
                     return const Center(
-                      child: CircularProgressIndicator(color: AppColors.primary),
+                      child:
+                          CircularProgressIndicator(color: AppColors.primary),
                     );
                   }
-                  
+
                   final ownerGymId = gymProv.ownerGym.id;
-                  
+
                   bool matchesFilter(Map<String, dynamic> p) {
                     if (p['gymId'] != ownerGymId) return false;
-                    if (_selectedType != 'All' && p['type']?.toString().toLowerCase() != _selectedType.toLowerCase()) return false;
-                    if (_searchQuery.isNotEmpty && !p['title'].toString().toLowerCase().contains(_searchQuery)) return false;
+                    if (_selectedType != 'All' &&
+                        p['type']?.toString().toLowerCase() !=
+                            _selectedType.toLowerCase()) return false;
+                    if (_searchQuery.isNotEmpty &&
+                        !p['title']
+                            .toString()
+                            .toLowerCase()
+                            .contains(_searchQuery)) return false;
                     return true;
                   }
 
                   final active = promoProv.active.where(matchesFilter).toList();
-                  final scheduled = promoProv.scheduled.where(matchesFilter).toList();
+                  final scheduled =
+                      promoProv.scheduled.where(matchesFilter).toList();
                   final paused = promoProv.paused.where(matchesFilter).toList();
 
                   return TabBarView(
@@ -181,7 +203,8 @@ class _OwnerPromotionsManagementScreenState
                     children: [
                       _buildList(active, promoProv),
                       _buildList(scheduled, promoProv),
-                      _buildEmptyState('No expired promotions', 'Check back later.'),
+                      _buildEmptyState(
+                          'No expired promotions', 'Check back later.'),
                       _buildList(paused, promoProv),
                     ],
                   );
@@ -193,7 +216,8 @@ class _OwnerPromotionsManagementScreenState
       ),
       floatingActionButton: FloatingActionButton(
         heroTag: null,
-        onPressed: () => Navigator.pushNamed(context, AppRoutes.ownerCreatePromotion),
+        onPressed: () =>
+            Navigator.pushNamed(context, AppRoutes.ownerCreatePromotion),
         backgroundColor: AppColors.primary,
         shape: const CircleBorder(),
         child: const Icon(Icons.add_rounded, color: Colors.white, size: 32),
@@ -201,13 +225,17 @@ class _OwnerPromotionsManagementScreenState
     );
   }
 
-  Widget _buildList(List<Map<String, dynamic>> promos, PromotionsProvider promoProv) {
-    if (promos.isEmpty) return _buildEmptyState('No promotions here', 'Create a new promotion to get started.');
+  Widget _buildList(
+      List<Map<String, dynamic>> promos, PromotionsProvider promoProv) {
+    if (promos.isEmpty)
+      return _buildEmptyState(
+          'No promotions here', 'Create a new promotion to get started.');
     return ListView.builder(
       padding: const EdgeInsets.only(
           left: AppPadding.md, right: AppPadding.md, top: 4, bottom: 80),
       itemCount: promos.length,
-      itemBuilder: (context, i) => _buildPromoCard(context, promos[i], promoProv),
+      itemBuilder: (context, i) =>
+          _buildPromoCard(context, promos[i], promoProv),
     );
   }
 
@@ -225,51 +253,59 @@ class _OwnerPromotionsManagementScreenState
                   fontSize: 18,
                   fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
-          Text(subtitle, style: const TextStyle(color: AppColors.textSecondary)),
+          Text(subtitle,
+              style: const TextStyle(color: AppColors.textSecondary)),
         ],
       ),
     );
   }
 
-  Widget _buildStatusOption(BuildContext context, Map<String, dynamic> promo, String status) {
+  Widget _buildStatusOption(
+      BuildContext context, Map<String, dynamic> promo, String status) {
     return ListTile(
       title: Text(status, style: const TextStyle(color: Colors.white)),
-      trailing: promo['status'] == status ? const Icon(Icons.check, color: AppColors.primary) : null,
+      trailing: promo['status'] == status
+          ? const Icon(Icons.check, color: AppColors.primary)
+          : null,
       onTap: () {
         final newPromo = Map<String, dynamic>.from(promo);
         newPromo['status'] = status;
         context.read<PromotionsProvider>().updatePromotion(promo, newPromo);
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Status changed to $status')));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Status changed to $status')));
       },
     );
   }
 
-  Widget _buildPromoCard(BuildContext context, Map<String, dynamic> promo, PromotionsProvider promoProv) {
+  Widget _buildPromoCard(BuildContext context, Map<String, dynamic> promo,
+      PromotionsProvider promoProv) {
     final Color cardColor = promo['color'] is Color
         ? promo['color'] as Color
-        : (promo['color'] is int ? Color(promo['color'] as int) : AppColors.primary);
-    
+        : (promo['color'] is int
+            ? Color(promo['color'] as int)
+            : AppColors.primary);
+
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(
-          builder: (_) => OwnerPromotionDetailScreen(promotion: promo)
-        ));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => OwnerPromotionDetailScreen(promotion: promo)));
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: AppPadding.md),
         decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: AppColors.border),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.2),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            )
-          ]
-        ),
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: AppColors.border),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.2),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              )
+            ]),
         clipBehavior: Clip.antiAlias,
         child: Column(
           children: [
@@ -300,40 +336,57 @@ class _OwnerPromotionsManagementScreenState
                               showModalBottomSheet(
                                 context: context,
                                 backgroundColor: AppColors.surface,
-                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(24))),
                                 builder: (_) => Padding(
                                   padding: const EdgeInsets.all(AppPadding.lg),
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      const Text('Change Promotion Status', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+                                      const Text('Change Promotion Status',
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white)),
                                       const SizedBox(height: 16),
-                                      _buildStatusOption(context, promo, 'Active'),
-                                      _buildStatusOption(context, promo, 'Scheduled'),
-                                      _buildStatusOption(context, promo, 'Paused'),
-                                      _buildStatusOption(context, promo, 'Expired'),
+                                      _buildStatusOption(
+                                          context, promo, 'Active'),
+                                      _buildStatusOption(
+                                          context, promo, 'Scheduled'),
+                                      _buildStatusOption(
+                                          context, promo, 'Paused'),
+                                      _buildStatusOption(
+                                          context, promo, 'Expired'),
                                     ],
                                   ),
                                 ),
                               );
                             },
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 4),
                               decoration: BoxDecoration(
                                 color: Colors.black.withValues(alpha: 0.3),
                                 borderRadius: BorderRadius.circular(8),
-                                border: Border.all(color: Colors.white.withValues(alpha: 0.5)),
+                                border: Border.all(
+                                    color: Colors.white.withValues(alpha: 0.5)),
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
                                     promo['status'] ?? 'Active',
-                                    style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                   const SizedBox(width: 4),
-                                  const Icon(Icons.arrow_drop_down, color: Colors.white, size: 14),
+                                  const Icon(Icons.arrow_drop_down,
+                                      color: Colors.white, size: 14),
                                 ],
                               ),
                             ),
@@ -370,15 +423,18 @@ class _OwnerPromotionsManagementScreenState
                               overflow: TextOverflow.ellipsis),
                           const SizedBox(height: 6),
                           Text(
-                            promo['description'] ?? 'Enjoy special discounts on memberships.',
-                            style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                            promo['description'] ??
+                                'Enjoy special discounts on memberships.',
+                            style: const TextStyle(
+                                color: AppColors.textSecondary, fontSize: 12),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: 12),
                           Row(
                             children: [
-                              const Icon(Icons.calendar_today_rounded, size: 14, color: AppColors.textMuted),
+                              const Icon(Icons.calendar_today_rounded,
+                                  size: 14, color: AppColors.textMuted),
                               const SizedBox(width: 4),
                               Text(promo['dates'],
                                   style: const TextStyle(
@@ -389,12 +445,20 @@ class _OwnerPromotionsManagementScreenState
                           const SizedBox(height: 12),
                           Row(
                             children: [
-                              const Icon(Icons.redeem_rounded, size: 14, color: AppColors.primary),
+                              const Icon(Icons.redeem_rounded,
+                                  size: 14, color: AppColors.primary),
                               const SizedBox(width: 6),
-                              Text('${promo['claimedCount'] ?? promo['redemptions'] ?? 0}',
-                                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.white)),
+                              Text(
+                                  '${promo['claimedCount'] ?? promo['redemptions'] ?? 0}',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      color: Colors.white)),
                               const SizedBox(width: 4),
-                              const Text('Redeemed', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                              const Text('Redeemed',
+                                  style: TextStyle(
+                                      color: AppColors.textSecondary,
+                                      fontSize: 12)),
                             ],
                           ),
                         ],
@@ -426,7 +490,11 @@ class _OwnerPromotionsManagementScreenState
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Filter by Type', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+                  const Text('Filter by Type',
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white)),
                   const SizedBox(height: 16),
                   Wrap(
                     spacing: 8,
@@ -443,7 +511,10 @@ class _OwnerPromotionsManagementScreenState
                         },
                         selectedColor: AppColors.primary,
                         backgroundColor: AppColors.background,
-                        labelStyle: TextStyle(color: isSelected ? Colors.white : AppColors.textSecondary),
+                        labelStyle: TextStyle(
+                            color: isSelected
+                                ? Colors.white
+                                : AppColors.textSecondary),
                       );
                     }).toList(),
                   ),

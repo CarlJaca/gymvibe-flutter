@@ -16,7 +16,12 @@ class OwnerAnalyticsScreen extends StatefulWidget {
 
 class _OwnerAnalyticsScreenState extends State<OwnerAnalyticsScreen> {
   String _period = 'This Month';
-  final List<String> _periods = ['This Week', 'This Month', 'Last 3 Months', 'This Year'];
+  final List<String> _periods = [
+    'This Week',
+    'This Month',
+    'Last 3 Months',
+    'This Year'
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +31,16 @@ class _OwnerAnalyticsScreenState extends State<OwnerAnalyticsScreen> {
         appBar: AppBar(
           backgroundColor: AppColors.background,
           elevation: 0,
-          leading: Navigator.canPop(context) ? IconButton(
-            icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
-            onPressed: () => Navigator.pop(context),
-          ) : null,
-          title: const Text('Analytics & Status', style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+          leading: Navigator.canPop(context)
+              ? IconButton(
+                  icon: const Icon(Icons.arrow_back_rounded,
+                      color: AppColors.textPrimary),
+                  onPressed: () => Navigator.pop(context),
+                )
+              : null,
+          title: const Text('Analytics & Status',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
           centerTitle: true,
           bottom: const TabBar(
             indicatorColor: AppColors.primary,
@@ -55,188 +65,195 @@ class _OwnerAnalyticsScreenState extends State<OwnerAnalyticsScreen> {
   }
 
   Widget _buildAnalyticsTab() {
-    return Consumer4<AuthProvider, GymProvider, EventsProvider, PromotionsProvider>(
-          builder: (context, auth, gymProv, eventsProv, promoProv, _) {
-            if (gymProv.isLoading) {
-              return const Center(
-                child: CircularProgressIndicator(color: AppColors.primary),
-              );
-            }
+    return Consumer4<AuthProvider, GymProvider, EventsProvider,
+        PromotionsProvider>(
+      builder: (context, auth, gymProv, eventsProv, promoProv, _) {
+        if (gymProv.isLoading) {
+          return const Center(
+            child: CircularProgressIndicator(color: AppColors.primary),
+          );
+        }
 
-            // ── Compute real metrics ──────────────────────────────────
-            // For testing/demo purposes, we read ALL events/promos
-            // to ensure they show up in the analytics regardless of gymId mismatches.
-            final ownerEvents = eventsProv.allEvents;
-            final ownerPromos = promoProv.allPromotions;
+        // ── Compute real metrics ──────────────────────────────────
+        // For testing/demo purposes, we read ALL events/promos
+        // to ensure they show up in the analytics regardless of gymId mismatches.
+        final ownerEvents = eventsProv.allEvents;
+        final ownerPromos = promoProv.allPromotions;
 
-            final totalEvents = ownerEvents.length;
-            final totalPromotions = ownerPromos.length;
-            final totalMembers = gymProv.ownerGym.memberCount;
-            final totalBookings = gymProv.ownerGym.bookingsCount;
+        final totalEvents = ownerEvents.length;
+        final totalPromotions = ownerPromos.length;
+        final totalMembers = gymProv.ownerGym.memberCount;
+        final totalBookings = gymProv.ownerGym.bookingsCount;
 
-            // ── Multipliers for dropdown logic ─────────────────────
-            List<String> dynamicChartLabels = [];
-            List<double> dynamicChartPoints = [];
+        // ── Multipliers for dropdown logic ─────────────────────
+        List<String> dynamicChartLabels = [];
+        List<double> dynamicChartPoints = [];
 
-            if (_period == 'This Week') {
-              dynamicChartLabels = ['Mon', 'Wed', 'Fri', 'Sun'];
-              dynamicChartPoints = [0.0, 0.4, 0.3, 0.6, 0.8, 0.7, 1.0];
-            } else if (_period == 'This Month') {
-              dynamicChartLabels = ['W1', 'W2', 'W3', 'W4'];
-              dynamicChartPoints = [0.0, 0.6, 0.5, 0.9];
-            } else if (_period == 'Last 3 Months') {
-              dynamicChartLabels = ['Month 1', 'Month 2', 'Month 3'];
-              dynamicChartPoints = [0.0, 0.7, 1.0];
-            } else { // This Year
-              dynamicChartLabels = ['Q1', 'Q2', 'Q3', 'Q4'];
-              dynamicChartPoints = [0.0, 0.4, 0.8, 1.0];
-            }
+        if (_period == 'This Week') {
+          dynamicChartLabels = ['Mon', 'Wed', 'Fri', 'Sun'];
+          dynamicChartPoints = [0.0, 0.4, 0.3, 0.6, 0.8, 0.7, 1.0];
+        } else if (_period == 'This Month') {
+          dynamicChartLabels = ['W1', 'W2', 'W3', 'W4'];
+          dynamicChartPoints = [0.0, 0.6, 0.5, 0.9];
+        } else if (_period == 'Last 3 Months') {
+          dynamicChartLabels = ['Month 1', 'Month 2', 'Month 3'];
+          dynamicChartPoints = [0.0, 0.7, 1.0];
+        } else {
+          // This Year
+          dynamicChartLabels = ['Q1', 'Q2', 'Q3', 'Q4'];
+          dynamicChartPoints = [0.0, 0.4, 0.8, 1.0];
+        }
 
-            // ── Build metric entries with dynamic values ────────────────
-            final List<_MetricEntry> metrics = [
-              _MetricEntry('Total Events', totalEvents),
-              _MetricEntry('Total Promotions', totalPromotions),
-              _MetricEntry('Total Members', totalMembers),
-              _MetricEntry('Total Bookings', totalBookings),
-              const _MetricEntry('Total Interested', 0),
-              const _MetricEntry('Total Going', 0),
-            ];
+        // ── Build metric entries with dynamic values ────────────────
+        final List<_MetricEntry> metrics = [
+          _MetricEntry('Total Events', totalEvents),
+          _MetricEntry('Total Promotions', totalPromotions),
+          _MetricEntry('Total Members', totalMembers),
+          _MetricEntry('Total Bookings', totalBookings),
+          const _MetricEntry('Total Interested', 0),
+          const _MetricEntry('Total Going', 0),
+        ];
 
-            // ── Derive chart points from real metrics ─────────────────
-            final baseActivity = metrics.fold(0, (sum, m) => sum + m.value);
-            final trendFactor = baseActivity > 0 ? baseActivity.toDouble() : 5.0; // Fallback trend
-            
-            final List<double> finalChartPoints = dynamicChartPoints.map((p) => p * trendFactor).toList();
-            
-            // Normalize to 0.0 - 1.0
-            final maxChartVal = finalChartPoints.isEmpty ? 1.0 : finalChartPoints.reduce((a, b) => a > b ? a : b);
-            final normalizedChartPoints = finalChartPoints.map((v) => v / maxChartVal).toList();
-            
-            final List<String> chartLabels = dynamicChartLabels;
+        // ── Derive chart points from real metrics ─────────────────
+        final baseActivity = metrics.fold(0, (sum, m) => sum + m.value);
+        final trendFactor =
+            baseActivity > 0 ? baseActivity.toDouble() : 5.0; // Fallback trend
 
-            // ── Compute percentage changes ────────────────────────────
-            final totalActivity = baseActivity.toDouble();
+        final List<double> finalChartPoints =
+            dynamicChartPoints.map((p) => p * trendFactor).toList();
 
-            return ListView(
-              padding: const EdgeInsets.all(AppPadding.md),
+        // Normalize to 0.0 - 1.0
+        final maxChartVal = finalChartPoints.isEmpty
+            ? 1.0
+            : finalChartPoints.reduce((a, b) => a > b ? a : b);
+        final normalizedChartPoints =
+            finalChartPoints.map((v) => v / maxChartVal).toList();
+
+        final List<String> chartLabels = dynamicChartLabels;
+
+        // ── Compute percentage changes ────────────────────────────
+        final totalActivity = baseActivity.toDouble();
+
+        return ListView(
+          padding: const EdgeInsets.all(AppPadding.md),
+          children: [
+            // ── Header ──────────────────────────────────────────────
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                // ── Header ──────────────────────────────────────────────
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: AppColors.surface,
-                        borderRadius: BorderRadius.circular(AppRadius.full),
-                        border: Border.all(color: AppColors.border),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<String>(
-                          value: _period,
-                          isDense: true,
-                          dropdownColor: AppColors.surfaceElevated,
-                          icon: const Icon(Icons.keyboard_arrow_down_rounded,
-                              size: 16, color: AppColors.textSecondary),
-                          style: const TextStyle(
-                              color: AppColors.textSecondary, fontSize: 12),
-                          items: _periods
-                              .map((p) => DropdownMenuItem(
-                                  value: p,
-                                  child: Text(p,
-                                      style: const TextStyle(
-                                          color: AppColors.textPrimary))))
-                              .toList(),
-                          onChanged: (v) => setState(() => _period = v!),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppPadding.md),
-
-                // ── Performance Overview Chart ───────────────────────────
                 Container(
-                  padding: const EdgeInsets.all(AppPadding.md),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: AppColors.surface,
-                    borderRadius: BorderRadius.circular(AppRadius.lg),
+                    borderRadius: BorderRadius.circular(AppRadius.full),
                     border: Border.all(color: AppColors.border),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Performance Overview',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 14)),
-                        ],
-                      ),
-                      const SizedBox(height: AppPadding.md),
-                      SizedBox(
-                        height: 160,
-                        child: baseActivity == 0
-                            ? const Center(
-                                child: Text(
-                                  'No activity data yet.\nCreate events or promotions to see metrics.',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: AppColors.textMuted,
-                                    fontSize: 13,
-                                  ),
-                                ),
-                              )
-                            : CustomPaint(
-                                painter: _LineChartPainter(points: normalizedChartPoints),
-                                size: const Size(double.infinity, 160),
-                              ),
-                      ),
-                      const SizedBox(height: AppPadding.sm),
-                      // X-axis labels from real metrics
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: chartLabels
-                            .map((label) => Flexible(
-                                  child: Text(label,
-                                      style: const TextStyle(
-                                          color: AppColors.textMuted,
-                                          fontSize: 9),
-                                      textAlign: TextAlign.center,
-                                      overflow: TextOverflow.ellipsis),
-                                ))
-                            .toList(),
-                      ),
-                    ],
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: _period,
+                      isDense: true,
+                      dropdownColor: AppColors.surfaceElevated,
+                      icon: const Icon(Icons.keyboard_arrow_down_rounded,
+                          size: 16, color: AppColors.textSecondary),
+                      style: const TextStyle(
+                          color: AppColors.textSecondary, fontSize: 12),
+                      items: _periods
+                          .map((p) => DropdownMenuItem(
+                              value: p,
+                              child: Text(p,
+                                  style: const TextStyle(
+                                      color: AppColors.textPrimary))))
+                          .toList(),
+                      onChanged: (v) => setState(() => _period = v!),
+                    ),
                   ),
                 ),
-                const SizedBox(height: AppPadding.lg),
-
-                // ── Top Metrics ──────────────────────────────────────────
-                const Text('Top Metrics',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                const SizedBox(height: AppPadding.sm),
-
-                ...metrics.map((m) {
-                  final pct = totalActivity > 0
-                      ? ((m.value / totalActivity) * 100).toStringAsFixed(1)
-                      : '0.0';
-                  final isPositive = m.value > 0;
-                  return _buildMetricRow({
-                    'label': m.label,
-                    'value': m.value.toString(),
-                    'change': '$pct%',
-                    'up': isPositive,
-                  });
-                }),
-
-                const SizedBox(height: AppPadding.xl),
               ],
-            );
-          },
+            ),
+            const SizedBox(height: AppPadding.md),
+
+            // ── Performance Overview Chart ───────────────────────────
+            Container(
+              padding: const EdgeInsets.all(AppPadding.md),
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(AppRadius.lg),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Performance Overview',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 14)),
+                    ],
+                  ),
+                  const SizedBox(height: AppPadding.md),
+                  SizedBox(
+                    height: 160,
+                    child: baseActivity == 0
+                        ? const Center(
+                            child: Text(
+                              'No activity data yet.\nCreate events or promotions to see metrics.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: AppColors.textMuted,
+                                fontSize: 13,
+                              ),
+                            ),
+                          )
+                        : CustomPaint(
+                            painter: _LineChartPainter(
+                                points: normalizedChartPoints),
+                            size: const Size(double.infinity, 160),
+                          ),
+                  ),
+                  const SizedBox(height: AppPadding.sm),
+                  // X-axis labels from real metrics
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: chartLabels
+                        .map((label) => Flexible(
+                              child: Text(label,
+                                  style: const TextStyle(
+                                      color: AppColors.textMuted, fontSize: 9),
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.ellipsis),
+                            ))
+                        .toList(),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppPadding.lg),
+
+            // ── Top Metrics ──────────────────────────────────────────
+            const Text('Top Metrics',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const SizedBox(height: AppPadding.sm),
+
+            ...metrics.map((m) {
+              final pct = totalActivity > 0
+                  ? ((m.value / totalActivity) * 100).toStringAsFixed(1)
+                  : '0.0';
+              final isPositive = m.value > 0;
+              return _buildMetricRow({
+                'label': m.label,
+                'value': m.value.toString(),
+                'change': '$pct%',
+                'up': isPositive,
+              });
+            }),
+
+            const SizedBox(height: AppPadding.xl),
+          ],
         );
+      },
+    );
   }
 
   Widget _buildMetricRow(Map<String, dynamic> metric) {
@@ -265,7 +282,9 @@ class _OwnerAnalyticsScreenState extends State<OwnerAnalyticsScreen> {
           Row(
             children: [
               Icon(
-                metric['up'] ? Icons.arrow_upward_rounded : Icons.arrow_downward_rounded,
+                metric['up']
+                    ? Icons.arrow_upward_rounded
+                    : Icons.arrow_downward_rounded,
                 size: 12,
                 color: metric['up'] ? AppColors.success : AppColors.error,
               ),
@@ -310,8 +329,9 @@ class _LineChartPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     if (points.isEmpty) return;
-    final double xStep = size.width / (points.length - 1).clamp(1, points.length);
-    const double yPad  = 10.0;
+    final double xStep =
+        size.width / (points.length - 1).clamp(1, points.length);
+    const double yPad = 10.0;
     final double chartH = size.height - yPad * 2;
 
     // Y-axis grid lines
@@ -334,7 +354,8 @@ class _LineChartPainter extends CustomPainter {
         fillPath.moveTo(x, size.height);
         fillPath.lineTo(x, y);
       } else {
-        final prev = Offset(xStep * (i - 1), yPad + chartH * (1 - points[i - 1]));
+        final prev =
+            Offset(xStep * (i - 1), yPad + chartH * (1 - points[i - 1]));
         final curr = Offset(x, y);
         final ctrl1 = Offset(prev.dx + xStep * 0.4, prev.dy);
         final ctrl2 = Offset(curr.dx - xStep * 0.4, curr.dy);
@@ -368,7 +389,7 @@ class _LineChartPainter extends CustomPainter {
 
     // Dots
     final dotPaint = Paint()..color = AppColors.primary;
-    final dotBg    = Paint()..color = AppColors.surface;
+    final dotBg = Paint()..color = AppColors.surface;
     for (int i = 0; i < points.length; i++) {
       final x = xStep * i;
       final y = yPad + chartH * (1 - points[i]);
@@ -382,4 +403,3 @@ class _LineChartPainter extends CustomPainter {
     return oldDelegate.points != points;
   }
 }
-

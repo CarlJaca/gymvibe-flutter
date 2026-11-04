@@ -50,8 +50,8 @@ class JobService {
   Future<void> reopenJob(String jobId) async {
     final doc = await _jobsRef.doc(jobId).get();
     if (!doc.exists) throw Exception('Job not found');
-    final job = JobPostingModel.fromJson(
-        doc.data()! as Map<String, dynamic>, doc.id);
+    final job =
+        JobPostingModel.fromJson(doc.data()! as Map<String, dynamic>, doc.id);
     if (job.isExpired) throw Exception('Cannot reopen — deadline has passed');
     await _jobsRef.doc(jobId).update({
       'status': 'active',
@@ -103,9 +103,8 @@ class JobService {
     String? locationFilter,
   }) async {
     // Increase limit to ensure we get enough jobs after client-side filtering
-    Query query = _jobsRef
-        .orderBy('createdAt', descending: true)
-        .limit(limit * 3);
+    Query query =
+        _jobsRef.orderBy('createdAt', descending: true).limit(limit * 3);
 
     if (startAfter != null) {
       query = query.startAfterDocument(startAfter);
@@ -126,12 +125,12 @@ class JobService {
           job.applicationDeadline!.isBefore(now)) {
         return false;
       }
-      
+
       // Client-side category filter
       if (categoryFilter != null && categoryFilter.isNotEmpty) {
         if (job.jobCategory != categoryFilter) return false;
       }
-      
+
       // Client-side employment type filter
       if (employmentTypeFilter != null && employmentTypeFilter.isNotEmpty) {
         if (job.employmentType.name != employmentTypeFilter) return false;
@@ -147,7 +146,9 @@ class JobService {
       }
       // Client-side location filter
       if (locationFilter != null && locationFilter.isNotEmpty) {
-        if (!job.location.toLowerCase().contains(locationFilter.toLowerCase())) {
+        if (!job.location
+            .toLowerCase()
+            .contains(locationFilter.toLowerCase())) {
           return false;
         }
       }
@@ -165,9 +166,8 @@ class JobService {
     String? employmentTypeFilter,
     DocumentSnapshot? startAfter,
   }) async {
-    Query query = _jobsRef
-        .orderBy('createdAt', descending: true)
-        .limit(limit * 3);
+    Query query =
+        _jobsRef.orderBy('createdAt', descending: true).limit(limit * 3);
 
     if (startAfter != null) {
       query = query.startAfterDocument(startAfter);
@@ -184,22 +184,20 @@ class JobService {
 
   /// Fetch all job postings belonging to a specific owner.
   Future<List<JobPostingModel>> fetchOwnerJobs(String ownerId) async {
-    final snapshot = await _jobsRef
-        .where('ownerId', isEqualTo: ownerId)
-        .get();
+    final snapshot = await _jobsRef.where('ownerId', isEqualTo: ownerId).get();
 
     final jobs = snapshot.docs.map((doc) {
       return JobPostingModel.fromJson(
           doc.data()! as Map<String, dynamic>, doc.id);
     }).toList();
-    
+
     jobs.sort((a, b) {
       if (a.createdAt == null && b.createdAt == null) return 0;
       if (a.createdAt == null) return 1;
       if (b.createdAt == null) return -1;
       return b.createdAt!.compareTo(a.createdAt!);
     });
-    
+
     return jobs;
   }
 

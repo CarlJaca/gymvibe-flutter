@@ -51,8 +51,7 @@ class _ApplicationDetailsScreenState extends State<ApplicationDetailsScreen> {
             child: const Text('Cancel'),
           ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.error),
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
             onPressed: () => Navigator.pop(ctx, true),
             child: const Text('Withdraw'),
           ),
@@ -147,8 +146,7 @@ class _ApplicationDetailsScreenState extends State<ApplicationDetailsScreen> {
               decoration: BoxDecoration(
                 color: Colors.purple.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(AppRadius.md),
-                border: Border.all(
-                    color: Colors.purple.withValues(alpha: 0.3)),
+                border: Border.all(color: Colors.purple.withValues(alpha: 0.3)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -162,8 +160,8 @@ class _ApplicationDetailsScreenState extends State<ApplicationDetailsScreen> {
                   ],
                   if (app.interviewInstructions != null) ...[
                     const SizedBox(height: 8),
-                    _detailRow(Icons.info_outline_rounded,
-                        'Instructions', app.interviewInstructions!),
+                    _detailRow(Icons.info_outline_rounded, 'Instructions',
+                        app.interviewInstructions!),
                   ],
                 ],
               ),
@@ -185,9 +183,7 @@ class _ApplicationDetailsScreenState extends State<ApplicationDetailsScreen> {
               ),
               child: Text(app.applicantMessage!,
                   style: const TextStyle(
-                      fontSize: 14,
-                      color: AppColors.textPrimary,
-                      height: 1.4)),
+                      fontSize: 14, color: AppColors.textPrimary, height: 1.4)),
             ),
             const SizedBox(height: 16),
           ],
@@ -202,14 +198,12 @@ class _ApplicationDetailsScreenState extends State<ApplicationDetailsScreen> {
               decoration: BoxDecoration(
                 color: AppColors.error.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(AppRadius.md),
-                border: Border.all(
-                    color: AppColors.error.withValues(alpha: 0.3)),
+                border:
+                    Border.all(color: AppColors.error.withValues(alpha: 0.3)),
               ),
               child: Text(app.rejectionReason!,
                   style: const TextStyle(
-                      fontSize: 14,
-                      color: AppColors.textPrimary,
-                      height: 1.4)),
+                      fontSize: 14, color: AppColors.textPrimary, height: 1.4)),
             ),
             const SizedBox(height: 16),
           ],
@@ -218,12 +212,9 @@ class _ApplicationDetailsScreenState extends State<ApplicationDetailsScreen> {
           _sectionTitle('Submitted Information'),
           const SizedBox(height: 8),
           _infoRow('Cover Message', app.coverMessage),
-          if (app.experience.isNotEmpty)
-            _infoRow('Experience', app.experience),
-          if (app.education.isNotEmpty)
-            _infoRow('Education', app.education),
-          if (app.skills.isNotEmpty)
-            _infoRow('Skills', app.skills.join(', ')),
+          if (app.experience.isNotEmpty) _infoRow('Experience', app.experience),
+          if (app.education.isNotEmpty) _infoRow('Education', app.education),
+          if (app.skills.isNotEmpty) _infoRow('Skills', app.skills.join(', ')),
           if (app.availability.isNotEmpty)
             _infoRow('Availability', app.availability),
           if (app.expectedSalary != null)
@@ -236,8 +227,7 @@ class _ApplicationDetailsScreenState extends State<ApplicationDetailsScreen> {
           // ── Withdraw button ─────────────────────────────────────────
           if (showWithdraw)
             OutlinedButton.icon(
-              icon: const Icon(Icons.cancel_outlined,
-                  color: AppColors.error),
+              icon: const Icon(Icons.cancel_outlined, color: AppColors.error),
               label: const Text('Withdraw Application'),
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.error,
@@ -290,8 +280,7 @@ class _ApplicationDetailsScreenState extends State<ApplicationDetailsScreen> {
                     width: 12,
                     height: 12,
                     decoration: BoxDecoration(
-                      color:
-                          isLast ? AppColors.primary : AppColors.textMuted,
+                      color: isLast ? AppColors.primary : AppColors.textMuted,
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -335,8 +324,7 @@ class _ApplicationDetailsScreenState extends State<ApplicationDetailsScreen> {
                           child: Text(
                             _formatDate(h.createdAt!),
                             style: const TextStyle(
-                                fontSize: 11,
-                                color: AppColors.textMuted),
+                                fontSize: 11, color: AppColors.textMuted),
                           ),
                         ),
                     ],
@@ -380,9 +368,7 @@ class _ApplicationDetailsScreenState extends State<ApplicationDetailsScreen> {
             const SizedBox(height: 4),
             Text(value,
                 style: const TextStyle(
-                    fontSize: 14,
-                    color: AppColors.textPrimary,
-                    height: 1.4)),
+                    fontSize: 14, color: AppColors.textPrimary, height: 1.4)),
           ],
         ),
       ),
@@ -464,8 +450,19 @@ class _ApplicationDetailsScreenState extends State<ApplicationDetailsScreen> {
 
   String _formatDate(DateTime date) {
     final months = [
-      '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      '',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return '${months[date.month]} ${date.day}, ${date.year}';
   }

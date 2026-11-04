@@ -45,8 +45,9 @@ class _MatchesScreenState extends State<MatchesScreen> {
 
   void _openCompareScreen(List<GymMatchResult> matchResults) {
     final allGyms = matchResults.map((m) => m.gym).toList();
-    final selectedGyms = allGyms.where((g) => _selectedGymIds.contains(g.id)).toList();
-    
+    final selectedGyms =
+        allGyms.where((g) => _selectedGymIds.contains(g.id)).toList();
+
     if (selectedGyms.length < 2) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -57,7 +58,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
       );
       return;
     }
-    
+
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -98,7 +99,8 @@ class _MatchesScreenState extends State<MatchesScreen> {
               ? FloatingActionButton.extended(
                   onPressed: () => _openCompareScreen(matchResults),
                   backgroundColor: AppColors.primary,
-                  icon: const Icon(Icons.compare_arrows_rounded, color: Colors.white),
+                  icon: const Icon(Icons.compare_arrows_rounded,
+                      color: Colors.white),
                   label: Text(
                     'Compare Gyms (${_selectedGymIds.length})',
                     style: const TextStyle(
@@ -160,13 +162,15 @@ class _MatchesScreenState extends State<MatchesScreen> {
                         ),
                         if (hasPreferences)
                           IconButton(
-                            icon: const Icon(Icons.tune_rounded, color: AppColors.primary),
+                            icon: const Icon(Icons.tune_rounded,
+                                color: AppColors.primary),
                             tooltip: 'Edit Preferences',
                             onPressed: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => const GymPreferencesScreen(isFirstTime: false),
+                                  builder: (_) => const GymPreferencesScreen(
+                                      isFirstTime: false),
                                 ),
                               );
                             },
@@ -186,7 +190,8 @@ class _MatchesScreenState extends State<MatchesScreen> {
                 if (hasPreferences && gymProvider.isLoading)
                   const SliverFillRemaining(
                     child: Center(
-                      child: CircularProgressIndicator(color: AppColors.primary),
+                      child:
+                          CircularProgressIndicator(color: AppColors.primary),
                     ),
                   ),
 
@@ -214,10 +219,13 @@ class _MatchesScreenState extends State<MatchesScreen> {
                             ),
                             const Spacer(),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 4),
                               decoration: BoxDecoration(
-                                color: AppColors.primary.withValues(alpha: 0.12),
-                                borderRadius: BorderRadius.circular(AppRadius.full),
+                                color:
+                                    AppColors.primary.withValues(alpha: 0.12),
+                                borderRadius:
+                                    BorderRadius.circular(AppRadius.full),
                               ),
                               child: Text(
                                 '${matchResults.length} found',
@@ -262,10 +270,13 @@ class _MatchesScreenState extends State<MatchesScreen> {
                       child: Center(
                         child: TextButton.icon(
                           onPressed: () => setState(() => _showAllGyms = true),
-                          icon: const Icon(Icons.expand_more_rounded, color: AppColors.primary),
+                          icon: const Icon(Icons.expand_more_rounded,
+                              color: AppColors.primary),
                           label: const Text(
                             'View more gyms',
-                            style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600),
+                            style: TextStyle(
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.w600),
                           ),
                         ),
                       ),
@@ -285,17 +296,23 @@ class _MatchesScreenState extends State<MatchesScreen> {
                         child: Center(
                           child: Column(
                             children: [
-                              Icon(Icons.search_off_rounded, size: 48, color: AppColors.textMuted),
+                              Icon(Icons.search_off_rounded,
+                                  size: 48, color: AppColors.textMuted),
                               const SizedBox(height: 16),
                               const Text(
                                 'No matches found',
-                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.textPrimary),
                               ),
                               const SizedBox(height: 8),
                               const Text(
                                 'Try updating your preferences for better results.',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: AppColors.textSecondary),
                               ),
                             ],
                           ),
@@ -346,7 +363,8 @@ class _MatchesScreenState extends State<MatchesScreen> {
             const Text(
               'Set your fitness preferences to get\npersonalized gym matches.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14, color: AppColors.textSecondary, height: 1.4),
+              style: TextStyle(
+                  fontSize: 14, color: AppColors.textSecondary, height: 1.4),
             ),
             const SizedBox(height: 28),
             SizedBox(
@@ -357,12 +375,14 @@ class _MatchesScreenState extends State<MatchesScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const GymPreferencesScreen(isFirstTime: false),
+                      builder: (_) =>
+                          const GymPreferencesScreen(isFirstTime: false),
                     ),
                   );
                 },
                 icon: const Icon(Icons.tune_rounded),
-                label: const Text('Set Preferences', style: TextStyle(fontWeight: FontWeight.bold)),
+                label: const Text('Set Preferences',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
               ),
             ),
           ],
@@ -416,12 +436,14 @@ class _MatchesScreenState extends State<MatchesScreen> {
               decoration: BoxDecoration(
                 color: AppColors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(AppRadius.md),
-                border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+                border:
+                    Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.auto_awesome_rounded, size: 18, color: AppColors.primary),
+                  Icon(Icons.auto_awesome_rounded,
+                      size: 18, color: AppColors.primary),
                   const SizedBox(width: 8),
                   Text(
                     '$matchedCount gym${matchedCount == 1 ? '' : 's'} matched',
@@ -449,7 +471,8 @@ class _MatchesScreenState extends State<MatchesScreen> {
     );
   }
 
-  Widget _buildMatchCard(BuildContext context, GymMatchResult result, int rank) {
+  Widget _buildMatchCard(
+      BuildContext context, GymMatchResult result, int rank) {
     final gym = result.gym;
     final matchPct = result.matchPercentage;
 
@@ -458,7 +481,9 @@ class _MatchesScreenState extends State<MatchesScreen> {
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadius.lg),
         border: Border.all(
-          color: _selectedGymIds.contains(gym.id) ? AppColors.primary : AppColors.border,
+          color: _selectedGymIds.contains(gym.id)
+              ? AppColors.primary
+              : AppColors.border,
           width: _selectedGymIds.contains(gym.id) ? 1.5 : 1.0,
         ),
       ),
@@ -467,158 +492,186 @@ class _MatchesScreenState extends State<MatchesScreen> {
           InkWell(
             borderRadius: BorderRadius.circular(AppRadius.lg),
             onTap: () {
-              Navigator.pushNamed(context, AppRoutes.gymDetails, arguments: gym);
+              Navigator.pushNamed(context, AppRoutes.gymDetails,
+                  arguments: gym);
             },
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-            // Gym image with rank badge
-            Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(AppRadius.lg),
-                    bottomLeft: Radius.circular(AppRadius.lg),
-                  ),
-                  child: SizedBox(
-                    width: 100,
-                    height: 120,
-                    child: Image.network(
-                      gym.imageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
-                        color: AppColors.surfaceElevated,
-                        child: const Icon(Icons.fitness_center_rounded,
-                            color: AppColors.textMuted, size: 28),
-                      ),
-                    ),
-                  ),
-                ),
-                // Rank badge
-                Positioned(
-                  top: 6,
-                  left: 6,
-                  child: Container(
-                    width: 24,
-                    height: 24,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 4),
-                      ],
-                    ),
-                    child: Center(
-                      child: Text(
-                        '$rank',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            // Info section
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(10, 8, 72, 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                // Gym image with rank badge
+                Stack(
                   children: [
-                    // Gym name — left-aligned text
-                    Text(
-                      gym.name,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
+                    ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(AppRadius.lg),
+                        bottomLeft: Radius.circular(AppRadius.lg),
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 2),
-                    // Address — left-aligned text
-                    Text(
-                      '${gym.address}, ${gym.city}',
-                      style: const TextStyle(fontSize: 11, color: AppColors.textSecondary),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    // Rating + Distance row — numbers right-aligned within their row
-                    Row(
-                      children: [
-                        const Icon(Icons.star_rounded, color: Colors.amber, size: 14),
-                        const SizedBox(width: 2),
-                        Text(
-                          gym.rating.toStringAsFixed(1),
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.textPrimary,
-                          ),
-                        ),
-                        Text(
-                          ' (${gym.reviewCount})',
-                          style: const TextStyle(fontSize: 10, color: AppColors.textSecondary),
-                        ),
-                        if (gym.distanceKm > 0) ...[
-                          const Text(' • ', style: TextStyle(color: AppColors.textMuted, fontSize: 10)),
-                          Text(
-                            '${gym.distanceKm.toStringAsFixed(1)} km',
-                            style: const TextStyle(fontSize: 11, color: AppColors.textSecondary),
-                          ),
-                        ],
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    // Facility tags — left-aligned text
-                    SizedBox(
-                      height: 20,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: [
-                          ...gym.facilities.take(3).map((f) => _buildTag(f)),
-                          if (gym.facilities.length > 3)
-                            _buildTag('+${gym.facilities.length - 3}'),
-                        ],
+                      child: SizedBox(
+                        width: 100,
+                        height: 120,
+                        child: gym.imageUrl.isNotEmpty
+                            ? Image.network(
+                                gym.imageUrl,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) => Container(
+                                  color: AppColors.surfaceElevated,
+                                  child: const Icon(
+                                      Icons.fitness_center_rounded,
+                                      color: AppColors.textMuted,
+                                      size: 28),
+                                ),
+                              )
+                            : Container(
+                                color: AppColors.surfaceElevated,
+                                child: const Icon(Icons.fitness_center_rounded,
+                                    color: AppColors.textMuted, size: 28),
+                              ),
                       ),
                     ),
-                    // Price — only show if at least one price exists
-                    if (gym.sessionPrice.isNotEmpty || gym.monthlyPrice.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 4),
-                        child: Text(
-                          [
-                            if (gym.sessionPrice.isNotEmpty)
-                              gym.sessionPrice.toLowerCase().contains('session')
-                                  ? gym.sessionPrice
-                                  : 'Session: ${gym.sessionPrice}',
-                            if (gym.monthlyPrice.isNotEmpty)
-                              gym.monthlyPrice.toLowerCase().contains('month')
-                                  ? gym.monthlyPrice
-                                  : 'Monthly: ${gym.monthlyPrice}',
-                          ].join(' • '),
-                          style: const TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.primary,
+                    // Rank badge
+                    Positioned(
+                      top: 6,
+                      left: 6,
+                      child: Container(
+                        width: 24,
+                        height: 24,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.3),
+                                blurRadius: 4),
+                          ],
+                        ),
+                        child: Center(
+                          child: Text(
+                            '$rank',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
+                    ),
                   ],
                 ),
-              ),
-            ), // Closes Expanded
-          ], // Closes Row's children
-        ), // Closes Row
-      ), // Closes InkWell
+                // Info section
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 8, 72, 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Gym name — left-aligned text
+                        Text(
+                          gym.branch.isNotEmpty
+                              ? '${gym.name} — ${gym.branch}'
+                              : gym.name,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 2),
+                        // Address — left-aligned text
+                        Text(
+                          '${gym.address}, ${gym.city}',
+                          style: const TextStyle(
+                              fontSize: 11, color: AppColors.textSecondary),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 4),
+                        // Rating + Distance row — numbers right-aligned within their row
+                        Row(
+                          children: [
+                            const Icon(Icons.star_rounded,
+                                color: Colors.amber, size: 14),
+                            const SizedBox(width: 2),
+                            Text(
+                              gym.rating.toStringAsFixed(1),
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                            Text(
+                              ' (${gym.reviewCount})',
+                              style: const TextStyle(
+                                  fontSize: 10, color: AppColors.textSecondary),
+                            ),
+                            if (gym.distanceKm > 0) ...[
+                              const Text(' • ',
+                                  style: TextStyle(
+                                      color: AppColors.textMuted,
+                                      fontSize: 10)),
+                              Text(
+                                '${gym.distanceKm.toStringAsFixed(1)} km',
+                                style: const TextStyle(
+                                    fontSize: 11,
+                                    color: AppColors.textSecondary),
+                              ),
+                            ],
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        // Facility tags — left-aligned text
+                        SizedBox(
+                          height: 20,
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            children: [
+                              ...gym.facilities
+                                  .take(3)
+                                  .map((f) => _buildTag(f)),
+                              if (gym.facilities.length > 3)
+                                _buildTag('+${gym.facilities.length - 3}'),
+                            ],
+                          ),
+                        ),
+                        // Price — only show if at least one price exists
+                        if (gym.sessionPrice.isNotEmpty ||
+                            gym.monthlyPrice.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4),
+                            child: Text(
+                              [
+                                if (gym.sessionPrice.isNotEmpty)
+                                  gym.sessionPrice
+                                          .toLowerCase()
+                                          .contains('session')
+                                      ? gym.sessionPrice
+                                      : 'Session: ${gym.sessionPrice}',
+                                if (gym.monthlyPrice.isNotEmpty)
+                                  gym.monthlyPrice
+                                          .toLowerCase()
+                                          .contains('month')
+                                      ? gym.monthlyPrice
+                                      : 'Monthly: ${gym.monthlyPrice}',
+                              ].join(' • '),
+                              style: const TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primary,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ), // Closes Expanded
+              ], // Closes Row's children
+            ), // Closes Row
+          ), // Closes InkWell
           // ── Right Side Actions ──
           Positioned(
             top: 8,
@@ -629,7 +682,8 @@ class _MatchesScreenState extends State<MatchesScreen> {
               children: [
                 // Match badge — right-aligned number
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                   decoration: BoxDecoration(
                     color: _matchColor(matchPct).withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(AppRadius.full),
@@ -650,7 +704,9 @@ class _MatchesScreenState extends State<MatchesScreen> {
                     context.read<GymProvider>().toggleFavorite(gym.id);
                   },
                   child: Icon(
-                    gym.isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                    gym.isFavorite
+                        ? Icons.favorite_rounded
+                        : Icons.favorite_border_rounded,
                     color: gym.isFavorite ? Colors.red : AppColors.textMuted,
                     size: 18,
                   ),
@@ -675,7 +731,8 @@ class _MatchesScreenState extends State<MatchesScreen> {
                       ),
                     ),
                     child: _selectedGymIds.contains(gym.id)
-                        ? const Icon(Icons.check_rounded, color: Colors.white, size: 16)
+                        ? const Icon(Icons.check_rounded,
+                            color: Colors.white, size: 16)
                         : null,
                   ),
                 ),
@@ -756,28 +813,30 @@ class _MatchesScreenState extends State<MatchesScreen> {
             ),
             const SizedBox(height: 12),
             ...reasons.map((r) => Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Row(
-                children: [
-                  Container(
-                    width: 22,
-                    height: 22,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.15),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(Icons.check_rounded, size: 14, color: AppColors.primary),
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 22,
+                        height: 22,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withValues(alpha: 0.15),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.check_rounded,
+                            size: 14, color: AppColors.primary),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          r,
+                          style: const TextStyle(
+                              fontSize: 13, color: AppColors.textPrimary),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      r,
-                      style: const TextStyle(fontSize: 13, color: AppColors.textPrimary),
-                    ),
-                  ),
-                ],
-              ),
-            )),
+                )),
           ],
         ),
       ),

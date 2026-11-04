@@ -235,7 +235,8 @@ class JobApplicationModel {
       applicantName: applicantName ?? this.applicantName,
       applicantEmail: applicantEmail ?? this.applicantEmail,
       applicantPhone: applicantPhone ?? this.applicantPhone,
-      applicantProfileImageUrl: applicantProfileImageUrl ?? this.applicantProfileImageUrl,
+      applicantProfileImageUrl:
+          applicantProfileImageUrl ?? this.applicantProfileImageUrl,
       coverMessage: coverMessage ?? this.coverMessage,
       experience: experience ?? this.experience,
       education: education ?? this.education,
@@ -244,14 +245,16 @@ class JobApplicationModel {
       expectedSalary: expectedSalary ?? this.expectedSalary,
       resumeUrl: resumeUrl ?? this.resumeUrl,
       resumeFileName: resumeFileName ?? this.resumeFileName,
-      supportingDocumentUrl: supportingDocumentUrl ?? this.supportingDocumentUrl,
+      supportingDocumentUrl:
+          supportingDocumentUrl ?? this.supportingDocumentUrl,
       status: status ?? this.status,
       ownerNote: ownerNote ?? this.ownerNote,
       rejectionReason: rejectionReason ?? this.rejectionReason,
       applicantMessage: applicantMessage ?? this.applicantMessage,
       interviewDate: interviewDate ?? this.interviewDate,
       interviewLocation: interviewLocation ?? this.interviewLocation,
-      interviewInstructions: interviewInstructions ?? this.interviewInstructions,
+      interviewInstructions:
+          interviewInstructions ?? this.interviewInstructions,
       submittedAt: submittedAt ?? this.submittedAt,
       updatedAt: updatedAt ?? this.updatedAt,
       reviewedAt: reviewedAt ?? this.reviewedAt,

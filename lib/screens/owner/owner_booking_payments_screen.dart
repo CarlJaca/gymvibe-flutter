@@ -57,7 +57,8 @@ class OwnerBookingPaymentsScreen extends StatelessWidget {
           return ListView.builder(
             padding: const EdgeInsets.all(AppPadding.md),
             itemCount: bookings.length,
-            itemBuilder: (context, i) => _BookingPaymentCard(booking: bookings[i]),
+            itemBuilder: (context, i) =>
+                _BookingPaymentCard(booking: bookings[i]),
           );
         },
       ),
@@ -121,7 +122,8 @@ class _BookingPaymentCardState extends State<_BookingPaymentCard> {
                     : const SizedBox(
                         height: 200,
                         child: Center(
-                          child: CircularProgressIndicator(color: AppColors.primary),
+                          child: CircularProgressIndicator(
+                              color: AppColors.primary),
                         ),
                       ),
                 errorBuilder: (_, __, ___) => const SizedBox(
@@ -175,7 +177,8 @@ class _BookingPaymentCardState extends State<_BookingPaymentCard> {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(AppRadius.full),
@@ -190,9 +193,11 @@ class _BookingPaymentCardState extends State<_BookingPaymentCard> {
           ),
           const SizedBox(height: 6),
           Text('${b.bookingDate}  •  ${b.timeSlotDisplay}',
-              style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+              style: const TextStyle(
+                  fontSize: 12, color: AppColors.textSecondary)),
           Text('Booking status: ${b.status}  •  ${b.price}',
-              style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+              style: const TextStyle(
+                  fontSize: 12, color: AppColors.textSecondary)),
           const SizedBox(height: 12),
           if (b.paymentProofUrl.isEmpty)
             const Text('No payment proof uploaded.',
@@ -279,4 +284,3 @@ class _BookingPaymentCardState extends State<_BookingPaymentCard> {
     );
   }
 }
-

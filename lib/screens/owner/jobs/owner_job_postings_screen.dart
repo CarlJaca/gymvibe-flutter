@@ -60,7 +60,8 @@ class _OwnerJobPostingsScreenState extends State<OwnerJobPostingsScreen>
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const CreateJobPostingScreen()),
+                MaterialPageRoute(
+                    builder: (_) => const CreateJobPostingScreen()),
               );
             },
           ),
@@ -120,7 +121,9 @@ class _OwnerJobPostingsScreenState extends State<OwnerJobPostingsScreen>
       backgroundColor: AppColors.surfaceElevated,
       onRefresh: () {
         final auth = context.read<AuthProvider>();
-        return context.read<OwnerJobProvider>().loadOwnerJobs(auth.currentUser!.id);
+        return context
+            .read<OwnerJobProvider>()
+            .loadOwnerJobs(auth.currentUser!.id);
       },
       child: ListView.builder(
         padding: const EdgeInsets.all(AppPadding.md),
@@ -224,8 +227,10 @@ class _OwnerJobPostingsScreenState extends State<OwnerJobPostingsScreen>
         if (job.applicationCount > 0) {
           _showEditWarning(job);
         } else {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (_) => EditJobPostingScreen(job: job)));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (_) => EditJobPostingScreen(job: job)));
         }
       }));
       actions.add(_actionButton('Applicants', Icons.people_rounded, () {
@@ -301,8 +306,10 @@ class _OwnerJobPostingsScreenState extends State<OwnerJobPostingsScreen>
           ElevatedButton(
             onPressed: () {
               Navigator.pop(ctx);
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => EditJobPostingScreen(job: job)));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => EditJobPostingScreen(job: job)));
             },
             child: const Text('Edit Anyway'),
           ),
@@ -352,8 +359,8 @@ class _OwnerJobPostingsScreenState extends State<OwnerJobPostingsScreen>
       ),
       child: Text(
         jobStatusLabel(status),
-        style: TextStyle(
-            fontSize: 11, fontWeight: FontWeight.w600, color: color),
+        style:
+            TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: color),
       ),
     );
   }
@@ -372,8 +379,19 @@ class _OwnerJobPostingsScreenState extends State<OwnerJobPostingsScreen>
 
   String _formatDate(DateTime date) {
     final months = [
-      '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      '',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return '${months[date.month]} ${date.day}, ${date.year}';
   }

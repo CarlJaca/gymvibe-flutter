@@ -39,11 +39,13 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
           children: [
             // ── Header ───────────────────────────────────────────────
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppPadding.sm, vertical: AppPadding.sm),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppPadding.sm, vertical: AppPadding.sm),
               child: Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
+                    icon: const Icon(Icons.arrow_back_rounded,
+                        color: AppColors.textPrimary),
                     onPressed: () => Navigator.pop(context),
                   ),
                   Expanded(
@@ -58,28 +60,26 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                 ],
               ),
             ),
-            
+
             // ── Active Filters Row ───────────────────────────────────
-            if (provider.activeFilters.isNotEmpty || provider.selectedCity != null)
+            if (provider.activeFilters.isNotEmpty ||
+                provider.selectedCity != null)
               SizedBox(
                 height: 40,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: AppPadding.md),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: AppPadding.md),
                   children: [
                     if (provider.selectedCity != null)
-                      _buildActiveChip(
-                        provider.selectedCity!, 
-                        onTap: () => provider.setCity(null)
-                      ),
-                    ...provider.activeFilters.map((f) => _buildActiveChip(
-                      f, 
-                      onTap: () => provider.toggleFilter(f)
-                    )),
+                      _buildActiveChip(provider.selectedCity!,
+                          onTap: () => provider.setCity(null)),
+                    ...provider.activeFilters.map((f) => _buildActiveChip(f,
+                        onTap: () => provider.toggleFilter(f))),
                   ],
                 ),
               ),
-              
+
             const SizedBox(height: AppPadding.md),
 
             // ── Results ──────────────────────────────────────────────
@@ -94,7 +94,8 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                   : ListView.separated(
                       padding: const EdgeInsets.all(AppPadding.md),
                       itemCount: provider.gyms.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: AppPadding.lg),
+                      separatorBuilder: (_, __) =>
+                          const SizedBox(height: AppPadding.lg),
                       itemBuilder: (context, index) {
                         final gym = provider.gyms[index];
                         return GymCard(
@@ -125,11 +126,13 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
       ),
       child: Row(
         children: [
-          Text(label, style: const TextStyle(color: AppColors.primary, fontSize: 12)),
+          Text(label,
+              style: const TextStyle(color: AppColors.primary, fontSize: 12)),
           const SizedBox(width: 4),
           InkWell(
             onTap: onTap,
-            child: const Icon(Icons.close_rounded, size: 14, color: AppColors.primary),
+            child: const Icon(Icons.close_rounded,
+                size: 14, color: AppColors.primary),
           ),
         ],
       ),

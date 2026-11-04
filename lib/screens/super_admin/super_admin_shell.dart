@@ -87,7 +87,8 @@ class _SuperAdminShellState extends State<SuperAdminShell> {
     );
 
     if (confirmed == true && mounted) {
-      Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (route) => false);
+      Navigator.pushNamedAndRemoveUntil(
+          context, AppRoutes.login, (route) => false);
       // Let the routing animation start, then clear the state
       Future.delayed(const Duration(milliseconds: 100), () {
         if (!mounted) return;
@@ -166,7 +167,9 @@ class _SuperAdminShellState extends State<SuperAdminShell> {
         color: AppColors.surface,
         border: Border(right: BorderSide(color: AppColors.border)),
       ),
-      child: _buildNavContent(context, currentIndex, authProvider, adminProvider, isSidebar: true),
+      child: _buildNavContent(
+          context, currentIndex, authProvider, adminProvider,
+          isSidebar: true),
     );
   }
 
@@ -174,7 +177,9 @@ class _SuperAdminShellState extends State<SuperAdminShell> {
       AuthProvider authProvider, SuperAdminProvider adminProvider) {
     return Drawer(
       backgroundColor: AppColors.surface,
-      child: _buildNavContent(context, currentIndex, authProvider, adminProvider, isSidebar: false),
+      child: _buildNavContent(
+          context, currentIndex, authProvider, adminProvider,
+          isSidebar: false),
     );
   }
 
@@ -182,7 +187,8 @@ class _SuperAdminShellState extends State<SuperAdminShell> {
       AuthProvider authProvider, SuperAdminProvider adminProvider,
       {required bool isSidebar}) {
     final pendingCount = adminProvider.pendingOwners.length;
-    final reportCount = adminProvider.reports.where((r) => r.status == 'pending').length;
+    final reportCount =
+        adminProvider.reports.where((r) => r.status == 'pending').length;
 
     return SafeArea(
       child: Column(
@@ -194,7 +200,8 @@ class _SuperAdminShellState extends State<SuperAdminShell> {
               children: [
                 const Row(
                   children: [
-                    Icon(Icons.fitness_center_rounded, color: AppColors.primary, size: 28),
+                    Icon(Icons.fitness_center_rounded,
+                        color: AppColors.primary, size: 28),
                     SizedBox(width: 10),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -226,7 +233,8 @@ class _SuperAdminShellState extends State<SuperAdminShell> {
                   alignment: Alignment.centerLeft,
                   child: Container(
                     margin: const EdgeInsets.only(left: 38),
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
                       color: AppColors.primary.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(4),
@@ -295,7 +303,8 @@ class _SuperAdminShellState extends State<SuperAdminShell> {
                       ),
                       const SizedBox(height: 4),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
                           color: AppColors.primary,
                           borderRadius: BorderRadius.circular(4),
@@ -413,7 +422,8 @@ class _SuperAdminShellState extends State<SuperAdminShell> {
                     item.label,
                     style: TextStyle(
                       fontSize: 13,
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                      fontWeight:
+                          isSelected ? FontWeight.w600 : FontWeight.w500,
                       color: isLogout
                           ? AppColors.error
                           : isSelected
@@ -424,7 +434,8 @@ class _SuperAdminShellState extends State<SuperAdminShell> {
                 ),
                 if (badge != null)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
                       color: AppColors.error,
                       borderRadius: BorderRadius.circular(10),

@@ -94,7 +94,9 @@ class _BookingScreenState extends State<BookingScreen> {
 
   int get _slotCapacity {
     final totalSlots = _timeSlots.isEmpty ? 1 : _timeSlots.length;
-    return (widget.gym.capacity / totalSlots).ceil().clamp(1, widget.gym.capacity);
+    return (widget.gym.capacity / totalSlots)
+        .ceil()
+        .clamp(1, widget.gym.capacity);
   }
 
   @override
@@ -136,7 +138,8 @@ class _BookingScreenState extends State<BookingScreen> {
       builder: (context, crowdProv, _) {
         final dateStr = _formatDateStr(_selectedDate);
         final dayCount = crowdProv.getBookingCount(dateStr);
-        final dayCrowdLevel = CrowdService.calculateCrowdLevel(dayCount, widget.gym.capacity);
+        final dayCrowdLevel =
+            CrowdService.calculateCrowdLevel(dayCount, widget.gym.capacity);
         final isBlocked = _isDateBlocked(_selectedDate);
 
         return Column(
@@ -149,16 +152,19 @@ class _BookingScreenState extends State<BookingScreen> {
                   children: [
                     // ─── One-Day Booking Badge ─────────────────────────
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 8),
                       decoration: BoxDecoration(
                         color: AppColors.primary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(AppRadius.full),
-                        border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+                        border: Border.all(
+                            color: AppColors.primary.withValues(alpha: 0.3)),
                       ),
                       child: const Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.info_outline_rounded, size: 16, color: AppColors.primary),
+                          Icon(Icons.info_outline_rounded,
+                              size: 16, color: AppColors.primary),
                           SizedBox(width: 6),
                           Text(
                             'One-day booking only',
@@ -179,7 +185,8 @@ class _BookingScreenState extends State<BookingScreen> {
                       decoration: BoxDecoration(
                         color: AppColors.surfaceElevated,
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+                        border: Border.all(
+                            color: AppColors.primary.withValues(alpha: 0.3)),
                       ),
                       child: Row(
                         children: [
@@ -200,7 +207,9 @@ class _BookingScreenState extends State<BookingScreen> {
                               children: [
                                 const Text(
                                   'Selected Date',
-                                  style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: AppColors.textSecondary),
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
@@ -232,7 +241,8 @@ class _BookingScreenState extends State<BookingScreen> {
                     if (!isBlocked) ...[
                       const Row(
                         children: [
-                          Icon(Icons.access_time_rounded, size: 18, color: AppColors.primary),
+                          Icon(Icons.access_time_rounded,
+                              size: 18, color: AppColors.primary),
                           SizedBox(width: 8),
                           Text(
                             'Select Time Slot',
@@ -249,7 +259,8 @@ class _BookingScreenState extends State<BookingScreen> {
                         const Center(
                           child: Padding(
                             padding: EdgeInsets.all(32),
-                            child: CircularProgressIndicator(color: AppColors.primary),
+                            child: CircularProgressIndicator(
+                                color: AppColors.primary),
                           ),
                         )
                       else
@@ -260,16 +271,19 @@ class _BookingScreenState extends State<BookingScreen> {
                         decoration: BoxDecoration(
                           color: AppColors.error.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
+                          border: Border.all(
+                              color: AppColors.error.withValues(alpha: 0.3)),
                         ),
                         child: const Row(
                           children: [
-                            Icon(Icons.block_rounded, color: AppColors.error, size: 24),
+                            Icon(Icons.block_rounded,
+                                color: AppColors.error, size: 24),
                             SizedBox(width: 12),
                             Expanded(
                               child: Text(
                                 'This date is blocked by the gym owner.\nPlease select another date.',
-                                style: TextStyle(color: AppColors.error, fontSize: 14),
+                                style: TextStyle(
+                                    color: AppColors.error, fontSize: 14),
                               ),
                             ),
                           ],
@@ -293,7 +307,8 @@ class _BookingScreenState extends State<BookingScreen> {
                           Expanded(
                             child: Text(
                               'Tip: Book on Low or Moderate days for a better workout experience.',
-                              style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                              style: TextStyle(
+                                  fontSize: 12, color: AppColors.textSecondary),
                             ),
                           ),
                         ],
@@ -327,7 +342,9 @@ class _BookingScreenState extends State<BookingScreen> {
                   child: const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Continue', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                      Text('Continue',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w600)),
                       SizedBox(width: 8),
                       Icon(Icons.arrow_forward_rounded, size: 18),
                     ],
@@ -363,18 +380,26 @@ class _BookingScreenState extends State<BookingScreen> {
         headerStyle: const HeaderStyle(
           titleCentered: true,
           formatButtonVisible: true,
-          formatButtonTextStyle: TextStyle(color: AppColors.primary, fontSize: 13),
+          formatButtonTextStyle:
+              TextStyle(color: AppColors.primary, fontSize: 13),
           formatButtonDecoration: BoxDecoration(
             border: Border.fromBorderSide(BorderSide(color: AppColors.primary)),
             borderRadius: BorderRadius.all(Radius.circular(12)),
           ),
-          leftChevronIcon: Icon(Icons.chevron_left_rounded, color: AppColors.textPrimary),
-          rightChevronIcon: Icon(Icons.chevron_right_rounded, color: AppColors.textPrimary),
-          titleTextStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+          leftChevronIcon:
+              Icon(Icons.chevron_left_rounded, color: AppColors.textPrimary),
+          rightChevronIcon:
+              Icon(Icons.chevron_right_rounded, color: AppColors.textPrimary),
+          titleTextStyle: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimary),
         ),
         daysOfWeekStyle: const DaysOfWeekStyle(
-          weekdayStyle: TextStyle(color: AppColors.textSecondary, fontWeight: FontWeight.w600),
-          weekendStyle: TextStyle(color: AppColors.textSecondary, fontWeight: FontWeight.w600),
+          weekdayStyle: TextStyle(
+              color: AppColors.textSecondary, fontWeight: FontWeight.w600),
+          weekendStyle: TextStyle(
+              color: AppColors.textSecondary, fontWeight: FontWeight.w600),
         ),
         onDaySelected: (selectedDay, focusedDay) {
           if (!_isDateBlocked(selectedDay)) {
@@ -386,16 +411,22 @@ class _BookingScreenState extends State<BookingScreen> {
           }
         },
         calendarBuilders: CalendarBuilders(
-          defaultBuilder: (context, day, focusedDay) => _buildCalendarCell(day, crowdProv),
-          selectedBuilder: (context, day, focusedDay) => _buildCalendarCell(day, crowdProv, isSelected: true),
-          todayBuilder: (context, day, focusedDay) => _buildCalendarCell(day, crowdProv, isToday: true),
-          disabledBuilder: (context, day, focusedDay) => _buildCalendarCell(day, crowdProv, isDisabled: true),
+          defaultBuilder: (context, day, focusedDay) =>
+              _buildCalendarCell(day, crowdProv),
+          selectedBuilder: (context, day, focusedDay) =>
+              _buildCalendarCell(day, crowdProv, isSelected: true),
+          todayBuilder: (context, day, focusedDay) =>
+              _buildCalendarCell(day, crowdProv, isToday: true),
+          disabledBuilder: (context, day, focusedDay) =>
+              _buildCalendarCell(day, crowdProv, isDisabled: true),
         ),
       ),
     );
   }
 
-  Widget _buildCalendarCell(DateTime day, CrowdStatusProvider crowdProv, {
+  Widget _buildCalendarCell(
+    DateTime day,
+    CrowdStatusProvider crowdProv, {
     bool isSelected = false,
     bool isToday = false,
     bool isDisabled = false,
@@ -414,14 +445,20 @@ class _BookingScreenState extends State<BookingScreen> {
       decoration: BoxDecoration(
         color: isSelected ? AppColors.primary : Colors.transparent,
         borderRadius: BorderRadius.circular(12),
-        border: isToday && !isSelected ? Border.all(color: AppColors.primary, width: 2) : null,
+        border: isToday && !isSelected
+            ? Border.all(color: AppColors.primary, width: 2)
+            : null,
       ),
       child: Stack(
         alignment: Alignment.center,
         children: [
           Text(
             '${day.day}',
-            style: TextStyle(color: textColor, fontWeight: isSelected || isToday ? FontWeight.bold : FontWeight.normal),
+            style: TextStyle(
+                color: textColor,
+                fontWeight: isSelected || isToday
+                    ? FontWeight.bold
+                    : FontWeight.normal),
           ),
           if (!isBlocked && !isDisabled)
             Positioned(
@@ -464,7 +501,8 @@ class _BookingScreenState extends State<BookingScreen> {
         children: [
           const Row(
             children: [
-              Icon(Icons.people_outline_rounded, size: 18, color: AppColors.primary),
+              Icon(Icons.people_outline_rounded,
+                  size: 18, color: AppColors.primary),
               SizedBox(width: 8),
               Text(
                 'Crowd Overview for this day',
@@ -480,7 +518,9 @@ class _BookingScreenState extends State<BookingScreen> {
           // Estimated from bookings
           Row(
             children: [
-              const Text('Estimated from bookings', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+              const Text('Estimated from bookings',
+                  style:
+                      TextStyle(fontSize: 12, color: AppColors.textSecondary)),
               const Spacer(),
               _buildCrowdBadge(dayCrowdLevel, compact: true),
             ],
@@ -496,7 +536,9 @@ class _BookingScreenState extends State<BookingScreen> {
             const SizedBox(height: 12),
             Row(
               children: [
-                const Text('Live status (by owner)', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                const Text('Live status (by owner)',
+                    style: TextStyle(
+                        fontSize: 12, color: AppColors.textSecondary)),
                 const Spacer(),
                 _buildCrowdBadge(liveLevel, compact: true),
               ],
@@ -505,7 +547,8 @@ class _BookingScreenState extends State<BookingScreen> {
               const SizedBox(height: 4),
               Text(
                 'Updated $timeAgo',
-                style: const TextStyle(fontSize: 11, color: AppColors.textMuted),
+                style:
+                    const TextStyle(fontSize: 11, color: AppColors.textMuted),
               ),
             ],
           ],
@@ -518,12 +561,14 @@ class _BookingScreenState extends State<BookingScreen> {
             ),
             child: const Row(
               children: [
-                Icon(Icons.info_outline_rounded, size: 14, color: AppColors.textMuted),
+                Icon(Icons.info_outline_rounded,
+                    size: 14, color: AppColors.textMuted),
                 SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     'Estimated crowd is based on GymVibe bookings. Live status is updated by the gym owner and may include walk-ins and regular members.',
-                    style: TextStyle(fontSize: 10, color: AppColors.textMuted, height: 1.4),
+                    style: TextStyle(
+                        fontSize: 10, color: AppColors.textMuted, height: 1.4),
                   ),
                 ),
               ],
@@ -551,7 +596,9 @@ class _BookingScreenState extends State<BookingScreen> {
         margin: const EdgeInsets.only(bottom: 10),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary.withValues(alpha: 0.1) : AppColors.surfaceElevated,
+          color: isSelected
+              ? AppColors.primary.withValues(alpha: 0.1)
+              : AppColors.surfaceElevated,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
             color: isSelected ? AppColors.primary : AppColors.border,
@@ -569,7 +616,8 @@ class _BookingScreenState extends State<BookingScreen> {
                   shape: BoxShape.circle,
                   color: AppColors.primary,
                 ),
-                child: const Icon(Icons.check_rounded, size: 14, color: Colors.white),
+                child: const Icon(Icons.check_rounded,
+                    size: 14, color: Colors.white),
               )
             else
               Container(
@@ -615,7 +663,8 @@ class _BookingScreenState extends State<BookingScreen> {
     final dateStr = _formatDateStr(_selectedDate);
     final crowdProv = context.watch<CrowdStatusProvider>();
     final dayCount = crowdProv.getBookingCount(dateStr);
-    final dayCrowdLevel = CrowdService.calculateCrowdLevel(dayCount, widget.gym.capacity);
+    final dayCrowdLevel =
+        CrowdService.calculateCrowdLevel(dayCount, widget.gym.capacity);
     final liveStatus = widget.gym.currentLiveStatus;
     final liveLevel = CrowdService.liveStatusToCrowdLevel(liveStatus);
     final updatedAt = widget.gym.statusUpdatedAt;
@@ -640,11 +689,13 @@ class _BookingScreenState extends State<BookingScreen> {
                   decoration: BoxDecoration(
                     color: AppColors.primary.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+                    border: Border.all(
+                        color: AppColors.primary.withValues(alpha: 0.3)),
                   ),
                   child: const Column(
                     children: [
-                      Icon(Icons.event_available_rounded, color: AppColors.primary, size: 28),
+                      Icon(Icons.event_available_rounded,
+                          color: AppColors.primary, size: 28),
                       SizedBox(height: 8),
                       Text(
                         'One-Day Booking Only',
@@ -658,7 +709,8 @@ class _BookingScreenState extends State<BookingScreen> {
                       Text(
                         'Your booking is valid for the selected date and time only.',
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                        style: TextStyle(
+                            fontSize: 12, color: AppColors.textSecondary),
                       ),
                     ],
                   ),
@@ -666,9 +718,11 @@ class _BookingScreenState extends State<BookingScreen> {
                 const SizedBox(height: 24),
 
                 // ─── Booking Details ───────────────────────────────
-                _buildSummaryRow(Icons.fitness_center_rounded, 'Gym', widget.gym.name),
+                _buildSummaryRow(
+                    Icons.fitness_center_rounded, 'Gym', widget.gym.name),
                 const SizedBox(height: 16),
-                _buildSummaryRow(Icons.calendar_today_rounded, 'Date', _formatDisplayDate(_selectedDate)),
+                _buildSummaryRow(Icons.calendar_today_rounded, 'Date',
+                    _formatDisplayDate(_selectedDate)),
                 const SizedBox(height: 16),
                 _buildSummaryRow(
                   Icons.access_time_rounded,
@@ -676,7 +730,8 @@ class _BookingScreenState extends State<BookingScreen> {
                   '${_formatTime24to12(_selectedSlot!['start']!)} – ${_formatTime24to12(_selectedSlot!['end']!)}',
                 ),
                 const SizedBox(height: 16),
-                _buildSummaryRow(Icons.receipt_long_rounded, 'Rate', '$priceStr (1 Day)'),
+                _buildSummaryRow(
+                    Icons.receipt_long_rounded, 'Rate', '$priceStr (1 Day)'),
                 const SizedBox(height: 24),
 
                 // ─── Today's Crowd Section ─────────────────────────
@@ -691,7 +746,8 @@ class _BookingScreenState extends State<BookingScreen> {
                     children: [
                       const Row(
                         children: [
-                          Icon(Icons.people_outline_rounded, size: 16, color: AppColors.primary),
+                          Icon(Icons.people_outline_rounded,
+                              size: 16, color: AppColors.primary),
                           SizedBox(width: 8),
                           Text(
                             "Today's Crowd",
@@ -711,7 +767,9 @@ class _BookingScreenState extends State<BookingScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Text('Estimated from bookings',
-                                    style: TextStyle(fontSize: 11, color: AppColors.textSecondary)),
+                                    style: TextStyle(
+                                        fontSize: 11,
+                                        color: AppColors.textSecondary)),
                                 const SizedBox(height: 6),
                                 _buildCrowdBadge(dayCrowdLevel),
                               ],
@@ -723,7 +781,9 @@ class _BookingScreenState extends State<BookingScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   const Text('Live status (by owner)',
-                                      style: TextStyle(fontSize: 11, color: AppColors.textSecondary)),
+                                      style: TextStyle(
+                                          fontSize: 11,
+                                          color: AppColors.textSecondary)),
                                   const SizedBox(height: 6),
                                   _buildCrowdBadge(liveLevel),
                                 ],
@@ -734,13 +794,15 @@ class _BookingScreenState extends State<BookingScreen> {
                       const SizedBox(height: 8),
                       Text(
                         '$dayCount / ${widget.gym.capacity} bookings',
-                        style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
+                        style: const TextStyle(
+                            fontSize: 12, color: AppColors.textMuted),
                       ),
                       if (timeAgo != null) ...[
                         const SizedBox(height: 2),
                         Text(
                           'Updated $timeAgo',
-                          style: const TextStyle(fontSize: 11, color: AppColors.textMuted),
+                          style: const TextStyle(
+                              fontSize: 11, color: AppColors.textMuted),
                         ),
                       ],
                     ],
@@ -754,11 +816,17 @@ class _BookingScreenState extends State<BookingScreen> {
                   children: [
                     const Text(
                       'Total',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary),
                     ),
                     Text(
                       priceStr,
-                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.primary),
+                      style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary),
                     ),
                   ],
                 ),
@@ -779,18 +847,21 @@ class _BookingScreenState extends State<BookingScreen> {
                 const Text(
                   'Upload your payment screenshot to continue',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                  style:
+                      TextStyle(fontSize: 12, color: AppColors.textSecondary),
                 ),
                 const SizedBox(height: 8),
               ],
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: (_hasProof && !_isSubmitting) ? _confirmBooking : null,
+                  onPressed:
+                      (_hasProof && !_isSubmitting) ? _confirmBooking : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
-                    disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.3),
+                    disabledBackgroundColor:
+                        AppColors.primary.withValues(alpha: 0.3),
                     disabledForegroundColor: Colors.white54,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
@@ -810,7 +881,8 @@ class _BookingScreenState extends State<BookingScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const Text('Confirm Booking',
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w600)),
                             const SizedBox(width: 8),
                             Container(
                               width: 28,
@@ -819,7 +891,8 @@ class _BookingScreenState extends State<BookingScreen> {
                                 color: Colors.white.withValues(alpha: 0.2),
                                 shape: BoxShape.circle,
                               ),
-                              child: const Icon(Icons.check_rounded, size: 16, color: Colors.white),
+                              child: const Icon(Icons.check_rounded,
+                                  size: 16, color: Colors.white),
                             ),
                           ],
                         ),
@@ -829,7 +902,8 @@ class _BookingScreenState extends State<BookingScreen> {
               const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.info_outline_rounded, size: 14, color: AppColors.textMuted),
+                  Icon(Icons.info_outline_rounded,
+                      size: 14, color: AppColors.textMuted),
                   SizedBox(width: 4),
                   Text(
                     'All bookings are for one day only.',
@@ -1171,13 +1245,18 @@ class _BookingScreenState extends State<BookingScreen> {
       children: [
         Icon(icon, size: 20, color: AppColors.textMuted),
         const SizedBox(width: 12),
-        Text(label, style: const TextStyle(fontSize: 14, color: AppColors.textSecondary)),
+        Text(label,
+            style:
+                const TextStyle(fontSize: 14, color: AppColors.textSecondary)),
         const Spacer(),
         Flexible(
           child: Text(
             value,
             textAlign: TextAlign.right,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.textPrimary),
+            style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textPrimary),
           ),
         ),
       ],
@@ -1257,15 +1336,34 @@ class _BookingScreenState extends State<BookingScreen> {
     return '${diff.inDays} days ago';
   }
 
-
   String _getFullWeekday(int day) {
-    const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const weekdays = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday'
+    ];
     return weekdays[day - 1];
   }
 
   String _getFullMonth(int month) {
-    const months = ['January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'];
+    const months = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
+    ];
     return months[month - 1];
   }
 }

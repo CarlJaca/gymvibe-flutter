@@ -20,23 +20,26 @@ class OwnerMoreScreen extends StatelessWidget {
             const SizedBox(height: AppPadding.sm),
             // ── More header ───────────────────────────────────────
             const Text('More',
-                style: TextStyle(
-                    fontSize: 22, fontWeight: FontWeight.bold)),
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
             const SizedBox(height: AppPadding.lg),
 
             _buildSection('Gym Management', [
               _item(context, Icons.work_outline_rounded, 'Job Postings',
-                  onTap: () => Navigator.pushNamed(context, AppRoutes.ownerJobs)),
+                  onTap: () =>
+                      Navigator.pushNamed(context, AppRoutes.ownerJobs)),
               _item(context, Icons.payments_rounded, 'Booking Payments',
-                  onTap: () => Navigator.push(context,
+                  onTap: () => Navigator.push(
+                      context,
                       MaterialPageRoute(
                           builder: (_) => const OwnerBookingPaymentsScreen()))),
               _item(context, Icons.reviews_rounded, 'Reviews Management',
-                  onTap: () => Navigator.push(context,
+                  onTap: () => Navigator.push(
+                      context,
                       MaterialPageRoute(
                           builder: (_) => const OwnerReviewsScreen()))),
               _item(context, Icons.account_circle_rounded, 'Public Gym Profile',
-                  onTap: () => Navigator.push(context,
+                  onTap: () => Navigator.push(
+                      context,
                       MaterialPageRoute(
                           builder: (_) => const OwnerGymProfileScreen()))),
             ]),
@@ -48,7 +51,8 @@ class OwnerMoreScreen extends StatelessWidget {
                   onTap: () =>
                       Navigator.pushNamed(context, AppRoutes.ownerPortal)),
               _item(context, Icons.notifications_none_rounded, 'Notifications',
-                  onTap: () => Navigator.pushNamed(context, AppRoutes.ownerNotifications)),
+                  onTap: () => Navigator.pushNamed(
+                      context, AppRoutes.ownerNotifications)),
               _item(context, Icons.help_outline_rounded, 'Help & Support',
                   onTap: () {}),
             ]),
@@ -60,8 +64,10 @@ class OwnerMoreScreen extends StatelessWidget {
                 context,
                 Icons.storefront_rounded,
                 'Gym Profile',
-                onTap: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => const OwnerGymProfileScreen())),
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const OwnerGymProfileScreen())),
               ),
             ]),
 
@@ -76,18 +82,19 @@ class OwnerMoreScreen extends StatelessWidget {
               ),
               clipBehavior: Clip.antiAlias,
               child: ListTile(
-                leading: const Icon(Icons.logout_rounded,
-                    color: AppColors.error),
+                leading:
+                    const Icon(Icons.logout_rounded, color: AppColors.error),
                 title: const Text(
                   'Log Out',
                   style: TextStyle(
-                      color: AppColors.error,
-                      fontWeight: FontWeight.w600),
+                      color: AppColors.error, fontWeight: FontWeight.w600),
                 ),
                 onTap: () {
-                  final provider = Provider.of<AuthProvider>(context, listen: false);
+                  final provider =
+                      Provider.of<AuthProvider>(context, listen: false);
                   provider.signOut();
-                  Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (route) => false);
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, AppRoutes.login, (route) => false);
                 },
               ),
             ),

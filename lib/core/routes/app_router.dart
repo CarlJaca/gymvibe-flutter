@@ -20,7 +20,7 @@ class AppRoutes {
   static const String notifications = '/notifications';
   static const String myReviews = '/my-reviews';
   static const String membershipHistory = '/membership-history';
-  
+
   // ── Fitness Events ────────────────────────────────────────────────
   static const String eventDetails = '/event-details';
   static const String myEvents = '/my-events';
@@ -35,15 +35,15 @@ class AppRoutes {
 
   // ── Owner Portal ──────────────────────────────────────────────────
   static const String ownerPrVerification = '/owner-pr-verification';
-  static const String ownerLogin     = '/owner-login';
-  static const String ownerRegister  = '/owner-register';
-  static const String ownerPortal    = '/owner-portal';
+  static const String ownerLogin = '/owner-login';
+  static const String ownerRegister = '/owner-register';
+  static const String ownerPortal = '/owner-portal';
   static const String ownerCrowdStatus = '/owner-crowd-status';
-  static const String ownerCreateEvent      = '/owner-create-event';
-  static const String ownerCreatePromotion  = '/owner-create-promotion';
-  static const String ownerEditProfile      = '/owner-edit-profile';
+  static const String ownerCreateEvent = '/owner-create-event';
+  static const String ownerCreatePromotion = '/owner-create-promotion';
+  static const String ownerEditProfile = '/owner-edit-profile';
   static const String ownerAttendanceTracking = '/owner-attendance-tracking';
-  static const String ownerNotifications      = '/owner-notifications';
+  static const String ownerNotifications = '/owner-notifications';
   static const String ownerJobs = '/owner-jobs';
 
   // ── Super Admin Portal ────────────────────────────────────────────
@@ -54,4 +54,3 @@ class AppRoutes {
   static const String myApplications = '/my-applications';
   static const String compareGyms = '/compare-gyms';
 }
-

@@ -17,18 +17,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final List<Map<String, String>> _slides = [
     {
       'title': 'Discover Gyms That Fit Your Vibe',
-      'desc': 'Find the best gyms near you based on your goals, preferences, and lifestyle.',
-      'image': 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=80',
+      'desc':
+          'Find the best gyms near you based on your goals, preferences, and lifestyle.',
+      'image':
+          'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=80',
     },
     {
       'title': 'Compare Memberships',
-      'desc': 'View pricing, facilities, and reviews side by side before committing.',
-      'image': 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&q=80',
+      'desc':
+          'View pricing, facilities, and reviews side by side before committing.',
+      'image':
+          'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&q=80',
     },
     {
       'title': 'Join the Community',
       'desc': 'Connect with local fitness events and athletes in Davao City.',
-      'image': 'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=800&q=80',
+      'image':
+          'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=800&q=80',
     },
   ];
 
@@ -74,13 +79,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               );
             },
           ),
-          
+
           Positioned(
             top: 50,
             right: 20,
             child: TextButton(
-              onPressed: () => Navigator.pushReplacementNamed(context, AppRoutes.login),
-              child: const Text('Skip', style: TextStyle(color: Colors.white70)),
+              onPressed: () =>
+                  Navigator.pushReplacementNamed(context, AppRoutes.login),
+              child:
+                  const Text('Skip', style: TextStyle(color: Colors.white70)),
             ),
           ),
 
@@ -97,7 +104,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
           ),
-          
+
           Positioned(
             left: 24,
             right: 24,
@@ -106,7 +113,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               children: [
                 Text(
                   _slides[_currentPage]['title']!,
-                  style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white),
+                  style: const TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
@@ -131,7 +141,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: _nextPage,
-                    child: Text(_currentPage == _slides.length - 1 ? 'Get Started' : 'Next'),
+                    child: Text(_currentPage == _slides.length - 1
+                        ? 'Get Started'
+                        : 'Next'),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -143,10 +155,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       style: TextStyle(color: Colors.white70),
                     ),
                     TextButton(
-                      onPressed: () => Navigator.pushReplacementNamed(context, AppRoutes.login),
+                      onPressed: () => Navigator.pushReplacementNamed(
+                          context, AppRoutes.login),
                       child: const Text(
                         'Log in',
-                        style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],

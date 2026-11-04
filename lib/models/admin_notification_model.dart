@@ -4,7 +4,8 @@ class AdminNotificationModel {
   final String id;
   final String title;
   final String message;
-  final String targetAudience; // 'all', 'gym_seekers', 'gym_owners', 'user:{userId}', 'gym:{gymId}'
+  final String
+      targetAudience; // 'all', 'gym_seekers', 'gym_owners', 'user:{userId}', 'gym:{gymId}'
   final String? linkedScreen;
   final String? imageUrl;
   final DateTime? scheduledDate;
@@ -27,7 +28,8 @@ class AdminNotificationModel {
     required this.senderName,
   });
 
-  factory AdminNotificationModel.fromJson(Map<String, dynamic> json, String documentId) {
+  factory AdminNotificationModel.fromJson(
+      Map<String, dynamic> json, String documentId) {
     DateTime? scheduledDate;
     if (json['scheduledDate'] is Timestamp) {
       scheduledDate = (json['scheduledDate'] as Timestamp).toDate();
@@ -60,7 +62,8 @@ class AdminNotificationModel {
       'targetAudience': targetAudience,
       'linkedScreen': linkedScreen,
       'imageUrl': imageUrl,
-      'scheduledDate': scheduledDate != null ? Timestamp.fromDate(scheduledDate!) : null,
+      'scheduledDate':
+          scheduledDate != null ? Timestamp.fromDate(scheduledDate!) : null,
       'sentDate': sentDate != null ? Timestamp.fromDate(sentDate!) : null,
       'status': status,
       'senderId': senderId,

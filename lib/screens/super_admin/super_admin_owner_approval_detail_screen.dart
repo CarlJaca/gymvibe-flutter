@@ -28,7 +28,8 @@ class SuperAdminOwnerApprovalDetailScreen extends StatelessWidget {
                 Expanded(
                   child: Text(
                     owner.gymName ?? 'Gym Application',
-                    style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
+                    style: const TextStyle(
+                        fontSize: 22, fontWeight: FontWeight.w800),
                   ),
                 ),
                 _buildStatusBadge(owner.accountStatus),
@@ -49,8 +50,12 @@ class SuperAdminOwnerApprovalDetailScreen extends StatelessWidget {
             _buildSection('Application Information', [
               _buildInfoRow('Gym Name', owner.gymName ?? 'Not specified'),
               _buildInfoRow('Gym Address', owner.location),
-              _buildInfoRow('Submitted Date',
-                  owner.createdAt != null ? DateFormat('MMM d, yyyy hh:mm a').format(owner.createdAt!) : 'Unknown'),
+              _buildInfoRow(
+                  'Submitted Date',
+                  owner.createdAt != null
+                      ? DateFormat('MMM d, yyyy hh:mm a')
+                          .format(owner.createdAt!)
+                      : 'Unknown'),
             ]),
             const SizedBox(height: 24),
 
@@ -122,7 +127,8 @@ class SuperAdminOwnerApprovalDetailScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+        Text(title,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
         const SizedBox(height: 12),
         Container(
           padding: const EdgeInsets.all(16),
@@ -145,10 +151,14 @@ class SuperAdminOwnerApprovalDetailScreen extends StatelessWidget {
         children: [
           SizedBox(
             width: 120,
-            child: Text(label, style: const TextStyle(fontSize: 13, color: AppColors.textSecondary)),
+            child: Text(label,
+                style: const TextStyle(
+                    fontSize: 13, color: AppColors.textSecondary)),
           ),
           Expanded(
-            child: Text(value, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+            child: Text(value,
+                style:
+                    const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
           ),
         ],
       ),
@@ -158,10 +168,17 @@ class SuperAdminOwnerApprovalDetailScreen extends StatelessWidget {
   Widget _buildStatusBadge(String status) {
     Color color;
     switch (status) {
-      case 'pending': color = AppColors.accentOrange; break;
-      case 'active': color = AppColors.success; break;
-      case 'rejected': color = AppColors.error; break;
-      default: color = AppColors.textMuted;
+      case 'pending':
+        color = AppColors.accentOrange;
+        break;
+      case 'active':
+        color = AppColors.success;
+        break;
+      case 'rejected':
+        color = AppColors.error;
+        break;
+      default:
+        color = AppColors.textMuted;
     }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
@@ -171,7 +188,8 @@ class SuperAdminOwnerApprovalDetailScreen extends StatelessWidget {
       ),
       child: Text(
         status[0].toUpperCase() + status.substring(1),
-        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: color),
+        style:
+            TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: color),
       ),
     );
   }
@@ -182,20 +200,24 @@ class SuperAdminOwnerApprovalDetailScreen extends StatelessWidget {
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.surface,
         title: const Text('Approve Owner'),
-        content: Text('Approve ${owner.name} as a Gym Owner for ${owner.gymName}?'),
+        content:
+            Text('Approve ${owner.name} as a Gym Owner for ${owner.gymName}?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
           ElevatedButton(
             onPressed: () {
               context.read<SuperAdminProvider>().approveOwner(
-                userId: owner.id,
-                adminId: authProvider.currentUser!.id,
-                adminName: authProvider.userName,
-              );
+                    userId: owner.id,
+                    adminId: authProvider.currentUser!.id,
+                    adminName: authProvider.userName,
+                  );
               Navigator.pop(ctx);
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Owner approved'), backgroundColor: AppColors.success),
+                const SnackBar(
+                    content: Text('Owner approved'),
+                    backgroundColor: AppColors.success),
               );
             },
             child: const Text('Approve'),
@@ -215,20 +237,25 @@ class SuperAdminOwnerApprovalDetailScreen extends StatelessWidget {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(controller: reasonCtrl, maxLines: 3, decoration: const InputDecoration(hintText: 'Rejection reason (required)')),
+            TextField(
+                controller: reasonCtrl,
+                maxLines: 3,
+                decoration: const InputDecoration(
+                    hintText: 'Rejection reason (required)')),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
           ElevatedButton(
             onPressed: () {
               if (reasonCtrl.text.trim().isEmpty) return;
               context.read<SuperAdminProvider>().rejectOwner(
-                userId: owner.id,
-                reason: reasonCtrl.text.trim(),
-                adminId: authProvider.currentUser!.id,
-                adminName: authProvider.userName,
-              );
+                    userId: owner.id,
+                    reason: reasonCtrl.text.trim(),
+                    adminId: authProvider.currentUser!.id,
+                    adminName: authProvider.userName,
+                  );
               Navigator.pop(ctx);
               Navigator.pop(context);
             },
@@ -247,18 +274,23 @@ class SuperAdminOwnerApprovalDetailScreen extends StatelessWidget {
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.surface,
         title: const Text('Request Information'),
-        content: TextField(controller: msgCtrl, maxLines: 3, decoration: const InputDecoration(hintText: 'What information is needed?')),
+        content: TextField(
+            controller: msgCtrl,
+            maxLines: 3,
+            decoration:
+                const InputDecoration(hintText: 'What information is needed?')),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
           ElevatedButton(
             onPressed: () {
               if (msgCtrl.text.trim().isEmpty) return;
               context.read<SuperAdminProvider>().requestOwnerInfo(
-                userId: owner.id,
-                message: msgCtrl.text.trim(),
-                adminId: authProvider.currentUser!.id,
-                adminName: authProvider.userName,
-              );
+                    userId: owner.id,
+                    message: msgCtrl.text.trim(),
+                    adminId: authProvider.currentUser!.id,
+                    adminName: authProvider.userName,
+                  );
               Navigator.pop(ctx);
               Navigator.pop(context);
             },
@@ -288,9 +320,13 @@ class _DocumentPlaceholder extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.description_outlined, size: 24, color: AppColors.textMuted),
+              const Icon(Icons.description_outlined,
+                  size: 24, color: AppColors.textMuted),
               const SizedBox(height: 4),
-              Text(label, style: const TextStyle(fontSize: 9, color: AppColors.textMuted), textAlign: TextAlign.center),
+              Text(label,
+                  style:
+                      const TextStyle(fontSize: 9, color: AppColors.textMuted),
+                  textAlign: TextAlign.center),
             ],
           ),
         ),

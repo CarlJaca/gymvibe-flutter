@@ -20,7 +20,8 @@ class PromotionsProvider extends ChangeNotifier {
         'id': 'p1',
         'gymId': 'gym1',
         'title': '50% Off Annual Membership',
-        'description': 'Get 50% off on any annual membership plan. Perfect for long-term fitness commitment!',
+        'description':
+            'Get 50% off on any annual membership plan. Perfect for long-term fitness commitment!',
         'dates': 'Valid until Aug 31',
         'type': 'discount',
         'value': 50,
@@ -43,7 +44,8 @@ class PromotionsProvider extends ChangeNotifier {
         'id': 'p2',
         'gymId': 'gym1',
         'title': 'Free Personal Training Session',
-        'description': 'Enjoy a complimentary personal training session with our certified trainers.',
+        'description':
+            'Enjoy a complimentary personal training session with our certified trainers.',
         'dates': 'Valid until Sep 15',
         'type': 'freebie',
         'value': 0,
@@ -75,87 +77,101 @@ class PromotionsProvider extends ChangeNotifier {
   bool _isLoading = false;
 
   List<Map<String, dynamic>> get allPromotions => _active;
-  List<Map<String, dynamic>> get active => _active.where((p) => (p['status'] ?? 'Active') == 'Active').toList();
+  List<Map<String, dynamic>> get active =>
+      _active.where((p) => (p['status'] ?? 'Active') == 'Active').toList();
   List<Map<String, dynamic>> get myClaimed => _myClaimed;
-  List<Map<String, dynamic>> get scheduled => _active.where((p) => p['status'] == 'Scheduled').toList();
-  List<Map<String, dynamic>> get paused => _active.where((p) => p['status'] == 'Paused').toList();
+  List<Map<String, dynamic>> get scheduled =>
+      _active.where((p) => p['status'] == 'Scheduled').toList();
+  List<Map<String, dynamic>> get paused =>
+      _active.where((p) => p['status'] == 'Paused').toList();
   bool get isLoading => _isLoading;
-  
-  List<Map<String, dynamic>> get myActiveClaimed => 
+
+  List<Map<String, dynamic>> get myActiveClaimed =>
       _myClaimed.where((p) => p['status'] == 'Active').toList();
-      
-  List<Map<String, dynamic>> get myExpiredClaimed => 
+
+  List<Map<String, dynamic>> get myExpiredClaimed =>
       _myClaimed.where((p) => p['status'] == 'Expired').toList();
 
   // ─── Init (Firestore) ──────────────────────────────────────────────────
   Future<void> loadPromotions() async {
     if (_promotionsSubscription != null) return;
-    
+
     _isLoading = true;
     notifyListeners();
 
     try {
-      _promotionsSubscription = _firestore.collection('promotions').snapshots().listen(
-        (snapshot) {
-          try {
-            if (snapshot.docs.isEmpty) {
-              _seedInitialPromotions();
-            } else {
-              _active = snapshot.docs.map((doc) {
-                final safeData = Map<String, dynamic>.from(doc.data());
-                if (safeData['color'] is int) {
-                  safeData['color'] = Color(safeData['color'] as int);
-                }
-                // Ensure required fields have defaults
-                safeData['id'] = doc.id;
-                final currentUserId = FirebaseAuth.instance.currentUser?.uid;
-                final claimedUsers = safeData['claimedUsers'] as List?;
-                final claimedUserIds = (safeData['claimedUserIds'] as List?)?.map((e) => e.toString()).toSet() ?? {};
-                final isClaimedByUser = currentUserId != null && (claimedUserIds.contains(currentUserId) || (claimedUsers != null && claimedUsers.any((u) => u is Map && u['id'] == currentUserId)));
-                safeData['isClaimed'] = isClaimedByUser || (safeData['isClaimed'] == true);
-                safeData['description'] ??= '';
-                safeData['isSaved'] ??= false;
-                safeData['isClaimed'] ??= false;
-                safeData['claimedCount'] ??= 0;
-                safeData['totalSlots'] ??= 100;
-                safeData['terms'] ??= <String>[];
-                return safeData;
-              }).toList();
+      _promotionsSubscription =
+          _firestore.collection('promotions').snapshots().listen((snapshot) {
+        try {
+          if (snapshot.docs.isEmpty) {
+            _seedInitialPromotions();
+          } else {
+            _active = snapshot.docs.map((doc) {
+              final safeData = Map<String, dynamic>.from(doc.data());
+              if (safeData['color'] is int) {
+                safeData['color'] = Color(safeData['color'] as int);
+              }
+              // Ensure required fields have defaults
+              safeData['id'] = doc.id;
+              final currentUserId = FirebaseAuth.instance.currentUser?.uid;
+              final claimedUsers = safeData['claimedUsers'] as List?;
+              final claimedUserIds = (safeData['claimedUserIds'] as List?)
+                      ?.map((e) => e.toString())
+                      .toSet() ??
+                  {};
+              final isClaimedByUser = currentUserId != null &&
+                  (claimedUserIds.contains(currentUserId) ||
+                      (claimedUsers != null &&
+                          claimedUsers.any(
+                              (u) => u is Map && u['id'] == currentUserId)));
+              safeData['isClaimed'] =
+                  isClaimedByUser || (safeData['isClaimed'] == true);
+              safeData['description'] ??= '';
+              safeData['isSaved'] ??= false;
+              safeData['isClaimed'] ??= false;
+              safeData['claimedCount'] ??= 0;
+              safeData['totalSlots'] ??= 100;
+              safeData['terms'] ??= <String>[];
+              return safeData;
+            }).toList();
 
-              // Backfill missing fields in Firestore docs (one-time migration)
-              for (var doc in snapshot.docs) {
-                final data = doc.data();
-                if (!data.containsKey('description') || !data.containsKey('totalSlots')) {
-                  doc.reference.set({
-                    'description': data['description'] ?? '',
-                    'isSaved': data['isSaved'] ?? false,
-                    'isClaimed': data['isClaimed'] ?? false,
-                    'claimedCount': data['claimedCount'] ?? 0,
-                    'totalSlots': data['totalSlots'] ?? 100,
-                    'terms': data['terms'] ?? <String>[],
-                  }, SetOptions(merge: true)).catchError((e) => debugPrint('Backfill error: $e'));
-                }
+            // Backfill missing fields in Firestore docs (one-time migration)
+            for (var doc in snapshot.docs) {
+              final data = doc.data();
+              if (!data.containsKey('description') ||
+                  !data.containsKey('totalSlots')) {
+                doc.reference.set({
+                  'description': data['description'] ?? '',
+                  'isSaved': data['isSaved'] ?? false,
+                  'isClaimed': data['isClaimed'] ?? false,
+                  'claimedCount': data['claimedCount'] ?? 0,
+                  'totalSlots': data['totalSlots'] ?? 100,
+                  'terms': data['terms'] ?? <String>[],
+                }, SetOptions(merge: true)).catchError(
+                    (e) => debugPrint('Backfill error: $e'));
               }
             }
-          } catch (e, stack) {
-            debugPrint('Error processing promotions snapshot: $e');
-            debugPrint(stack.toString());
           }
-          
-          _isLoading = false;
-          notifyListeners();
-        },
-        onError: (e) {
-          debugPrint('Error loading promotions: $e');
-          _isLoading = false;
-          notifyListeners();
+        } catch (e, stack) {
+          debugPrint('Error processing promotions snapshot: $e');
+          debugPrint(stack.toString());
         }
-      );
+
+        _isLoading = false;
+        notifyListeners();
+      }, onError: (e) {
+        debugPrint('Error loading promotions: $e');
+        _isLoading = false;
+        notifyListeners();
+      });
     } catch (e) {
-      debugPrint('Sync Error loading promotions stream: $e. Attempting fallback fetch.');
-      
+      debugPrint(
+          'Sync Error loading promotions stream: $e. Attempting fallback fetch.');
+
       try {
-        final snapshot = await _firestore.collection('promotions').get(const GetOptions(source: Source.cache));
+        final snapshot = await _firestore
+            .collection('promotions')
+            .get(const GetOptions(source: Source.cache));
         _active = snapshot.docs.map((doc) {
           final data = Map<String, dynamic>.from(doc.data());
           data['id'] = doc.id;
@@ -184,12 +200,14 @@ class PromotionsProvider extends ChangeNotifier {
     final index = _active.indexWhere((p) => p['id'] == id);
     if (index != -1) {
       final currentUserId = FirebaseAuth.instance.currentUser?.uid;
-      final currentUserName = FirebaseAuth.instance.currentUser?.displayName ?? 'Member';
+      final currentUserName =
+          FirebaseAuth.instance.currentUser?.displayName ?? 'Member';
 
       _active[index]['isClaimed'] = true;
-      final newCount = ((_active[index]['claimedCount'] as num?) ?? 0).toInt() + 1;
+      final newCount =
+          ((_active[index]['claimedCount'] as num?) ?? 0).toInt() + 1;
       _active[index]['claimedCount'] = newCount;
-      
+
       // Add to my claimed
       _myClaimed.insert(0, {
         'id': _active[index]['id'],
@@ -218,7 +236,11 @@ class PromotionsProvider extends ChangeNotifier {
         ]);
       }
 
-      _firestore.collection('promotions').doc(id).update(updateData).catchError((e) => debugPrint('Error: $e'));
+      _firestore
+          .collection('promotions')
+          .doc(id)
+          .update(updateData)
+          .catchError((e) => debugPrint('Error: $e'));
     }
   }
 
@@ -253,13 +275,16 @@ class PromotionsProvider extends ChangeNotifier {
       'isClaimed': false,
       'claimedUsers': [],
     };
-    
+
     // Optimistic update
     _active.insert(0, newPromo);
     notifyListeners();
 
     try {
-      await _firestore.collection('promotions').doc(newPromo['id'] as String).set(newPromo);
+      await _firestore
+          .collection('promotions')
+          .doc(newPromo['id'] as String)
+          .set(newPromo);
     } catch (e) {
       debugPrint('Error: $e');
     }
@@ -271,7 +296,10 @@ class PromotionsProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _firestore.collection('promotions').doc(promo['id'] as String).delete();
+      await _firestore
+          .collection('promotions')
+          .doc(promo['id'] as String)
+          .delete();
     } catch (e) {
       debugPrint('Error: $e');
     }
@@ -281,13 +309,16 @@ class PromotionsProvider extends ChangeNotifier {
     final copy = Map<String, dynamic>.from(promo);
     copy['id'] = 'p_${DateTime.now().millisecondsSinceEpoch}';
     copy['title'] = '${copy['title']} (Copy)';
-    
+
     // Optimistic update
     _active.insert(0, copy);
     notifyListeners();
 
     try {
-      await _firestore.collection('promotions').doc(copy['id'] as String).set(copy);
+      await _firestore
+          .collection('promotions')
+          .doc(copy['id'] as String)
+          .set(copy);
     } catch (e) {
       debugPrint('Error: $e');
     }
@@ -295,7 +326,7 @@ class PromotionsProvider extends ChangeNotifier {
 
   Future<void> togglePause(Map<String, dynamic> promo) async {
     String newStatus = promo['status'] == 'Active' ? 'Paused' : 'Active';
-    
+
     // Optimistic update
     final index = _active.indexWhere((p) => p['id'] == promo['id']);
     if (index != -1) {
@@ -304,7 +335,10 @@ class PromotionsProvider extends ChangeNotifier {
     }
 
     try {
-      await _firestore.collection('promotions').doc(promo['id'] as String).update({
+      await _firestore
+          .collection('promotions')
+          .doc(promo['id'] as String)
+          .update({
         'status': newStatus,
       });
     } catch (e) {
@@ -312,7 +346,8 @@ class PromotionsProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> updatePromotion(Map<String, dynamic> oldPromo, Map<String, dynamic> newPromo) async {
+  Future<void> updatePromotion(
+      Map<String, dynamic> oldPromo, Map<String, dynamic> newPromo) async {
     // Optimistic update
     final index = _active.indexWhere((p) => p['id'] == newPromo['id']);
     if (index != -1) {
@@ -321,7 +356,10 @@ class PromotionsProvider extends ChangeNotifier {
     }
 
     try {
-      await _firestore.collection('promotions').doc(newPromo['id'] as String).update(newPromo);
+      await _firestore
+          .collection('promotions')
+          .doc(newPromo['id'] as String)
+          .update(newPromo);
     } catch (e) {
       debugPrint('Error: $e');
     }
