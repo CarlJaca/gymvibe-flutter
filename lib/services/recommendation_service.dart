@@ -61,13 +61,14 @@ class RecommendationService {
       attrs.add(budgetTag);
     }
 
-    // Trainer availability — check facilities and description
+    // Trainer availability — check facilities, trainerAvailability, and description
     final hasTrainer = gym.facilities.any((f) {
           final fl = f.toLowerCase();
           return fl.contains('trainer') ||
               fl.contains('coach') ||
               fl.contains('personal training');
         }) ||
+        gym.trainerAvailability.isNotEmpty ||
         gym.description.toLowerCase().contains('trainer') ||
         gym.description.toLowerCase().contains('coach');
     if (hasTrainer) {

@@ -78,7 +78,10 @@ class GymProvider extends ChangeNotifier {
     if (_matchResults.isNotEmpty) {
       return _matchResults.map((r) => r.gym).toList();
     }
-    if (_userPreferences.isEmpty) return [];
+    if (_userPreferences.isEmpty) {
+      // Fallback: show top gyms for new users before preferences are configured
+      return _allGyms.take(5).toList();
+    }
     return RecommendationService.getRecommendedGyms(
       userPreferences: _userPreferences,
       allGyms: _allGyms,

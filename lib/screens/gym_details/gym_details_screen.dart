@@ -1093,13 +1093,13 @@ class GymDetailsScreen extends StatelessWidget {
   }
 
   Future<void> _launchDirections(GymModel gym) async {
-    // Use the gym's maps_url (branch-specific search URL) if available
     final String urlStr;
-    if (gym.mapsUrl != null && gym.mapsUrl!.isNotEmpty) {
-      urlStr = gym.mapsUrl!;
-    } else if (gym.canShowExactMapPin) {
+    if (gym.canShowMapMarker && gym.latitude != null && gym.longitude != null) {
+      // Direct navigation to confirmed gym or building destination
       urlStr =
-          'https://www.google.com/maps/search/?api=1&query=${gym.latitude},${gym.longitude}';
+          'https://www.google.com/maps/dir/?api=1&destination=${gym.latitude},${gym.longitude}';
+    } else if (gym.mapsUrl != null && gym.mapsUrl!.isNotEmpty) {
+      urlStr = gym.mapsUrl!;
     } else {
       // Fallback: search by branch name + address
       final query =

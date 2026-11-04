@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:provider/provider.dart';
 import '../../core/constants/app_constants.dart';
 import '../../models/gym_model.dart';
+import '../../providers/location_provider.dart';
 
 class CompareGymsScreen extends StatelessWidget {
   final List<GymModel> gyms;
@@ -53,13 +55,26 @@ class CompareGymsScreen extends StatelessWidget {
                         .map((g) => _RatingCell(g.rating, g.reviewCount))
                         .toList(),
                   ),
-                  _buildComparisonRow(
-                    'Distance',
-                    Icons.location_on_rounded,
-                    gyms
-                        .map((g) => _DistanceCell(
-                            '${g.distanceKm.toStringAsFixed(1)} km'))
-                        .toList(),
+                  Consumer<LocationProvider>(
+                    builder: (context, locProv, _) {
+                      return _buildComparisonRow(
+                        'Distance',
+                        Icons.location_on_rounded,
+                        gyms.map((g) {
+                          if (!g.canShowMapMarker) {
+                            return const _DistanceCell('Unverified');
+                          }
+                          final d = locProv.calculateDistanceNullable(
+                              g.latitude, g.longitude);
+                          if (d == null) {
+                            return const _DistanceCell('—');
+                          }
+                          final prefix = g.isBuildingLevel ? '≈ ' : '';
+                          return _DistanceCell(
+                              '$prefix${d.toStringAsFixed(1)} km');
+                        }).toList(),
+                      );
+                    },
                   ),
                   _buildComparisonRow(
                     'Status',
@@ -185,7 +200,9 @@ class CompareGymsScreen extends StatelessWidget {
                     SizedBox(
                       height: 30,
                       child: Text(
-                        gym.name,
+                        gym.branch.isNotEmpty
+                            ? '${gym.name} (${gym.branch})'
+                            : gym.name,
                         style: const TextStyle(
                           color: AppColors.textPrimary,
                           fontSize: 10,

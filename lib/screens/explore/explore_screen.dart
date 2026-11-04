@@ -490,7 +490,7 @@ class _ExploreScreenState extends State<ExploreScreen>
     );
   }
 
-  void _showGymPreview(BuildContext context, dynamic gym) {
+  void _showGymPreview(BuildContext context, GymModel gym) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,

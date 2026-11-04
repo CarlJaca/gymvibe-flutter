@@ -5,6 +5,7 @@ import '../../core/constants/app_constants.dart';
 import '../../core/routes/app_router.dart';
 import '../../providers/gym_provider.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/location_provider.dart';
 import '../../services/recommendation_service.dart';
 import '../preferences/gym_preferences_screen.dart';
 import '../community/community_screen.dart';
@@ -607,18 +608,34 @@ class _MatchesScreenState extends State<MatchesScreen> {
                               style: const TextStyle(
                                   fontSize: 10, color: AppColors.textSecondary),
                             ),
-                            if (gym.distanceKm > 0) ...[
-                              const Text(' • ',
-                                  style: TextStyle(
-                                      color: AppColors.textMuted,
-                                      fontSize: 10)),
-                              Text(
-                                '${gym.distanceKm.toStringAsFixed(1)} km',
-                                style: const TextStyle(
-                                    fontSize: 11,
-                                    color: AppColors.textSecondary),
-                              ),
-                            ],
+                            Consumer<LocationProvider>(
+                              builder: (context, locProv, _) {
+                                if (!gym.canShowMapMarker) {
+                                  return const SizedBox.shrink();
+                                }
+                                final d = locProv.calculateDistanceNullable(
+                                    gym.latitude, gym.longitude);
+                                if (d == null) return const SizedBox.shrink();
+                                final prefix = gym.isBuildingLevel ? '≈ ' : '';
+                                return Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Text(' • ',
+                                        style: TextStyle(
+                                            color: AppColors.textMuted,
+                                            fontSize: 10)),
+                                    Text(
+                                      '$prefix${d.toStringAsFixed(1)} km',
+                                      style: TextStyle(
+                                          fontSize: 11,
+                                          color: gym.isBuildingLevel
+                                              ? Colors.orange
+                                              : AppColors.textSecondary),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
                           ],
                         ),
                         const SizedBox(height: 4),
