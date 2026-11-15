@@ -36,26 +36,39 @@ class GymCard extends StatelessWidget {
             children: [
               // ── Gym Image ────────────────────────────────────────────────
               gym.imageUrl.isNotEmpty
-                  ? CachedNetworkImage(
-                      imageUrl: gym.imageUrl,
-                      height: AppSizes.gymCardHeight,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      placeholder: (_, __) => Container(
-                        height: AppSizes.gymCardHeight,
-                        color: AppColors.surface,
-                        child: const Center(
-                          child: CircularProgressIndicator(
-                              color: AppColors.primary, strokeWidth: 2),
-                        ),
-                      ),
-                      errorWidget: (_, __, ___) => Container(
-                        height: AppSizes.gymCardHeight,
-                        color: AppColors.surface,
-                        child: const Icon(Icons.fitness_center,
-                            color: AppColors.textSecondary, size: 40),
-                      ),
-                    )
+                  ? (gym.imageUrl.startsWith('assets/')
+                      ? Image.asset(
+                          gym.imageUrl,
+                          height: AppSizes.gymCardHeight,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            height: AppSizes.gymCardHeight,
+                            color: AppColors.surface,
+                            child: const Icon(Icons.fitness_center,
+                                color: AppColors.textSecondary, size: 40),
+                          ),
+                        )
+                      : CachedNetworkImage(
+                          imageUrl: gym.imageUrl,
+                          height: AppSizes.gymCardHeight,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          placeholder: (_, __) => Container(
+                            height: AppSizes.gymCardHeight,
+                            color: AppColors.surface,
+                            child: const Center(
+                              child: CircularProgressIndicator(
+                                  color: AppColors.primary, strokeWidth: 2),
+                            ),
+                          ),
+                          errorWidget: (_, __, ___) => Container(
+                            height: AppSizes.gymCardHeight,
+                            color: AppColors.surface,
+                            child: const Icon(Icons.fitness_center,
+                                color: AppColors.textSecondary, size: 40),
+                          ),
+                        ))
                   : Container(
                       height: AppSizes.gymCardHeight,
                       width: double.infinity,

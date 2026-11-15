@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/routes/app_router.dart';
-import '../../services/auth_service.dart';
+import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -30,34 +30,46 @@ class _SplashScreenState extends State<SplashScreen>
     );
     _progressController.forward();
 
-    Future.delayed(const Duration(milliseconds: 2400), () {
-      if (mounted) {
-        final isLoggedIn = AuthService.instance.isLoggedIn;
-        final isOwner = AuthService.instance.currentUser?.isOwner ?? false;
+    _initializeAndNavigate();
+  }
 
-        String nextRoute = AppRoutes.onboarding;
-        if (isLoggedIn) {
-          final user = AuthService.instance.currentUser;
-          if (user != null && user.isSuperAdmin) {
-            nextRoute = AppRoutes.superAdminPortal;
-          } else if (isOwner) {
-            if (user != null) {
-              context
-                  .read<GymProvider>()
-                  .setCurrentOwner(user.id, gymName: user.gymName);
-            }
-            nextRoute = AppRoutes.ownerPortal;
-          } else {
-            nextRoute = AppRoutes.main;
-          }
-        }
+  Future<void> _initializeAndNavigate() async {
+    // Wait for the splash animation to show for at least 2.4 seconds
+    await Future.delayed(const Duration(milliseconds: 2400));
+    if (!mounted) return;
 
-        Navigator.pushReplacementNamed(
-          context,
-          nextRoute,
-        );
+    final authProvider = context.read<AuthProvider>();
+
+    // Try to restore previous session (checks explicit logout flag internally)
+    final sessionRestored = await authProvider.tryRestoreSession();
+
+    if (!mounted) return;
+
+    if (sessionRestored && authProvider.currentUser != null) {
+      final user = authProvider.currentUser!;
+
+      // Set owner context if needed
+      if (user.isOwner) {
+        context
+            .read<GymProvider>()
+            .setCurrentOwner(user.id, gymName: user.gymName);
       }
-    });
+
+      // Route based on role
+      String nextRoute;
+      if (user.isSuperAdmin) {
+        nextRoute = AppRoutes.superAdminPortal;
+      } else if (user.isOwner) {
+        nextRoute = AppRoutes.ownerPortal;
+      } else {
+        nextRoute = AppRoutes.main;
+      }
+
+      Navigator.pushReplacementNamed(context, nextRoute);
+    } else {
+      // No valid session or user explicitly logged out — show onboarding/login
+      Navigator.pushReplacementNamed(context, AppRoutes.onboarding);
+    }
   }
 
   @override

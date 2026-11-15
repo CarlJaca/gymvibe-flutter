@@ -393,6 +393,31 @@ class GymModel {
     );
   }
 
+  /// Maps each gym (by slug) to its bundled asset image.
+  static const Map<String, String> _gymImageMap = {
+    'dstars-fitness-gym-matina': 'assets/images/gyms/dstars_matina.jpg',
+    'beefit-gym-matina': 'assets/images/gyms/beefit_matina.jpg',
+    'crossfit-madayaw-south': 'assets/images/gyms/crossfit_madayaw.jpg',
+    'strive-fitness-davao-main': 'assets/images/gyms/strive_fitness.jpg',
+    'elorde-davao-main': 'assets/images/gyms/elorde_davao.jpg',
+    'clutchlab-fitness-gym-main': 'assets/images/gyms/clutchlab.jpg',
+    'continental-prime-fitness-gym-juna-subdivision': 'assets/images/gyms/continental_prime.jpg',
+    'dstars-fitness-gym-ecoland': 'assets/images/gyms/dstars_ecoland.jpg',
+    'elevation-fitness-gym-ecoland': 'assets/images/gyms/elevation_fitness.jpg',
+    'anytime-fitness-sm-city-ecoland-the-annex': 'assets/images/gyms/anytime_fitness.jpg',
+    'arcadia-fitness-gym-arcadia-active-lifestyle-center': 'assets/images/gyms/arcadia_fitness.jpg',
+    'garage-fitness-compound-main': 'assets/images/gyms/garage_fitness.jpg',
+    'ultradynamic-fitness-gym-prime-bangkal-talomo': 'assets/images/gyms/ultradynamic.jpg',
+    'kilo-culture-main': 'assets/images/gyms/kilo_culture.jpg',
+    'dstars-fitness-gym-ma-a': 'assets/images/gyms/dstars_maa.jpg',
+  };
+
+  /// Gets the local asset image path for a gym by its slug ID.
+  /// Returns empty string if no image is mapped.
+  static String _getGymAssetImage(String slug) {
+    return _gymImageMap[slug] ?? '';
+  }
+
   /// Creates a GymModel from the bundled real dataset JSON.
   /// Generates a stable slug ID from name + branch.
   factory GymModel.fromDatasetJson(Map<String, dynamic> j) {
@@ -418,7 +443,7 @@ class GymModel {
       name: name,
       branch: branch,
       district: j['district'] as String? ?? '',
-      imageUrl: '', // No image in real dataset — handled by UI placeholders
+      imageUrl: _getGymAssetImage(slug), // Mapped to bundled gym asset images
       address: j['address'] as String? ?? '',
       city: j['district'] as String? ?? '', // district maps to city for filter
       hours: j['operating_hours'] as String? ?? '',

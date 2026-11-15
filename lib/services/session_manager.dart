@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../core/utils/secure_logger.dart';
 
 /// Manages user session lifecycle including auth state monitoring
@@ -17,6 +18,9 @@ class SessionManager {
   /// Callback invoked when the session expires (either by inactivity
   /// or external auth state change like account deletion/disabling).
   void Function()? onSessionExpired;
+
+  /// SharedPreferences key for tracking explicit logout.
+  static const String _explicitLogoutKey = 'explicit_logout';
 
   /// The currently configured inactivity timeout.
   Duration _inactivityTimeout = defaultInactivityTimeout;
@@ -99,5 +103,29 @@ class SessionManager {
     final callback = onSessionExpired;
     stopSession();
     callback?.call();
+  }
+
+  // ─── Explicit Logout Flag ──────────────────────────────────────────────────
+
+  /// Sets the explicit logout flag. Call this when the user deliberately
+  /// taps "Logout" so the app knows not to auto-restore the session.
+  Future<void> setExplicitlyLoggedOut(bool value) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_explicitLogoutKey, value);
+    } catch (e) {
+      SecureLogger.logError('Error setting explicit logout flag', e);
+    }
+  }
+
+  /// Returns true if the user explicitly logged out last time.
+  Future<bool> wasExplicitlyLoggedOut() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getBool(_explicitLogoutKey) ?? false;
+    } catch (e) {
+      SecureLogger.logError('Error reading explicit logout flag', e);
+      return false;
+    }
   }
 }

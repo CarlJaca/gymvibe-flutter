@@ -229,12 +229,19 @@ class _OwnerGymProfileScreenState extends State<OwnerGymProfileScreen> {
                   background: Stack(
                     fit: StackFit.expand,
                     children: [
-                      Image.network(
-                        gym.imageUrl,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) =>
-                            Container(color: AppColors.surfaceElevated),
-                      ),
+                      gym.imageUrl.startsWith('assets/')
+                          ? Image.asset(
+                              gym.imageUrl,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) =>
+                                  Container(color: AppColors.surfaceElevated),
+                            )
+                          : Image.network(
+                              gym.imageUrl,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) =>
+                                  Container(color: AppColors.surfaceElevated),
+                            ),
                       DecoratedBox(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(

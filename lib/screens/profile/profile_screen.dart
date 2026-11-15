@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/gym_provider.dart';
 
 import 'dart:io';
 import '../../providers/events_provider.dart';
@@ -275,6 +276,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         color: AppColors.error, fontWeight: FontWeight.w600),
                   ),
                   onTap: () {
+                    // Clear in-memory user data (favorites, saved, preferences)
+                    context.read<GymProvider>().clearUserData();
                     auth.signOut();
                     Navigator.pushNamedAndRemoveUntil(
                         context, AppRoutes.login, (route) => false);

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../models/gym_model.dart';
 import '../data/gym_repository.dart';
 import '../services/recommendation_service.dart';
@@ -170,6 +171,9 @@ class GymProvider extends ChangeNotifier {
       _datasetLoaded = true;
       _applyFilter();
       calculateMatches();
+
+      // Load user's favorite/saved gyms from Firestore (if logged in)
+      await loadUserFavorites();
     } catch (e) {
       debugPrint('Error loading gyms from dataset: $e');
       _errorMessage = 'Failed to load gym data.';
@@ -190,13 +194,16 @@ class GymProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ─── Toggle Favorite & Saved ────────────────────────────────────────────────
+  // ─── Toggle Favorite & Saved (Firestore-persisted) ────────────────────────
   void toggleFavorite(String gymId) {
     final index = _allGyms.indexWhere((g) => g.id == gymId);
     if (index != -1) {
       _allGyms[index].isFavorite = !_allGyms[index].isFavorite;
       _applyFilter();
       notifyListeners();
+
+      // Persist to Firestore
+      _persistFavoriteChange(gymId, _allGyms[index].isFavorite);
     }
   }
 
@@ -224,6 +231,9 @@ class GymProvider extends ChangeNotifier {
       _allGyms[index].isSaved = !_allGyms[index].isSaved;
       _applyFilter();
       notifyListeners();
+
+      // Persist to Firestore
+      _persistSavedChange(gymId, _allGyms[index].isSaved);
     }
   }
 
@@ -243,6 +253,92 @@ class GymProvider extends ChangeNotifier {
       ),
     );
     return gym.isSaved;
+  }
+
+  // ─── Firestore Persistence Helpers ──────────────────────────────────────────
+
+  /// Persists a favorite change to the user's Firestore document.
+  Future<void> _persistFavoriteChange(String gymId, bool isFavorite) async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) return;
+
+    try {
+      final userRef = _firestore.collection('users').doc(uid);
+      if (isFavorite) {
+        await userRef.update({
+          'favoriteGymIds': FieldValue.arrayUnion([gymId]),
+        });
+      } else {
+        await userRef.update({
+          'favoriteGymIds': FieldValue.arrayRemove([gymId]),
+        });
+      }
+    } catch (e) {
+      debugPrint('Error persisting favorite: $e');
+    }
+  }
+
+  /// Persists a saved change to the user's Firestore document.
+  Future<void> _persistSavedChange(String gymId, bool isSaved) async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) return;
+
+    try {
+      final userRef = _firestore.collection('users').doc(uid);
+      if (isSaved) {
+        await userRef.update({
+          'savedGymIds': FieldValue.arrayUnion([gymId]),
+        });
+      } else {
+        await userRef.update({
+          'savedGymIds': FieldValue.arrayRemove([gymId]),
+        });
+      }
+    } catch (e) {
+      debugPrint('Error persisting saved gym: $e');
+    }
+  }
+
+  /// Loads the user's favorite and saved gym IDs from Firestore and applies
+  /// them to the in-memory gym list.
+  Future<void> loadUserFavorites() async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) return;
+
+    try {
+      final doc = await _firestore.collection('users').doc(uid).get();
+      if (!doc.exists || doc.data() == null) return;
+
+      final data = doc.data()!;
+      final favoriteIds =
+          Set<String>.from(data['favoriteGymIds'] as List? ?? []);
+      final savedIds = Set<String>.from(data['savedGymIds'] as List? ?? []);
+
+      for (final gym in _allGyms) {
+        gym.isFavorite = favoriteIds.contains(gym.id);
+        gym.isSaved = savedIds.contains(gym.id);
+      }
+
+      _applyFilter();
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error loading user favorites: $e');
+    }
+  }
+
+  /// Clears in-memory favorite/saved state without touching Firestore.
+  /// Called on logout to hide private data from the next viewer.
+  void clearUserData() {
+    for (final gym in _allGyms) {
+      gym.isFavorite = false;
+      gym.isSaved = false;
+    }
+    _currentOwnerId = null;
+    _fallbackGymName = null;
+    _userPreferences = [];
+    _matchResults = [];
+    _applyFilter();
+    notifyListeners();
   }
 
   // ─── Search & Filters ────────────────────────────────────────────────────────

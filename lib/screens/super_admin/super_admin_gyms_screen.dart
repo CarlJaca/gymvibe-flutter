@@ -162,11 +162,22 @@ class _SuperAdminGymsScreenState extends State<SuperAdminGymsScreen> {
         height: 50,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(AppRadius.sm),
-          image: DecorationImage(
-            image: NetworkImage(gym.imageUrl),
-            fit: BoxFit.cover,
-          ),
+          color: AppColors.surfaceElevated,
+          image: gym.imageUrl.isNotEmpty
+              ? (gym.imageUrl.startsWith('assets/')
+                  ? DecorationImage(
+                      image: AssetImage(gym.imageUrl),
+                      fit: BoxFit.cover,
+                    )
+                  : DecorationImage(
+                      image: NetworkImage(gym.imageUrl),
+                      fit: BoxFit.cover,
+                    ))
+              : null,
         ),
+        child: gym.imageUrl.isEmpty
+            ? const Icon(Icons.fitness_center, color: AppColors.textMuted, size: 20)
+            : null,
       ),
       title: Text(gym.name,
           style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),

@@ -511,17 +511,29 @@ class _MatchesScreenState extends State<MatchesScreen> {
                         width: 100,
                         height: 120,
                         child: gym.imageUrl.isNotEmpty
-                            ? Image.network(
-                                gym.imageUrl,
-                                fit: BoxFit.cover,
-                                errorBuilder: (_, __, ___) => Container(
-                                  color: AppColors.surfaceElevated,
-                                  child: const Icon(
-                                      Icons.fitness_center_rounded,
-                                      color: AppColors.textMuted,
-                                      size: 28),
-                                ),
-                              )
+                            ? (gym.imageUrl.startsWith('assets/')
+                                ? Image.asset(
+                                    gym.imageUrl,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (_, __, ___) => Container(
+                                      color: AppColors.surfaceElevated,
+                                      child: const Icon(
+                                          Icons.fitness_center_rounded,
+                                          color: AppColors.textMuted,
+                                          size: 28),
+                                    ),
+                                  )
+                                : Image.network(
+                                    gym.imageUrl,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (_, __, ___) => Container(
+                                      color: AppColors.surfaceElevated,
+                                      child: const Icon(
+                                          Icons.fitness_center_rounded,
+                                          color: AppColors.textMuted,
+                                          size: 28),
+                                    ),
+                                  ))
                             : Container(
                                 color: AppColors.surfaceElevated,
                                 child: const Icon(Icons.fitness_center_rounded,

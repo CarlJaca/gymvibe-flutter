@@ -221,13 +221,18 @@ class AuthService {
   Future<UserModel?> signInWithFacebook({bool isOwnerLogin = false}) async {
     try {
       final LoginResult result = await FacebookAuth.instance.login(
-        permissions: ['public_profile', 'email'],
+        permissions: ['public_profile'],
       );
 
       if (result.status == LoginStatus.success) {
+        final accessToken = result.accessToken;
+        if (accessToken == null) {
+          throw Exception('Facebook login succeeded but no access token was returned.');
+        }
+
         // Create a credential from the access token
         final OAuthCredential credential =
-            FacebookAuthProvider.credential(result.accessToken!.tokenString);
+            FacebookAuthProvider.credential(accessToken.tokenString);
 
         // Sign in to Firebase with the Facebook credential
         final UserCredential userCredential =
@@ -240,7 +245,6 @@ class AuthService {
 
         // Auto-register if profile doesn't exist yet
         if (userProfile == null) {
-          // You can also fetch user data from Facebook directly, but Firebase provides the basics
           userProfile = UserModel(
             id: user.uid,
             name: user.displayName ?? 'Facebook User',
@@ -271,7 +275,9 @@ class AuthService {
       }
     } catch (e) {
       SecureLogger.logError('Facebook Sign In Error', e);
-      throw Exception('Failed to sign in with Facebook. Please try again.');
+      // Re-throw with the actual error message so the user can see what went wrong
+      final msg = e.toString().replaceFirst('Exception: ', '');
+      throw Exception(msg);
     }
   }
 
@@ -356,6 +362,39 @@ class AuthService {
     } catch (_) {}
 
     _currentUser = null;
+  }
+
+  // ─── Restore Session ─────────────────────────────────────────────────────────
+  /// Attempts to restore a session from the persisted Firebase auth state.
+  /// Returns the UserModel if a valid session exists, otherwise null.
+  Future<UserModel?> tryRestoreSession() async {
+    try {
+      final firebaseUser = _firebaseAuth.currentUser;
+      if (firebaseUser == null) return null;
+
+      debugPrint('[AUTH] Restoring session for uid: ${firebaseUser.uid}');
+      UserModel? userProfile = await _fetchUserProfile(firebaseUser.uid);
+
+      if (userProfile == null) {
+        debugPrint('[AUTH] Session restore: no Firestore profile found');
+        return null;
+      }
+
+      // Check account status
+      if (userProfile.accountStatus == 'suspended' ||
+          userProfile.accountStatus == 'deactivated') {
+        debugPrint('[AUTH] Session restore: account is ${userProfile.accountStatus}');
+        await _firebaseAuth.signOut();
+        return null;
+      }
+
+      _currentUser = userProfile;
+      debugPrint('[AUTH] Session restored — role: ${userProfile.role}');
+      return _currentUser;
+    } catch (e) {
+      SecureLogger.logError('Session restore error', e);
+      return null;
+    }
   }
 
   // ─── Reset Password ──────────────────────────────────────────────────────────

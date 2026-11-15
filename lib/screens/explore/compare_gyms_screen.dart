@@ -167,26 +167,40 @@ class CompareGymsScreen extends StatelessWidget {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: gym.imageUrl.isNotEmpty
-                          ? CachedNetworkImage(
-                              imageUrl: gym.imageUrl,
-                              width: 48,
-                              height: 48,
-                              fit: BoxFit.cover,
-                              placeholder: (_, __) => Container(
-                                width: 48,
-                                height: 48,
-                                color: AppColors.surface,
-                                child: const Icon(Icons.fitness_center_rounded,
-                                    color: AppColors.textMuted, size: 18),
-                              ),
-                              errorWidget: (_, __, ___) => Container(
-                                width: 48,
-                                height: 48,
-                                color: AppColors.surface,
-                                child: const Icon(Icons.fitness_center_rounded,
-                                    color: AppColors.textMuted, size: 18),
-                              ),
-                            )
+                          ? (gym.imageUrl.startsWith('assets/')
+                              ? Image.asset(
+                                  gym.imageUrl,
+                                  width: 48,
+                                  height: 48,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) => Container(
+                                    width: 48,
+                                    height: 48,
+                                    color: AppColors.surface,
+                                    child: const Icon(Icons.fitness_center_rounded,
+                                        color: AppColors.textMuted, size: 18),
+                                  ),
+                                )
+                              : CachedNetworkImage(
+                                  imageUrl: gym.imageUrl,
+                                  width: 48,
+                                  height: 48,
+                                  fit: BoxFit.cover,
+                                  placeholder: (_, __) => Container(
+                                    width: 48,
+                                    height: 48,
+                                    color: AppColors.surface,
+                                    child: const Icon(Icons.fitness_center_rounded,
+                                        color: AppColors.textMuted, size: 18),
+                                  ),
+                                  errorWidget: (_, __, ___) => Container(
+                                    width: 48,
+                                    height: 48,
+                                    color: AppColors.surface,
+                                    child: const Icon(Icons.fitness_center_rounded,
+                                        color: AppColors.textMuted, size: 18),
+                                  ),
+                                ))
                           : Container(
                               width: 48,
                               height: 48,

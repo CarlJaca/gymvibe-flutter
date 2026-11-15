@@ -31,26 +31,40 @@ class ExploreGymTile extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(AppRadius.md),
               child: gym.imageUrl.isNotEmpty
-                  ? CachedNetworkImage(
-                      imageUrl: gym.imageUrl,
-                      width: 70,
-                      height: 70,
-                      fit: BoxFit.cover,
-                      placeholder: (_, __) => Container(
-                        width: 70,
-                        height: 70,
-                        color: AppColors.surfaceElevated,
-                        child: const Icon(Icons.fitness_center,
-                            color: AppColors.textSecondary, size: 24),
-                      ),
-                      errorWidget: (_, __, ___) => Container(
-                        width: 70,
-                        height: 70,
-                        color: AppColors.surfaceElevated,
-                        child: const Icon(Icons.fitness_center,
-                            color: AppColors.textSecondary, size: 24),
-                      ),
-                    )
+                  ? (gym.imageUrl.startsWith('assets/')
+                      ? Image.asset(
+                          gym.imageUrl,
+                          width: 70,
+                          height: 70,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            width: 70,
+                            height: 70,
+                            color: AppColors.surfaceElevated,
+                            child: const Icon(Icons.fitness_center,
+                                color: AppColors.textSecondary, size: 24),
+                          ),
+                        )
+                      : CachedNetworkImage(
+                          imageUrl: gym.imageUrl,
+                          width: 70,
+                          height: 70,
+                          fit: BoxFit.cover,
+                          placeholder: (_, __) => Container(
+                            width: 70,
+                            height: 70,
+                            color: AppColors.surfaceElevated,
+                            child: const Icon(Icons.fitness_center,
+                                color: AppColors.textSecondary, size: 24),
+                          ),
+                          errorWidget: (_, __, ___) => Container(
+                            width: 70,
+                            height: 70,
+                            color: AppColors.surfaceElevated,
+                            child: const Icon(Icons.fitness_center,
+                                color: AppColors.textSecondary, size: 24),
+                          ),
+                        ))
                   : Container(
                       width: 70,
                       height: 70,

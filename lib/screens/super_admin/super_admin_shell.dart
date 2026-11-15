@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/app_constants.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/gym_provider.dart';
 import '../../providers/super_admin_provider.dart';
 import '../../core/routes/app_router.dart';
 import 'super_admin_dashboard_screen.dart';
@@ -92,6 +93,7 @@ class _SuperAdminShellState extends State<SuperAdminShell> {
       // Let the routing animation start, then clear the state
       Future.delayed(const Duration(milliseconds: 100), () {
         if (!mounted) return;
+        context.read<GymProvider>().clearUserData();
         context.read<AuthProvider>().signOut();
       });
     }

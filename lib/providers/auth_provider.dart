@@ -83,6 +83,7 @@ class AuthProvider extends ChangeNotifier {
         _currentUser = result;
         _status = AuthStatus.authenticated;
         _rateLimiter.recordSuccess(actionKey);
+        await _clearExplicitLogoutFlag();
         _startSessionMonitoring();
         notifyListeners();
         return true;
@@ -125,6 +126,7 @@ class AuthProvider extends ChangeNotifier {
       _currentUser =
           await _authService.signInWithGoogle(isOwnerLogin: isOwnerLogin);
       _status = AuthStatus.authenticated;
+      await _clearExplicitLogoutFlag();
       _startSessionMonitoring();
       notifyListeners();
       return true;
@@ -146,6 +148,7 @@ class AuthProvider extends ChangeNotifier {
       _currentUser =
           await _authService.signInWithFacebook(isOwnerLogin: isOwnerLogin);
       _status = AuthStatus.authenticated;
+      await _clearExplicitLogoutFlag();
       _startSessionMonitoring();
       notifyListeners();
       return true;
@@ -178,6 +181,7 @@ class AuthProvider extends ChangeNotifier {
         gymName: gymName,
       );
       _status = AuthStatus.authenticated;
+      await _clearExplicitLogoutFlag();
       notifyListeners();
       return true;
     } catch (e) {
@@ -191,6 +195,8 @@ class AuthProvider extends ChangeNotifier {
   // ─── Sign Out ────────────────────────────────────────────────────────────────
   Future<void> signOut() async {
     _sessionManager.stopSession();
+    // Set explicit logout flag BEFORE signing out
+    await _sessionManager.setExplicitlyLoggedOut(true);
     await _authService.signOut();
     _currentUser = null;
     _status = AuthStatus.unauthenticated;
@@ -200,6 +206,49 @@ class AuthProvider extends ChangeNotifier {
   void clearError() {
     _errorMessage = null;
     notifyListeners();
+  }
+
+  // ─── Session Restoration ──────────────────────────────────────────────────
+  /// Attempts to restore a previous login session from Firebase persisted auth.
+  /// Returns true if session was restored, false otherwise.
+  /// If the user explicitly logged out, this will NOT restore the session.
+  Future<bool> tryRestoreSession() async {
+    // Check if user explicitly logged out
+    final wasLoggedOut = await _sessionManager.wasExplicitlyLoggedOut();
+    if (wasLoggedOut) {
+      // User explicitly logged out — do NOT auto-restore
+      // Sign out Firebase to clear the persisted session
+      await _authService.signOut();
+      _status = AuthStatus.unauthenticated;
+      notifyListeners();
+      return false;
+    }
+
+    // Try to restore from Firebase persisted auth
+    _status = AuthStatus.loading;
+    notifyListeners();
+
+    try {
+      final user = await _authService.tryRestoreSession();
+      if (user != null) {
+        _currentUser = user;
+        _status = AuthStatus.authenticated;
+        _startSessionMonitoring();
+        notifyListeners();
+        return true;
+      }
+    } catch (e) {
+      SecureLogger.logError('Session restoration error', e);
+    }
+
+    _status = AuthStatus.unauthenticated;
+    notifyListeners();
+    return false;
+  }
+
+  /// Clears the explicit logout flag. Called after a successful login.
+  Future<void> _clearExplicitLogoutFlag() async {
+    await _sessionManager.setExplicitlyLoggedOut(false);
   }
 
   // ─── Reset Password ──────────────────────────────────────────────────────────

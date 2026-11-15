@@ -9,6 +9,7 @@ import '../../core/routes/app_router.dart';
 import '../../models/gym_model.dart';
 import '../../providers/gym_provider.dart';
 import '../../providers/crowd_status_provider.dart';
+import '../../providers/location_provider.dart';
 import '../../services/crowd_service.dart';
 import '../../widgets/star_rating.dart';
 import '../../widgets/rating_progress_bar.dart';
@@ -114,17 +115,29 @@ class GymDetailsScreen extends StatelessWidget {
             Hero(
               tag: 'gym_image_${gym.id}',
               child: gym.imageUrl.isNotEmpty
-                  ? CachedNetworkImage(
-                      imageUrl: gym.imageUrl,
-                      fit: BoxFit.cover,
-                      errorWidget: (_, __, ___) => Container(
-                        color: AppColors.surface,
-                        child: const Center(
-                          child: Icon(Icons.fitness_center,
-                              color: AppColors.textSecondary, size: 60),
-                        ),
-                      ),
-                    )
+                  ? (gym.imageUrl.startsWith('assets/')
+                      ? Image.asset(
+                          gym.imageUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            color: AppColors.surface,
+                            child: const Center(
+                              child: Icon(Icons.fitness_center,
+                                  color: AppColors.textSecondary, size: 60),
+                            ),
+                          ),
+                        )
+                      : CachedNetworkImage(
+                          imageUrl: gym.imageUrl,
+                          fit: BoxFit.cover,
+                          errorWidget: (_, __, ___) => Container(
+                            color: AppColors.surface,
+                            child: const Center(
+                              child: Icon(Icons.fitness_center,
+                                  color: AppColors.textSecondary, size: 60),
+                            ),
+                          ),
+                        ))
                   : Container(
                       color: AppColors.surface,
                       child: const Center(
@@ -516,6 +529,63 @@ class GymDetailsScreen extends StatelessWidget {
           gym.address,
           style: const TextStyle(
               color: AppColors.textPrimary, fontSize: 14, height: 1.5),
+        ),
+        const SizedBox(height: 8),
+        // Dynamic distance from user
+        Consumer<LocationProvider>(
+          builder: (context, locProv, _) {
+            if (!gym.canShowMapMarker) {
+              return const Row(
+                children: [
+                  Icon(Icons.near_me_disabled_rounded,
+                      color: AppColors.textSecondary, size: 14),
+                  SizedBox(width: 4),
+                  Text('Pin not verified — distance unavailable',
+                      style: TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 12,
+                          fontStyle: FontStyle.italic)),
+                ],
+              );
+            }
+            final dist = locProv.calculateDistanceNullable(
+                gym.latitude, gym.longitude);
+            if (dist == null) {
+              return const Row(
+                children: [
+                  Icon(Icons.near_me_rounded,
+                      color: AppColors.textSecondary, size: 14),
+                  SizedBox(width: 4),
+                  Text('Distance unavailable',
+                      style: TextStyle(
+                          color: AppColors.textSecondary, fontSize: 12)),
+                ],
+              );
+            }
+            final prefix = gym.isBuildingLevel ? '≈ ' : '';
+            final label = gym.isBuildingLevel
+                ? ' (approx. straight line)'
+                : ' (straight line)';
+            return Row(
+              children: [
+                Icon(Icons.near_me_rounded,
+                    color: gym.isBuildingLevel
+                        ? Colors.orange
+                        : AppColors.primary,
+                    size: 14),
+                const SizedBox(width: 4),
+                Text(
+                  '$prefix${dist.toStringAsFixed(1)} km$label',
+                  style: TextStyle(
+                      color: gym.isBuildingLevel
+                          ? Colors.orange
+                          : AppColors.primary,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600),
+                ),
+              ],
+            );
+          },
         ),
         if (gym.phone.isNotEmpty) ...[
           const SizedBox(height: 8),

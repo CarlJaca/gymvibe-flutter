@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/routes/app_router.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/gym_provider.dart';
 import 'owner_reviews_screen.dart';
 import 'owner_booking_payments_screen.dart';
 import 'owner_gym_profile_screen.dart';
@@ -92,6 +93,8 @@ class OwnerMoreScreen extends StatelessWidget {
                 onTap: () {
                   final provider =
                       Provider.of<AuthProvider>(context, listen: false);
+                  Provider.of<GymProvider>(context, listen: false)
+                      .clearUserData();
                   provider.signOut();
                   Navigator.pushNamedAndRemoveUntil(
                       context, AppRoutes.login, (route) => false);
