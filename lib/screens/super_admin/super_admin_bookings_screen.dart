@@ -30,6 +30,10 @@ class _SuperAdminBookingsScreenState extends State<SuperAdminBookingsScreen> {
     context.read<SuperAdminProvider>().loadBookings(
           searchQuery: query.isNotEmpty ? query : null,
           statusFilter: _statusFilter,
+          typeFilter: _typeFilter,
+          dateFilter: _dateFilter != null
+              ? '${_dateFilter!.year}-${_dateFilter!.month.toString().padLeft(2, '0')}-${_dateFilter!.day.toString().padLeft(2, '0')}'
+              : null,
         );
   }
 
@@ -62,11 +66,13 @@ class _SuperAdminBookingsScreenState extends State<SuperAdminBookingsScreen> {
   }
 
   void _reloadBookings() {
-    // In a real app, date and type filters would be passed to the provider
-    // For now, we'll pass status and search, and handle extra filtering in memory or backend
     context.read<SuperAdminProvider>().loadBookings(
           searchQuery: _searchCtrl.text.isNotEmpty ? _searchCtrl.text : null,
           statusFilter: _statusFilter,
+          typeFilter: _typeFilter,
+          dateFilter: _dateFilter != null
+              ? '${_dateFilter!.year}-${_dateFilter!.month.toString().padLeft(2, '0')}-${_dateFilter!.day.toString().padLeft(2, '0')}'
+              : null,
         );
   }
 
@@ -199,12 +205,16 @@ class _SuperAdminBookingsScreenState extends State<SuperAdminBookingsScreen> {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('User: ${booking['userName'] ?? 'Unknown'}',
+            Text('User: ${booking['userName'] ?? booking['userId'] ?? 'Unknown'}',
                 style: const TextStyle(
                     fontSize: 12, color: AppColors.textSecondary)),
-            Text('Date: ${booking['dateStr']} at ${booking['time']}',
+            Text('Date: ${booking['bookingDate'] ?? 'N/A'}  •  ${booking['timeSlotStart'] ?? ''} – ${booking['timeSlotEnd'] ?? ''}',
                 style:
                     const TextStyle(fontSize: 11, color: AppColors.textMuted)),
+            if (booking['refNo'] != null && booking['refNo'].toString().isNotEmpty)
+              Text('Ref: ${booking['refNo']}',
+                  style:
+                      const TextStyle(fontSize: 10, color: AppColors.textMuted)),
             Text('ID: ${booking['id']}',
                 style:
                     const TextStyle(fontSize: 10, color: AppColors.textMuted)),
@@ -239,26 +249,48 @@ class _SuperAdminBookingsScreenState extends State<SuperAdminBookingsScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.surface,
         title: const Text('Booking Details'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _detailRow('ID', booking['id']),
-            _detailRow('Gym', booking['gymName'] ?? 'Unknown'),
-            _detailRow('User', booking['userName'] ?? 'Unknown'),
-            _detailRow('Status', booking['status'] ?? 'Unknown'),
-            _detailRow('Date', '${booking['dateStr']} at ${booking['time']}'),
-            if (booking['notes'] != null &&
-                booking['notes'].toString().isNotEmpty)
-              _detailRow('Notes', booking['notes']),
-            if (isFlagged) ...[
-              const SizedBox(height: 8),
-              const Text('⚠️ This booking has been flagged.',
-                  style: TextStyle(
-                      color: AppColors.accentOrange,
-                      fontWeight: FontWeight.bold)),
-            ]
-          ],
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _detailRow('ID', booking['id'] ?? ''),
+              _detailRow('Gym', booking['gymName'] ?? 'Unknown'),
+              _detailRow('Gym ID', booking['gymId'] ?? 'N/A'),
+              _detailRow('User', booking['userName'] ?? booking['userId'] ?? 'Unknown'),
+              _detailRow('User ID', booking['userId'] ?? 'N/A'),
+              _detailRow('Status', booking['status'] ?? 'Unknown'),
+              _detailRow('Date', booking['bookingDate'] ?? 'N/A'),
+              _detailRow('Time', '${booking['timeSlotStart'] ?? ''} – ${booking['timeSlotEnd'] ?? ''}'),
+              if (booking['refNo'] != null &&
+                  booking['refNo'].toString().isNotEmpty)
+                _detailRow('Ref No', booking['refNo']),
+              if (booking['price'] != null &&
+                  booking['price'].toString().isNotEmpty)
+                _detailRow('Price', booking['price'].toString()),
+              if (booking['paymentStatus'] != null &&
+                  booking['paymentStatus'].toString().isNotEmpty)
+                _detailRow('Payment', booking['paymentStatus']),
+              if (booking['notes'] != null &&
+                  booking['notes'].toString().isNotEmpty)
+                _detailRow('Notes', booking['notes']),
+              if (isFlagged) ...[
+                const SizedBox(height: 8),
+                const Text('⚠️ This booking has been flagged.',
+                    style: TextStyle(
+                        color: AppColors.accentOrange,
+                        fontWeight: FontWeight.bold)),
+                if (booking['flagNotes'] != null &&
+                    booking['flagNotes'].toString().isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text('Reason: ${booking['flagNotes']}',
+                        style: const TextStyle(
+                            fontSize: 12, color: AppColors.textSecondary)),
+                  ),
+              ]
+            ],
+          ),
         ),
         actions: [
           TextButton(

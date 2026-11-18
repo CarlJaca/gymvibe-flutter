@@ -69,7 +69,7 @@ class PostCard extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: AppSizes.avatarSm / 2,
-                  backgroundImage: NetworkImage(post.userAvatarUrl),
+                  backgroundImage: CachedNetworkImageProvider(post.userAvatarUrl),
                   backgroundColor: AppColors.surfaceElevated,
                 ),
                 const SizedBox(width: 10),
@@ -315,7 +315,7 @@ class _CommentsSheetState extends State<_CommentsSheet> {
                       children: [
                         CircleAvatar(
                           radius: 16,
-                          backgroundImage: NetworkImage(comment.userAvatarUrl),
+                          backgroundImage: CachedNetworkImageProvider(comment.userAvatarUrl),
                           backgroundColor: AppColors.surface,
                         ),
                         const SizedBox(width: 12),
@@ -374,7 +374,7 @@ class _CommentsSheetState extends State<_CommentsSheet> {
                 children: [
                   CircleAvatar(
                     radius: 18,
-                    backgroundImage: NetworkImage(widget.auth.userAvatar),
+                    backgroundImage: CachedNetworkImageProvider(widget.auth.userAvatar),
                     backgroundColor: AppColors.surface,
                   ),
                   const SizedBox(width: 12),

@@ -79,12 +79,16 @@ class SuperAdminUserDetailsSheet extends StatelessWidget {
                             ? 'Gym Seeker'
                             : user.role == 'gym_owner'
                                 ? 'Gym Owner'
-                                : 'Super Admin',
+                                : user.role == 'admin'
+                                    ? 'Admin'
+                                    : 'Super Admin',
                         user.role == 'gym_seeker'
                             ? const Color(0xFF4FC3F7)
                             : user.role == 'gym_owner'
                                 ? const Color(0xFFBA68C8)
-                                : AppColors.primary),
+                                : user.role == 'admin'
+                                    ? const Color(0xFF66BB6A)
+                                    : AppColors.primary),
                     const SizedBox(width: 8),
                     _buildBadge(
                       user.accountStatus[0].toUpperCase() +
@@ -427,6 +431,8 @@ class SuperAdminUserDetailsSheet extends StatelessWidget {
                       value: 'gym_seeker', child: Text('Gym User')),
                   DropdownMenuItem(
                       value: 'gym_owner', child: Text('Gym Owner')),
+                  DropdownMenuItem(
+                      value: 'admin', child: Text('Admin')),
                 ],
                 onChanged: (v) => setDialogState(() => selectedRole = v),
                 decoration: const InputDecoration(labelText: 'Role'),

@@ -52,6 +52,11 @@ class _LoginScreenState extends State<LoginScreen> {
       }
       if (provider.isSuperAdmin) {
         Navigator.pushReplacementNamed(context, AppRoutes.superAdminPortal);
+      } else if (provider.currentUser!.isAdmin) {
+        // Admin manages assigned gym — route to owner portal
+        context.read<GymProvider>().setCurrentOwner(provider.currentUser!.id,
+            gymName: provider.currentUser!.gymName);
+        Navigator.pushReplacementNamed(context, AppRoutes.ownerPortal);
       } else if (_isOwnerLogin) {
         Navigator.pushReplacementNamed(context, AppRoutes.ownerPortal);
       } else if (!provider.currentUser!.hasCompletedPreferences) {
@@ -74,6 +79,11 @@ class _LoginScreenState extends State<LoginScreen> {
       }
       if (provider.isSuperAdmin) {
         Navigator.pushReplacementNamed(context, AppRoutes.superAdminPortal);
+      } else if (provider.currentUser!.isAdmin) {
+        // Admin manages assigned gym — route to owner portal
+        context.read<GymProvider>().setCurrentOwner(provider.currentUser!.id,
+            gymName: provider.currentUser!.gymName);
+        Navigator.pushReplacementNamed(context, AppRoutes.ownerPortal);
       } else if (_isOwnerLogin) {
         Navigator.pushReplacementNamed(context, AppRoutes.ownerPortal);
       } else if (!provider.currentUser!.hasCompletedPreferences) {
@@ -96,6 +106,11 @@ class _LoginScreenState extends State<LoginScreen> {
       }
       if (provider.isSuperAdmin) {
         Navigator.pushReplacementNamed(context, AppRoutes.superAdminPortal);
+      } else if (provider.currentUser!.isAdmin) {
+        // Admin manages assigned gym — route to owner portal
+        context.read<GymProvider>().setCurrentOwner(provider.currentUser!.id,
+            gymName: provider.currentUser!.gymName);
+        Navigator.pushReplacementNamed(context, AppRoutes.ownerPortal);
       } else if (_isOwnerLogin) {
         Navigator.pushReplacementNamed(context, AppRoutes.ownerPortal);
       } else if (!provider.currentUser!.hasCompletedPreferences) {

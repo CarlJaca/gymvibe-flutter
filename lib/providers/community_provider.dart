@@ -190,4 +190,14 @@ class CommunityProvider extends ChangeNotifier {
             .map((doc) => CommentModel.fromJson(doc.data(), doc.id))
             .toList());
   }
+
+  /// Clear in-memory data on logout (Firestore data persists).
+  void clearOnLogout() {
+    _communities.clear();
+    _posts.clear();
+    _selectedCommunity = null;
+    _postText = '';
+    _isLoading = false;
+    notifyListeners();
+  }
 }

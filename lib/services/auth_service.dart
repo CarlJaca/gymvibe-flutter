@@ -66,39 +66,9 @@ class AuthService {
       debugPrint(
           '[AUTH] Firestore profile fetch: ${userProfile != null ? 'FOUND (role: ${userProfile.role})' : 'NOT FOUND'}');
 
-      // If this is the super admin email, ensure the role is correct
-      // (handles Firestore doc ID mismatch or seeder overwrite issues)
-      if (email.toLowerCase() == 'superadmin@gymvibe.com') {
-        debugPrint('[AUTH] Super admin email detected — forcing role override');
-        if (userProfile != null && userProfile.role != 'super_admin') {
-          // Override the role from the fetched profile
-          userProfile = UserModel(
-            id: user.uid,
-            name: userProfile.name,
-            email: userProfile.email,
-            avatarUrl: userProfile.avatarUrl,
-            location: userProfile.location,
-            role: 'super_admin',
-          );
-          // Also fix the Firestore document for future logins
-          try {
-            await _firestore
-                .collection('users')
-                .doc(user.uid)
-                .update({'role': 'super_admin'});
-            debugPrint('[AUTH] Firestore role updated to super_admin');
-          } catch (_) {}
-        } else {
-          userProfile ??= UserModel(
-            id: user.uid,
-            name: 'Super Admin',
-            email: email,
-            avatarUrl: 'https://i.pravatar.cc/150?img=11',
-            location: 'System',
-            role: 'super_admin',
-          );
-        }
-      }
+      // Role is determined solely by the Firestore 'role' field.
+      // No client-side email-based role overrides — the super_admin role
+      // must be provisioned directly in Firestore by an authorized process.
 
       if (userProfile == null) {
         debugPrint('[AUTH] No profile found — returning error');
@@ -113,6 +83,14 @@ class AuthService {
       if (userProfile.accountStatus == 'deactivated') {
         await _firebaseAuth.signOut();
         return 'This account has been deactivated.';
+      }
+      if (userProfile.accountStatus == 'pending') {
+        await _firebaseAuth.signOut();
+        return 'Your account is pending approval. Please wait for an administrator to review your application.';
+      }
+      if (userProfile.accountStatus == 'rejected') {
+        await _firebaseAuth.signOut();
+        return 'Your account application has been rejected. Contact support for details.';
       }
 
       // Super admin can log in from any login screen
@@ -300,6 +278,7 @@ class AuthService {
       if (user == null) throw Exception('Registration failed.');
 
       // Create new user model
+      // Gym owners start with 'pending' status until approved by a Super Admin.
       final newUser = UserModel(
         id: user.uid,
         name: name,
@@ -308,6 +287,7 @@ class AuthService {
         location: 'Davao City', // Default location
         membershipType: 'Free',
         role: isOwner ? 'gym_owner' : 'gym_seeker',
+        accountStatus: isOwner ? 'pending' : 'active',
         gymName: gymName,
       );
 
@@ -382,7 +362,9 @@ class AuthService {
 
       // Check account status
       if (userProfile.accountStatus == 'suspended' ||
-          userProfile.accountStatus == 'deactivated') {
+          userProfile.accountStatus == 'deactivated' ||
+          userProfile.accountStatus == 'pending' ||
+          userProfile.accountStatus == 'rejected') {
         debugPrint('[AUTH] Session restore: account is ${userProfile.accountStatus}');
         await _firebaseAuth.signOut();
         return null;

@@ -101,6 +101,12 @@ class _SuperAdminUsersScreenState extends State<SuperAdminUsersScreen> {
                   isSelected: _roleFilter == 'gym_owner',
                   onTap: () => _setRoleFilter('gym_owner'),
                 ),
+                const SizedBox(width: 8),
+                _buildFilterChip(
+                  label: 'Admins (${provider.adminCount})',
+                  isSelected: _roleFilter == 'admin',
+                  onTap: () => _setRoleFilter('admin'),
+                ),
               ],
             ),
           ),
@@ -293,9 +299,13 @@ class _SuperAdminUsersScreenState extends State<SuperAdminUsersScreen> {
         color = const Color(0xFFBA68C8);
         label = 'Gym Owner';
         break;
+      case 'admin':
+        color = const Color(0xFF66BB6A);
+        label = 'Admin';
+        break;
       case 'super_admin':
         color = AppColors.primary;
-        label = 'Admin';
+        label = 'Super Admin';
         break;
       default:
         color = AppColors.textSecondary;

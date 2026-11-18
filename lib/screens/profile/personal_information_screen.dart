@@ -1,7 +1,11 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../core/constants/app_constants.dart';
 import '../../providers/auth_provider.dart';
+import '../../services/storage_service.dart';
 
 class PersonalInformationScreen extends StatefulWidget {
   const PersonalInformationScreen({super.key});
@@ -17,6 +21,18 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   late TextEditingController _phoneController;
   late TextEditingController _locationController;
   bool _isLoading = false;
+  bool _isUploadingAvatar = false;
+
+  /// Maximum avatar file size: 5 MB
+  static const int _maxAvatarBytes = 5 * 1024 * 1024;
+
+  /// Supported image extensions
+  static const List<String> _allowedExtensions = [
+    'jpg',
+    'jpeg',
+    'png',
+    'webp'
+  ];
 
   @override
   void initState() {
@@ -35,6 +51,110 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
     _locationController.dispose();
     super.dispose();
   }
+
+  // ─── Avatar Upload ────────────────────────────────────────────────────
+
+  Future<void> _pickAndUploadAvatar() async {
+    try {
+      final result = await FilePicker.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: _allowedExtensions,
+        allowMultiple: false,
+      );
+
+      if (result == null || result.files.single.path == null) return;
+
+      final pickedFile = result.files.single;
+
+      // Validate file size
+      if (pickedFile.size > _maxAvatarBytes) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Image too large. Maximum size is 5 MB.'),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        }
+        return;
+      }
+
+      // Confirm with user
+      if (!mounted) return;
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          backgroundColor: AppColors.surface,
+          title: const Text('Update Avatar'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ClipOval(
+                child: Image.file(
+                  File(pickedFile.path!),
+                  width: 120,
+                  height: 120,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text('Use this image as your profile picture?'),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Save'),
+            ),
+          ],
+        ),
+      );
+
+      if (confirmed != true || !mounted) return;
+
+      setState(() => _isUploadingAvatar = true);
+
+      final file = File(pickedFile.path!);
+      final auth = context.read<AuthProvider>();
+      if (auth.currentUser == null) return;
+
+      // Upload to storage backend
+      final newUrl =
+          await storageService.uploadUserAvatar(auth.currentUser!.id, file);
+
+      // Save URL to Firestore user profile
+      await auth.updateUserProfile({'avatarUrl': newUrl});
+
+      // Evict old cached image so the new one loads immediately
+      await CachedNetworkImage.evictFromCache(newUrl);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Avatar updated successfully!'),
+            backgroundColor: AppColors.success,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to update avatar: $e'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isUploadingAvatar = false);
+    }
+  }
+
+  // ─── Save Profile Fields ──────────────────────────────────────────────
 
   Future<void> _saveChanges() async {
     if (!_formKey.currentState!.validate()) return;
@@ -90,6 +210,68 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                   'Update your personal details below.',
                   style:
                       TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                ),
+                const SizedBox(height: AppPadding.xl),
+
+                // ── Avatar Section ──────────────────────────────────────
+                Center(
+                  child: Consumer<AuthProvider>(
+                    builder: (context, auth, _) {
+                      return Stack(
+                        children: [
+                          CircleAvatar(
+                            radius: 50,
+                            backgroundColor: AppColors.surfaceElevated,
+                            backgroundImage: CachedNetworkImageProvider(
+                              auth.userAvatar,
+                            ),
+                          ),
+                          if (_isUploadingAvatar)
+                            const Positioned.fill(
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  color: Colors.black54,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                      color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: GestureDetector(
+                              onTap: _isUploadingAvatar
+                                  ? null
+                                  : _pickAndUploadAvatar,
+                              child: Container(
+                                width: 32,
+                                height: 32,
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                      color: AppColors.background, width: 2),
+                                ),
+                                child: const Icon(Icons.camera_alt_rounded,
+                                    size: 16, color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Center(
+                  child: Text(
+                    'Tap the camera icon to change your photo',
+                    style:
+                        TextStyle(color: AppColors.textMuted, fontSize: 12),
+                  ),
                 ),
                 const SizedBox(height: AppPadding.xl),
 

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
-
+  
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -45,6 +45,7 @@ import 'screens/gym_details/gym_details_screen.dart';
 import 'screens/search/search_landing_screen.dart';
 import 'screens/search/search_results_screen.dart';
 import 'screens/search/filters_screen.dart';
+import 'screens/explore/compare_gyms_screen.dart';
 import 'screens/home/customer_notifications_screen.dart';
 import 'screens/booking/booking_screen.dart';
 import 'screens/booking/my_bookings_screen.dart';
@@ -479,6 +480,10 @@ class _GymVibeAppState extends State<GymVibeApp> {
             case AppRoutes.myApplications:
               return MaterialPageRoute(
                   builder: (_) => const MyApplicationsScreen());
+            case AppRoutes.compareGyms:
+              final gyms = settings.arguments as List<GymModel>;
+              return MaterialPageRoute(
+                  builder: (_) => CompareGymsScreen(gyms: gyms));
 
             case AppRoutes.superAdminPortal:
               return MaterialPageRoute(
@@ -505,7 +510,8 @@ class MainNavigation extends StatefulWidget {
   State<MainNavigation> createState() => _MainNavigationState();
 }
 
-class _MainNavigationState extends State<MainNavigation> {
+class _MainNavigationState extends State<MainNavigation>
+    with WidgetsBindingObserver {
   int _currentIndex = 0;
 
   final List<Widget> _screens = [
@@ -515,6 +521,52 @@ class _MainNavigationState extends State<MainNavigation> {
     const PromotionsScreen(), // 3 - Promos
     const ProfileScreen(), // 4 – Profile
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    // Re-initialize providers after login (ensures data loads for returning users)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _reinitializeProviders();
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // Force rebuild to recalculate dynamic Open/Closed status
+      // when app returns from background
+      setState(() {});
+    }
+  }
+
+  void _reinitializeProviders() {
+    final auth = context.read<AuthProvider>();
+    if (auth.currentUser == null) return;
+    final userId = auth.currentUser!.id;
+
+    // Calendar: set user and load current month
+    final calendarProv = context.read<CalendarProvider>();
+    calendarProv.setUserId(userId);
+    final now = DateTime.now();
+    calendarProv.loadMonth(now.year, now.month);
+
+    // Community: reload posts and communities from Firestore
+    context.read<CommunityProvider>().loadCommunityData();
+
+    // Gyms: ensure gyms are loaded
+    final gymProv = context.read<GymProvider>();
+    if (gymProv.allGyms.isEmpty) {
+      gymProv.loadGyms();
+    }
+  }
 
   void _onTabTapped(int index) {
     setState(() {

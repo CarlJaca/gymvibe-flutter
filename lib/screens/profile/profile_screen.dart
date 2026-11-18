@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
+import '../../providers/calendar_provider.dart';
+import '../../providers/community_provider.dart';
+import '../../providers/crowd_status_provider.dart';
 
 import 'dart:io';
 import '../../providers/events_provider.dart';
@@ -26,34 +30,56 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   bool _isUploadingAvatar = false;
 
+  /// Maximum avatar file size: 5 MB
+  static const int _maxAvatarBytes = 5 * 1024 * 1024;
+
   Future<void> _uploadAvatar() async {
     try {
       final result = await FilePicker.pickFiles(
-        type: FileType.image,
+        type: FileType.custom,
+        allowedExtensions: ['jpg', 'jpeg', 'png', 'webp'],
         allowMultiple: false,
       );
 
-      if (result != null && result.files.single.path != null) {
-        setState(() => _isUploadingAvatar = true);
+      if (result == null || result.files.single.path == null) return;
 
-        final file = File(result.files.single.path!);
-        if (!mounted) return;
-        final auth = context.read<AuthProvider>();
+      final pickedFile = result.files.single;
 
-        if (auth.currentUser == null) return;
-
-        final newUrl =
-            await storageService.uploadUserAvatar(auth.currentUser!.id, file);
-
-        await auth.updateUserProfile({'avatarUrl': newUrl});
-
+      // Validate file size
+      if (pickedFile.size > _maxAvatarBytes) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-                content: Text('Avatar updated!'),
-                backgroundColor: AppColors.success),
+              content: Text('Image too large. Maximum size is 5 MB.'),
+              backgroundColor: AppColors.error,
+            ),
           );
         }
+        return;
+      }
+
+      setState(() => _isUploadingAvatar = true);
+
+      final file = File(pickedFile.path!);
+      if (!mounted) return;
+      final auth = context.read<AuthProvider>();
+
+      if (auth.currentUser == null) return;
+
+      final newUrl =
+          await storageService.uploadUserAvatar(auth.currentUser!.id, file);
+
+      await auth.updateUserProfile({'avatarUrl': newUrl});
+
+      // Evict cached image so the new one loads immediately
+      await CachedNetworkImage.evictFromCache(newUrl);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Avatar updated!'),
+              backgroundColor: AppColors.success),
+        );
       }
     } catch (e) {
       if (mounted) {
@@ -68,6 +94,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  // _showComingSoon kept for potential future features
+  // ignore: unused_element
   void _showComingSoon(String feature) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -97,7 +125,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         CircleAvatar(
                           radius: AppSizes.avatarXL / 2,
                           backgroundColor: AppColors.surfaceElevated,
-                          backgroundImage: NetworkImage(auth.userAvatar),
+                          backgroundImage: CachedNetworkImageProvider(
+                            auth.userAvatar,
+                          ),
                         ),
                         if (_isUploadingAvatar)
                           Positioned.fill(
@@ -153,7 +183,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     const SizedBox(height: 16),
                     // Edit Profile button
                     OutlinedButton(
-                      onPressed: () => _showComingSoon('Edit Profile'),
+                      onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) =>
+                                  const PersonalInformationScreen())),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppColors.textPrimary,
                         side: const BorderSide(color: AppColors.border),
@@ -247,8 +281,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         MaterialPageRoute(
                             builder: (_) =>
                                 const PersonalInformationScreen()))),
-                _buildMenuItem(Icons.payment_rounded, 'Payment Methods',
-                    onTap: () => _showComingSoon('Payment Methods')),
                 _buildMenuItem(Icons.card_giftcard_rounded, 'Rewards & Loyalty',
                     onTap: () => Navigator.push(
                         context,
@@ -278,6 +310,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   onTap: () {
                     // Clear in-memory user data (favorites, saved, preferences)
                     context.read<GymProvider>().clearUserData();
+                    context.read<CalendarProvider>().clearOnLogout();
+                    context.read<CommunityProvider>().clearOnLogout();
+                    context.read<CrowdStatusProvider>().clearCache();
                     auth.signOut();
                     Navigator.pushNamedAndRemoveUntil(
                         context, AppRoutes.login, (route) => false);

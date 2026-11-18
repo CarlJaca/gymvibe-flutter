@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/app_constants.dart';
+import '../../core/utils/operating_hours_helper.dart';
 import '../../models/gym_model.dart';
 import '../../providers/location_provider.dart';
 
@@ -79,7 +80,13 @@ class CompareGymsScreen extends StatelessWidget {
                   _buildComparisonRow(
                     'Status',
                     Icons.access_time_rounded,
-                    gyms.map((g) => _StatusCell(g.isOpen)).toList(),
+                    gyms.map((g) {
+                      final status = OperatingHoursHelper.getStatus(
+                        operatingHours: g.operatingHours.isNotEmpty ? g.operatingHours : g.hours,
+                        dailySchedule: g.dailySchedule,
+                      );
+                      return _StatusCell(status.isOpen, statusLabel: status.label);
+                    }).toList(),
                   ),
                   _buildComparisonRow(
                     'Hours',
@@ -386,26 +393,38 @@ class _TextCell extends StatelessWidget {
   }
 }
 
-/// Status cell — center-aligned
+/// Status cell — center-aligned with dynamic Open/Closed/Unavailable
 class _StatusCell extends StatelessWidget {
   final bool isOpen;
-  const _StatusCell(this.isOpen);
+  final String statusLabel;
+  const _StatusCell(this.isOpen, {this.statusLabel = ''});
 
   @override
   Widget build(BuildContext context) {
+    final label = statusLabel.isNotEmpty
+        ? statusLabel
+        : (isOpen ? 'Open' : 'Closed');
+    final isUnavailable = label == 'Hours unavailable';
+
     return Center(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
         decoration: BoxDecoration(
           color: isOpen
               ? AppColors.primary.withValues(alpha: 0.15)
-              : Colors.red.withValues(alpha: 0.15),
+              : isUnavailable
+                  ? Colors.grey.withValues(alpha: 0.15)
+                  : Colors.red.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(16),
         ),
         child: Text(
-          isOpen ? 'Open' : 'Closed',
+          label,
           style: TextStyle(
-            color: isOpen ? AppColors.primary : Colors.redAccent,
+            color: isOpen
+                ? AppColors.primary
+                : isUnavailable
+                    ? Colors.grey
+                    : Colors.redAccent,
             fontWeight: FontWeight.w600,
             fontSize: 11,
           ),

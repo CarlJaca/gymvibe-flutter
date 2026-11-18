@@ -43,6 +43,33 @@ class SuperAdminProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Clears all cached data on logout to prevent stale data leakage.
+  void clearOnLogout() {
+    _currentNavIndex = 0;
+    _dashboardStats = {};
+    _recentActivity = [];
+    _users = [];
+    _totalUserCount = 0;
+    _seekerCount = 0;
+    _ownerCount = 0;
+    _adminCount = 0;
+    _pendingOwners = [];
+    _approvedOwners = [];
+    _rejectedOwners = [];
+    _gyms = [];
+    _ownerCache.clear();
+    _bookings = [];
+    _reports = [];
+    _personalRecords = [];
+    _auditLogs = [];
+    _actionTypes = [];
+    _notifications = [];
+    _settings = const AppSettingsModel();
+    _isLoading = false;
+    _errorMessage = null;
+    notifyListeners();
+  }
+
   // ═══════════════════════════════════════════════════════════════════
   // DASHBOARD
   // ═══════════════════════════════════════════════════════════════════
@@ -77,11 +104,13 @@ class SuperAdminProvider extends ChangeNotifier {
   int _totalUserCount = 0;
   int _seekerCount = 0;
   int _ownerCount = 0;
+  int _adminCount = 0;
 
   List<UserModel> get users => _users;
   int get totalUserCount => _totalUserCount;
   int get seekerCount => _seekerCount;
   int get ownerCount => _ownerCount;
+  int get adminCount => _adminCount;
 
   Future<void> loadUsers({
     String? searchQuery,
@@ -100,11 +129,13 @@ class SuperAdminProvider extends ChangeNotifier {
         _service.getUserCount(),
         _service.getUserCount(roleFilter: 'gym_seeker'),
         _service.getUserCount(roleFilter: 'gym_owner'),
+        _service.getUserCount(roleFilter: 'admin'),
       ]);
       _users = results[0] as List<UserModel>;
       _totalUserCount = results[1] as int;
       _seekerCount = results[2] as int;
       _ownerCount = results[3] as int;
+      _adminCount = results[4] as int;
     } catch (e) {
       _setError('Failed to load users: $e');
     }
@@ -378,13 +409,15 @@ class SuperAdminProvider extends ChangeNotifier {
   List<Map<String, dynamic>> _bookings = [];
   List<Map<String, dynamic>> get bookings => _bookings;
 
-  Future<void> loadBookings({String? searchQuery, String? statusFilter}) async {
+  Future<void> loadBookings({String? searchQuery, String? statusFilter, String? typeFilter, String? dateFilter}) async {
     _setLoading(true);
     _setError(null);
     try {
       _bookings = await _service.getAllBookings(
         searchQuery: searchQuery,
         statusFilter: statusFilter,
+        typeFilter: typeFilter,
+        dateFilter: dateFilter,
       );
     } catch (e) {
       _setError('Failed to load bookings: $e');

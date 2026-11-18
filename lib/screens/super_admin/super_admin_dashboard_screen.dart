@@ -119,6 +119,12 @@ class _SuperAdminDashboardScreenState extends State<SuperAdminDashboardScreen> {
           Icons.flag_rounded, const Color(0xFFE57373)),
       _StatData('Suspended Users', stats['suspendedUsers'] ?? 0,
           Icons.block_rounded, const Color(0xFFEF5350)),
+      _StatData('Confirmed Bookings', stats['confirmedBookings'] ?? 0,
+          Icons.check_circle_rounded, const Color(0xFF66BB6A)),
+      _StatData('Completed Bookings', stats['completedBookings'] ?? 0,
+          Icons.task_alt_rounded, const Color(0xFF42A5F5)),
+      _StatData('Cancelled Bookings', stats['cancelledBookings'] ?? 0,
+          Icons.cancel_rounded, const Color(0xFFEF5350)),
     ];
 
     return GridView.builder(

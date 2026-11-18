@@ -6,6 +6,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/routes/app_router.dart';
+import '../../core/utils/operating_hours_helper.dart';
 import '../../models/gym_model.dart';
 import '../../providers/gym_provider.dart';
 import '../../providers/crowd_status_provider.dart';
@@ -180,6 +181,40 @@ class GymDetailsScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
+                  // ── Dynamic Open/Closed Status ──
+                  Builder(
+                    builder: (context) {
+                      final hoursStatus = OperatingHoursHelper.getStatus(
+                        operatingHours: gym.operatingHours.isNotEmpty
+                            ? gym.operatingHours
+                            : gym.hours,
+                        dailySchedule: gym.dailySchedule,
+                      );
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: hoursStatus.isOpen
+                              ? AppColors.success
+                              : (hoursStatus.label == 'Hours unavailable'
+                                  ? Colors.grey
+                                  : AppColors.error),
+                          borderRadius:
+                              BorderRadius.circular(AppRadius.full),
+                        ),
+                        child: Text(
+                          hoursStatus.label.toUpperCase(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.8,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                   if (gym.rating > 0) ...[
                     Row(
                       children: [

@@ -88,13 +88,16 @@ class _OwnerRegisterScreenState extends State<OwnerRegisterScreen> {
       );
       context.read<GymProvider>().addGym(newGym);
 
-      // Sign out immediately so owner must log in manually
+      // Sign out immediately — owner account is pending approval
       await provider.signOut();
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Gym Account created! Please sign in to continue.'),
+          content: Text(
+              'Registration submitted! Your account is pending admin approval. '
+              'You will be able to sign in once approved.'),
           backgroundColor: Color(0xFF4CAF50),
+          duration: Duration(seconds: 5),
         ),
       );
       Navigator.pushReplacementNamed(context, AppRoutes.ownerLogin);

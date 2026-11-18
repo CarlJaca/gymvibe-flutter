@@ -37,7 +37,7 @@ class AuditLogService {
     String? actionFilter,
     DateTime? startDate,
     DateTime? endDate,
-    int limit = 20,
+    int limit = 500,
     DocumentSnapshot? lastDocument,
   }) async {
     Query query = _firestore
@@ -107,7 +107,7 @@ class AuditLogService {
     final snapshot = await _firestore
         .collection(_collection)
         .orderBy('createdAt', descending: true)
-        .limit(200)
+        .limit(500)
         .get();
 
     final actions = snapshot.docs

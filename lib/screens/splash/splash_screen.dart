@@ -59,6 +59,9 @@ class _SplashScreenState extends State<SplashScreen>
       String nextRoute;
       if (user.isSuperAdmin) {
         nextRoute = AppRoutes.superAdminPortal;
+      } else if (user.isAdmin) {
+        // Admin role routes to owner portal (manages assigned gym)
+        nextRoute = AppRoutes.ownerPortal;
       } else if (user.isOwner) {
         nextRoute = AppRoutes.ownerPortal;
       } else {
@@ -67,8 +70,8 @@ class _SplashScreenState extends State<SplashScreen>
 
       Navigator.pushReplacementNamed(context, nextRoute);
     } else {
-      // No valid session or user explicitly logged out — show onboarding/login
-      Navigator.pushReplacementNamed(context, AppRoutes.onboarding);
+      // No valid session or user explicitly logged out — show login
+      Navigator.pushReplacementNamed(context, AppRoutes.login);
     }
   }
 

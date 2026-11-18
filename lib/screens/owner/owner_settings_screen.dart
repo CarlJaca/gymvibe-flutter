@@ -134,14 +134,17 @@ class OwnerSettingsScreen extends StatelessWidget {
                       ),
                       trailing: const Icon(Icons.chevron_right_rounded,
                           color: AppColors.textSecondary),
-                      onTap: () {
-                        final provider =
+                      onTap: () async {
+                        final nav = Navigator.of(context);
+                        final authProv =
                             Provider.of<AuthProvider>(context, listen: false);
-                        Provider.of<GymProvider>(context, listen: false)
-                            .clearUserData();
-                        provider.signOut();
-                        Navigator.pushNamedAndRemoveUntil(
-                            context, AppRoutes.login, (route) => false);
+                        final gymProv =
+                            Provider.of<GymProvider>(context, listen: false);
+                        // Clear providers BEFORE navigation to avoid stale state
+                        gymProv.clearUserData();
+                        await authProv.signOut();
+                        nav.pushNamedAndRemoveUntil(
+                            AppRoutes.login, (route) => false);
                       },
                     ),
                   ],

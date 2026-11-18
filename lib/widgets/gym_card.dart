@@ -5,6 +5,7 @@ import '../models/gym_model.dart';
 import '../providers/gym_provider.dart';
 import '../providers/location_provider.dart';
 import '../core/constants/app_constants.dart';
+import '../core/utils/operating_hours_helper.dart';
 import 'star_rating.dart';
 
 class GymCard extends StatelessWidget {
@@ -15,6 +16,12 @@ class GymCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ── Dynamic Open/Closed status based on real operating hours ──
+    final hoursStatus = OperatingHoursHelper.getStatus(
+      operatingHours: gym.operatingHours.isNotEmpty ? gym.operatingHours : gym.hours,
+      dailySchedule: gym.dailySchedule,
+    );
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -113,29 +120,32 @@ class GymCard extends StatelessWidget {
                 ),
               ),
 
-              // ── Open Badge ───────────────────────────────────────────────
-              if (gym.isOpen)
-                Positioned(
-                  top: 12,
-                  left: 12,
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: AppColors.success,
-                      borderRadius: BorderRadius.circular(AppRadius.full),
-                    ),
-                    child: const Text(
-                      'OPEN',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 0.8,
-                      ),
+              // ── Dynamic Open/Closed Badge ────────────────────────────────
+              Positioned(
+                top: 12,
+                left: 12,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: hoursStatus.isOpen
+                        ? AppColors.success
+                        : (hoursStatus.label == 'Hours unavailable'
+                            ? Colors.grey
+                            : AppColors.error),
+                    borderRadius: BorderRadius.circular(AppRadius.full),
+                  ),
+                  child: Text(
+                    hoursStatus.label.toUpperCase(),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.8,
                     ),
                   ),
                 ),
+              ),
 
               // ── Favorite Button ───────────────────────────────────────────
               Positioned(

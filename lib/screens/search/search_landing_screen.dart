@@ -4,7 +4,6 @@ import '../../core/constants/app_constants.dart';
 import '../../core/routes/app_router.dart';
 import '../../providers/gym_provider.dart';
 import '../../widgets/search_bar_widget.dart';
-import '../../widgets/city_card_widget.dart';
 import '../../widgets/gym_card.dart';
 
 class SearchLandingScreen extends StatefulWidget {
@@ -17,24 +16,6 @@ class SearchLandingScreen extends StatefulWidget {
 class _SearchLandingScreenState extends State<SearchLandingScreen> {
   final TextEditingController _searchController = TextEditingController();
   bool _isSearching = false;
-
-  final List<Map<String, String>> _cities = [
-    {
-      'name': 'Davao City',
-      'image':
-          'https://images.unsplash.com/photo-1628148002936-39ee648a002b?q=80&w=600&auto=format&fit=crop'
-    },
-    {
-      'name': 'Cebu City',
-      'image':
-          'https://images.unsplash.com/photo-1518218105741-945763560bf9?q=80&w=600&auto=format&fit=crop'
-    },
-    {
-      'name': 'Butuan City',
-      'image':
-          'https://images.unsplash.com/photo-1542281286-9e0a16bb7366?q=80&w=600&auto=format&fit=crop'
-    },
-  ];
 
   @override
   void initState() {
@@ -253,38 +234,7 @@ class _SearchLandingScreenState extends State<SearchLandingScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // ── City Selection ────────────────────────────────────────
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: AppPadding.md),
-          child: Text(
-            'Where to?',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-        ),
-        const SizedBox(height: AppPadding.md),
-        SizedBox(
-          height: 140,
-          child: ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: AppPadding.md),
-            scrollDirection: Axis.horizontal,
-            itemCount: _cities.length,
-            itemBuilder: (context, index) {
-              final city = _cities[index];
-              return CityCardWidget(
-                cityName: city['name']!,
-                imageUrl: city['image']!,
-                isSelected: provider.selectedCity == city['name'],
-                onTap: () => provider.setCity(
-                    provider.selectedCity == city['name']
-                        ? null
-                        : city['name']),
-              );
-            },
-          ),
-        ),
-        const SizedBox(height: AppPadding.xl),
-
-        // ── Actions ────────────────────────────────────────────────
+        // ── Filters ────────────────────────────────────────────────
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppPadding.md),
           child: Column(
@@ -292,11 +242,6 @@ class _SearchLandingScreenState extends State<SearchLandingScreen> {
               _buildActionTile(
                 title: 'Filters',
                 onTap: () => Navigator.pushNamed(context, AppRoutes.filters),
-              ),
-              const SizedBox(height: 12),
-              _buildActionTile(
-                title: 'Sort by',
-                onTap: () {},
               ),
             ],
           ),

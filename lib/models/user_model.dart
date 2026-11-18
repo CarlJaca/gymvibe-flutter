@@ -9,7 +9,7 @@ class UserModel {
   final String membershipType;
   final List<String> savedGymIds;
   final List<String> fitnessPreferences;
-  final String role; // 'gym_seeker', 'gym_owner', 'super_admin'
+  final String role; // 'gym_seeker', 'gym_owner', 'admin', 'super_admin'
   final String accountStatus; // 'active', 'pending', 'suspended', 'deactivated'
   final String? gymName;
   final String? contactNumber;
@@ -36,10 +36,14 @@ class UserModel {
   });
 
   // ─── Computed role getters (backward compatible) ─────────────────────
-  bool get isOwner => role == 'gym_owner' || role == 'super_admin';
+  bool get isOwner => role == 'gym_owner' || role == 'admin' || role == 'super_admin';
   bool get isSuperAdmin => role == 'super_admin';
   bool get isGymSeeker => role == 'gym_seeker';
   bool get isGymOwner => role == 'gym_owner';
+  bool get isAdmin => role == 'admin';
+
+  /// True when the account holds any administrative privilege.
+  bool get hasAdminAccess => role == 'admin' || role == 'super_admin';
 
   factory UserModel.fromJson(Map<String, dynamic> json, String documentId) {
     // Backward compat: if 'role' is missing, derive from legacy 'isOwner' bool

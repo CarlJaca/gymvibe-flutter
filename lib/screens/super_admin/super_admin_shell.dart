@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../core/constants/app_constants.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
@@ -88,14 +89,14 @@ class _SuperAdminShellState extends State<SuperAdminShell> {
     );
 
     if (confirmed == true && mounted) {
+      // Clear all provider state BEFORE navigation
+      context.read<GymProvider>().clearUserData();
+      context.read<SuperAdminProvider>().clearOnLogout();
+      await context.read<AuthProvider>().signOut();
+
+      if (!mounted) return;
       Navigator.pushNamedAndRemoveUntil(
           context, AppRoutes.login, (route) => false);
-      // Let the routing animation start, then clear the state
-      Future.delayed(const Duration(milliseconds: 100), () {
-        if (!mounted) return;
-        context.read<GymProvider>().clearUserData();
-        context.read<AuthProvider>().signOut();
-      });
     }
   }
 
@@ -270,15 +271,8 @@ class _SuperAdminShellState extends State<SuperAdminShell> {
                 CircleAvatar(
                   radius: 20,
                   backgroundColor: AppColors.primary.withValues(alpha: 0.2),
-                  child: Text(
-                    (authProvider.userName.isNotEmpty
-                        ? authProvider.userName[0]
-                        : 'A'),
-                    style: const TextStyle(
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+                  backgroundImage: CachedNetworkImageProvider(
+                    authProvider.userAvatar,
                   ),
                 ),
                 const SizedBox(width: 12),

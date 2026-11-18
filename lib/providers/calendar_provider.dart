@@ -132,7 +132,18 @@ class CalendarProvider extends ChangeNotifier {
 
   /// Set the current user ID for Firestore paths.
   void setUserId(String userId) {
+    if (_userId != userId) {
+      _activities.clear(); // Clear previous user's data
+    }
     _userId = userId;
+  }
+
+  /// Clear in-memory data on logout (Firestore data persists).
+  void clearOnLogout() {
+    _userId = null;
+    _activities.clear();
+    _isLoading = false;
+    notifyListeners();
   }
 
   /// Get activities for a specific date.

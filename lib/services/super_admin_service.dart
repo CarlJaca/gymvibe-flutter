@@ -5,6 +5,7 @@ import '../models/leaderboard_model.dart';
 import '../models/content_report_model.dart';
 import '../models/admin_notification_model.dart';
 import '../models/app_settings_model.dart';
+import '../data/gym_repository.dart';
 import 'audit_log_service.dart';
 
 class SuperAdminService {
@@ -52,6 +53,21 @@ class SuperAdminService {
           .where('status', isEqualTo: 'pending')
           .count()
           .get(),
+      _firestore
+          .collection('bookings')
+          .where('status', isEqualTo: 'Confirmed')
+          .count()
+          .get(),
+      _firestore
+          .collection('bookings')
+          .where('status', isEqualTo: 'Completed')
+          .count()
+          .get(),
+      _firestore
+          .collection('bookings')
+          .where('status', isEqualTo: 'Cancelled')
+          .count()
+          .get(),
     ]);
 
     // Personal records require collection group queries
@@ -74,17 +90,34 @@ class SuperAdminService {
       // Collection group index might not exist yet
     }
 
+    // Count total gyms: Firestore count + bundled dataset gyms (deduplicated)
+    int firestoreGymCount = results[4].count ?? 0;
+    int totalGymCount = firestoreGymCount;
+    try {
+      final datasetGyms = await GymRepository.instance.loadAll();
+      // Get Firestore gym IDs to deduplicate
+      final firestoreSnap = await _firestore.collection('gyms').get();
+      final firestoreIds = firestoreSnap.docs.map((d) => d.id).toSet();
+      final uniqueDatasetGyms = datasetGyms.where((g) => !firestoreIds.contains(g.id)).length;
+      totalGymCount = firestoreGymCount + uniqueDatasetGyms;
+    } catch (_) {
+      // If dataset load fails, just use Firestore count
+    }
+
     return {
       'totalUsers': results[0].count ?? 0,
       'gymSeekers': results[1].count ?? 0,
       'gymOwners': results[2].count ?? 0,
       'pendingOwners': results[3].count ?? 0,
-      'approvedGyms': results[4].count ?? 0,
+      'approvedGyms': totalGymCount,
       'totalBookings': results[5].count ?? 0,
       'activeEvents': results[6].count ?? 0,
       'activePromotions': results[7].count ?? 0,
       'suspendedUsers': results[8].count ?? 0,
       'reportedContent': results[9].count ?? 0,
+      'confirmedBookings': results[10].count ?? 0,
+      'completedBookings': results[11].count ?? 0,
+      'cancelledBookings': results[12].count ?? 0,
       'verifiedPRs': verifiedPRs,
       'pendingPRs': pendingPRs,
     };
@@ -99,7 +132,7 @@ class SuperAdminService {
     String? searchQuery,
     String? roleFilter,
     String? statusFilter,
-    int limit = 20,
+    int limit = 500,
     DocumentSnapshot? lastDocument,
   }) async {
     Query query = _firestore.collection('users').orderBy('name');
@@ -267,14 +300,14 @@ class SuperAdminService {
       throw Exception('Cannot change your own role.');
     }
 
-    final validRoles = ['gym_seeker', 'gym_owner'];
+    final validRoles = ['gym_seeker', 'gym_owner', 'admin'];
     if (!validRoles.contains(newRole)) {
       throw Exception('Invalid role: $newRole');
     }
 
     await _firestore.collection('users').doc(userId).update({
       'role': newRole,
-      'isOwner': newRole == 'gym_owner',
+      'isOwner': newRole == 'gym_owner' || newRole == 'admin',
     });
 
     await _auditLog.logAction(
@@ -444,34 +477,68 @@ class SuperAdminService {
   // ═══════════════════════════════════════════════════════════════════
 
   /// Get all gyms with optional search and filter.
+  /// Merges bundled dataset gyms AND Firestore-registered gyms (same logic
+  /// as GymProvider.loadGyms) so the Superadmin sees every gym on the platform.
   Future<List<GymModel>> getAllGyms({
     String? searchQuery,
     String? statusFilter,
-    int limit = 20,
+    int limit = 500,
     DocumentSnapshot? lastDocument,
   }) async {
-    Query query = _firestore.collection('gyms').orderBy('name');
-
-    if (lastDocument != null) {
-      query = query.startAfterDocument(lastDocument);
+    // 1. Load the 15 real Davao gyms from the bundled JSON dataset
+    List<GymModel> allGyms = [];
+    try {
+      final datasetGyms = await GymRepository.instance.loadAll();
+      allGyms = List<GymModel>.from(datasetGyms);
+    } catch (_) {
+      // Non-fatal — continue with Firestore gyms only
     }
 
-    query = query.limit(limit);
+    // 2. Load owner-registered gyms from Firestore (supplementary)
+    try {
+      Query query = _firestore.collection('gyms').orderBy('name');
 
-    final snapshot = await query.get();
-    List<GymModel> gyms = snapshot.docs.map((doc) {
-      return GymModel.fromJson(doc.data() as Map<String, dynamic>, doc.id);
-    }).toList();
+      if (lastDocument != null) {
+        query = query.startAfterDocument(lastDocument);
+      }
 
+      query = query.limit(limit);
+
+      final snapshot = await query.get();
+      for (final doc in snapshot.docs) {
+        final firestoreGym = GymModel.fromJson(
+          doc.data() as Map<String, dynamic>,
+          doc.id,
+        );
+        // Only add if not already in dataset (avoid duplicates by ID)
+        if (!allGyms.any((g) => g.id == firestoreGym.id)) {
+          allGyms.add(firestoreGym);
+        }
+      }
+    } catch (_) {
+      // Non-fatal if Firestore query fails — dataset gyms still available
+    }
+
+    // 3. Apply status filter (client-side since dataset gyms aren't in Firestore)
+    if (statusFilter != null && statusFilter.isNotEmpty) {
+      allGyms = allGyms.where((g) => g.status == statusFilter).toList();
+    }
+
+    // 4. Apply search filter
     if (searchQuery != null && searchQuery.isNotEmpty) {
       final lowerQuery = searchQuery.toLowerCase();
-      gyms = gyms.where((g) {
+      allGyms = allGyms.where((g) {
         return g.name.toLowerCase().contains(lowerQuery) ||
-            g.address.toLowerCase().contains(lowerQuery);
+            g.address.toLowerCase().contains(lowerQuery) ||
+            g.branch.toLowerCase().contains(lowerQuery) ||
+            g.district.toLowerCase().contains(lowerQuery);
       }).toList();
     }
 
-    return gyms;
+    // 5. Sort by name
+    allGyms.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+
+    return allGyms;
   }
 
   /// Get gym owner details for a gym.
@@ -554,7 +621,9 @@ class SuperAdminService {
   Future<List<Map<String, dynamic>>> getAllBookings({
     String? searchQuery,
     String? statusFilter,
-    int limit = 20,
+    String? typeFilter,
+    String? dateFilter,
+    int limit = 500,
     DocumentSnapshot? lastDocument,
   }) async {
     Query query = _firestore
@@ -563,6 +632,14 @@ class SuperAdminService {
 
     if (statusFilter != null && statusFilter.isNotEmpty) {
       query = query.where('status', isEqualTo: statusFilter);
+    }
+
+    // Note: bookingType may not exist in all booking documents.
+    // If the field is missing, Firestore returns no matches, so we handle
+    // type filtering client-side after fetching to be safe.
+
+    if (dateFilter != null && dateFilter.isNotEmpty) {
+      query = query.where('bookingDate', isEqualTo: dateFilter);
     }
 
     if (lastDocument != null) {
@@ -592,6 +669,13 @@ class SuperAdminService {
                 .contains(lowerQuery) ||
             (b['id'] ?? '').toString().toLowerCase().contains(lowerQuery) ||
             (b['userId'] ?? '').toString().toLowerCase().contains(lowerQuery);
+      }).toList();
+    }
+
+    // Client-side type filter (bookingType field may not exist in all docs)
+    if (typeFilter != null && typeFilter.isNotEmpty) {
+      bookings = bookings.where((b) {
+        return (b['bookingType'] ?? '').toString() == typeFilter;
       }).toList();
     }
 
@@ -630,7 +714,7 @@ class SuperAdminService {
   Future<List<ContentReportModel>> getReportedContent({
     String? contentTypeFilter,
     String? statusFilter,
-    int limit = 20,
+    int limit = 500,
   }) async {
     Query query = _firestore
         .collection('contentReports')
@@ -820,7 +904,7 @@ class SuperAdminService {
     String? searchQuery,
     String? statusFilter,
     String? categoryFilter,
-    int limit = 20,
+    int limit = 500,
   }) async {
     try {
       Query query = _firestore.collectionGroup('personalRecords');
